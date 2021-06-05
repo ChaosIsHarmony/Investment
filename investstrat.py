@@ -1,20 +1,11 @@
 import requests
 import json
- 
+import copy
+from datetime import date, datetime, timedelta 
 '''
 Interesting API calls:
 /coins/list
 /coins/{id}/market_chart?vs_currency=twd&days=max&interval=monthly
-
-UNUSED
-x = requests.get(API_URL + "/coins/list?include_platform=false")
-for coin in x.json():
-	coin_name = coin.get("symbol")
-	for coin_sym in coin_symbol_list_hodl:
-		if coin_sym in coin_name:
-			date = "30-12-2020"
-			# history for given date
-			print(coin_name, get_price_on(coin, date).keys())
 '''
 
 
@@ -53,28 +44,31 @@ def normalize(prices, start=1):
 	assert type(prices[0][1]) == float, "cannot normalize non-numeric data"
 	assert start <= len(prices), "start must not exceed price list length"
 
-	max_price = find_max(prices, start)
-	for i in range(len(prices)):
-		if prices[i][1] == max_price:
-			prices[i][1] = 1
-		else:
-			prices[i][1] /= max_price
+	deep_copy_prices = copy.deepcopy(prices)
 
-	return prices
+	max_price = find_max(deep_copy_prices, start)
+	for i in range(len(deep_copy_prices)):
+		if deep_copy_prices[i][1] == max_price:
+			deep_copy_prices[i][1] = 1
+		else:
+			deep_copy_prices[i][1] /= max_price
+
+	return deep_copy_prices
 
 
 def calc_SMA(prices, key, start=1):
+	assert type(key) == str, "key should be of type str"
 	assert int(key) >= 150, "key too small; must be 150 or greater"
 	assert len(prices) > 0, "cannot process an empty price list"
-	assert start <= len(prices)-150, "start must not exceed price list length - 150"
+	assert 150 <= len(prices) - start, "start must not exceed price list length - 150"
 
 	SMA = {}
 	total = 0
 	for i in range(start, len(prices)+1):
-		if i-start == 50:
+		if i-start == 10:
+			SMA["10"] = total/10
+		elif i-start == 50:
 			SMA["50"] = total/50
-		elif i-start == 100:
-			SMA["100"] = total/100
 		elif i-start == int(key):
 			SMA[key] = total/int(key)
 		total += prices[-i][1]
@@ -83,9 +77,9 @@ def calc_SMA(prices, key, start=1):
 
 
 def recent_risk_delta(SMA):
-	assert SMA["50"] and SMA["100"], "Both 50-day MA and 100-day MA must exist"
+	assert SMA["10"] and SMA["50"], "Both 10-day MA and 50-day MA must exist"
 
-	return SMA["50"] - SMA["100"]
+	return SMA["10"] - SMA["50"]
 
 
 def decide(risk, d_risk, cur_max_ratio):
@@ -97,43 +91,55 @@ def decide(risk, d_risk, cur_max_ratio):
 		d_risk - Change from 100-day MA to 50-day MA
 		cur_max_ratio - Current price to All-time High price ratio
 	'''
-	tot_risk = risk + d_risk + cur_max_ratio
-	print(f"Total risk aggregate:  {tot_risk:.4f}")
+	risk 
 
-	if tot_risk > 5:
-		return "SELL 3Y"
-	elif tot_risk > 4.5:
-		return "SELL 2Y"
-	elif tot_risk > 4:
-		return "SELL Y"
-	elif tot_risk > 3.5:
-		return "HODL"
-	elif tot_risk > 2.5:
-		return "BUY X"
-	elif tot_risk > 2:
+	if d_risk > 0.05 and cur_max_ratio > 0.8:
+		if risk > 2.5:
+			return "SELL 3Y"
+		elif risk > 2.25:
+			return "SELL 2Y"
+		elif risk > 1.75:
+			return "SELL Y"
+		elif d_risk > 0.15:
+			return "SELL Y"
+		else:
+			return "HODL"
+	elif risk < 1.25 and d_risk < -0.1 and cur_max_ratio < 0.6:
 		return "BUY 2X"
-	else:
-		return "BUY 3x"
+	elif d_risk < -0.05 and cur_max_ratio < 0.7:
+		if 1.0 <= risk < 1.5:
+			return "BUY X"
+		elif 0.75 <= risk < 1.0:
+			return "BUY 2X"
+		elif risk < 0.75:
+			return "BUY 3X"
+		else:
+			return "HODL"
+	
+	return "HODL"
+
+def generate_report(SMA, prices, key="350", start=1):
+	risk = SMA["50"]/SMA[key]
+	d_risk = recent_risk_delta(SMA)
+	cur_max_ratio = prices[-start][1] / find_max(prices, start)
+	decision = decide(risk, d_risk, cur_max_ratio)
+
+	return risk, d_risk, cur_max_ratio, decision
 	
 
 def print_report(SMA, prices, key="350", start=1, show_all=True):
 	if key in SMA.keys():
-		risk = SMA["50"]/SMA[key]
-		d_risk = recent_risk_delta(SMA)
-		cur_max_ratio = prices[-start][1] / find_max(prices, start)
-		decision = decide(risk, d_risk, cur_max_ratio)
-	
+		risk, d_risk, cur_max_ratio, decision = generate_report(SMA, prices, key, start)
+		
 		if show_all or decision == "BUY" or decision == "SELL":
 			print(f"\tRisk 50/{key}: ", end="")
 			print(f"{risk:>16.4f}")
-			print("\t50 - 100 MA delta: ", end="")
-			print(f"{d_risk:>10.4f}")
-			print(f"\t\t50 SMA: {SMA['50']:.4f} | 100 SMA: {SMA['100']:.4f}" )
+			print("\t10 - 50 MA delta: ", end="")
+			print(f"{d_risk:>11.4f}")
+			print(f"\t\t10 SMA: {SMA['10']:.4f} | 50 SMA: {SMA['50']:.4f}" )
 			print("\tCur/Max Price: ", end="")
 			print(f"{cur_max_ratio:>14.4f}")
 			print()
-			if int(key) != 350:
-				print("WARNING: Decision is calibrated for 50/350 MA comparison")
 			print("DECISION:", decision)
 			return decision
 
@@ -156,15 +162,19 @@ def in_depth_report(coin, key, days):
 	SMA = {}
 	signal_changes = {}	
 	prev_signal = ""
+	today = date.today()
 
 	print(coin)
-	print("Present Day")
+	print(today)
 	prices_norm = normalize(prices_orig, 1)
 	SMA = calc_SMA(prices_norm, key, 1)
 	print_report(SMA, prices_norm, key, 1)
-
-	for i in range(1, days-int(key)):
-		print(f"{i} days ago")
+	print("------------")
+	print()
+	print("------------")
+	
+	for i in range(2, days-int(key)):
+		print(today - timedelta(i))
 		prices_norm = normalize(prices_orig, i)
 		SMA = calc_SMA(prices_norm, key, i)
 
@@ -174,7 +184,11 @@ def in_depth_report(coin, key, days):
 
 		decision = print_report(SMA, prices_norm, key, i)
 		if decision != prev_signal:
-			signal_changes[i] = [decision, SMA["50"]/SMA[key]]
+			risk = SMA["50"]/SMA[key]
+			d_risk = recent_risk_delta(SMA)
+			cur_max_ratio = prices_norm[-i][1] / find_max(prices_norm, i)
+
+			signal_changes[i] = [decision, (risk+d_risk+cur_max_ratio)]
 			prev_signal = decision
 		print("------------")
 		print()
