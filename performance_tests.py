@@ -21,7 +21,7 @@ for coin in coins:
 	signal_changes = {}
 	prev_signal = ""
 
-	for i in range(1, 2):#days-int(key)):
+	for i in range(1, 15):#days-int(key)):
 		SMA = {}
 		prices_norm = strat.normalize(prices_orig, i)
 		SMA = strat.calc_SMA(prices_norm, key, i)
@@ -32,8 +32,11 @@ for coin in coins:
 		risk, d_risk, cur_max_ratio, decision = strat.generate_report(SMA, prices_norm, key, i)
 
 		if decision != prev_signal:
-			signal_changes[i] = [f"{prev_signal} -> {decision}", risk, d_risk, cur_max_ratio]
-			prev_signal = decision
+			if i == 1:
+				prev_signal = decision
+			else:	
+				signal_changes[i] = [f"{prev_signal} <- {decision}", risk, d_risk, cur_max_ratio]
+				prev_signal = decision
 	
 	
 	for days in signal_changes.keys():

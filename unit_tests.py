@@ -1,6 +1,7 @@
 import investstrat as strat
 import copy
 
+
 def run_tests():
 	prices = []
 	for i in range(500):
@@ -11,6 +12,7 @@ def run_tests():
 	print("test_normalize() tests all passed")
 	test_calc_SMA(prices)
 	print("test_calc_SMA() tests all passed")
+
 
 
 def test_find_max(prices):
@@ -30,6 +32,7 @@ def test_find_max(prices):
 	assert(max_num == 364)
 
 
+
 def test_normalize(prices):
 	deep_copy_prices = copy.deepcopy(prices)
 
@@ -46,6 +49,8 @@ def test_normalize(prices):
 	assert(1/(len(prices)-3) >= norm_prices[0][1] > 1/(len(prices)-1))
 	assert(2/(len(prices)-3) >= norm_prices[1][1] > 2/(len(prices)-1))
 	assert(len(prices)/(len(prices)-1) >= norm_prices[-3][1] > len(prices)/(len(prices)+1))
+
+
 
 def test_calc_SMA(prices):
 	SMA = strat.calc_SMA(prices, "350")
@@ -67,5 +72,7 @@ def test_calc_SMA(prices):
 	assert(SMA["10"] == 396.5)
 	assert(SMA["50"] == 376.5)
 	assert(SMA["250"] == 276.5)
+
+
 
 run_tests() 

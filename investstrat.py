@@ -11,18 +11,36 @@ Interesting API calls:
 
 API_URL = "https://api.coingecko.com/api/v3"
 
-coin_id = ["algorand", "bitcoin", "cardano", "chainlink", "ethereum", "polkadot", "solana"]
+coin_id = ["algorand", "bitcoin", "cardano", "chainlink", "cosmos", "ethereum", "matic-network", "polkadot", "solana"]
+
 
 
 def get_price_on(coin, date):
-	return requests.get(API_URL + f"/coins/{coin.get('id')}/history?date={date}").json()
+	'''
+	Gets the price of the specified coin on the specified date.
+	
+	NOTE: param date requires "dd-mm-yyyy" format as per the coingecko api requirements.
+	'''
+	return requests.get(API_URL + f"/coins/{coin}/history?date={date}").json()
+
 
 
 def get_chart(coin, days):
+	'''
+	Gets the market chart for the specified coin for a specified number of days extending backwards from the present.
+
+	NOTE: if days == "max", then it will retrieve all possible data for the given coin.
+	'''
 	return requests.get(API_URL + f"/coins/{coin}/market_chart?vs_currency=twd&days={days}&interval=daily").json()
 
 
+
 def find_max(prices, start=1):
+	'''
+	Finds highest price starting from the index len(prices)-start; thus, if start == 1, it starts from the last index (i.e., the most recent date).
+
+	NOTE: this method searches backwards as the most recent data is listed last (i.e., the first item in the array is the oldest; the last, the most recent).
+	'''
 	assert len(prices) > 0, "cannot process empty list"
 	assert start <= len(prices), "start must not exceed price list length"
 
@@ -39,7 +57,11 @@ def find_max(prices, start=1):
 	return max_price
 
 
+
 def normalize(prices, start=1):
+	'''
+	Normalizes prices by finding highest price in the given range and then dividing all by that number.
+	'''
 	assert len(prices) > 0, "cannot process empty list"
 	assert type(prices[0][1]) == float, "cannot normalize non-numeric data"
 	assert start <= len(prices), "start must not exceed price list length"
@@ -48,19 +70,25 @@ def normalize(prices, start=1):
 
 	max_price = find_max(deep_copy_prices, start)
 	for i in range(len(deep_copy_prices)):
-		if deep_copy_prices[i][1] == max_price:
-			deep_copy_prices[i][1] = 1
-		else:
-			deep_copy_prices[i][1] /= max_price
+		deep_copy_prices[i][1] /= max_price
 
 	return deep_copy_prices
 
 
+
 def calc_SMA(prices, key, start=1):
+	'''
+	Calculates the Simple Moving Average for three intervals:
+		- 10-day
+		- 50-day
+		- key-day (where the key param is >= 100)
+
+	NOTE: the start param is used to indicate the starting date (i.e., x days backward from the present day)
+	'''
 	assert type(key) == str, "key should be of type str"
-	assert int(key) >= 150, "key too small; must be 150 or greater"
+	assert int(key) >= 100, "key too small; must be 100 or greater"
 	assert len(prices) > 0, "cannot process an empty price list"
-	assert 150 <= len(prices) - start, "start must not exceed price list length - 150"
+	assert 100 <= len(prices) - start, "start must not exceed price list length - 100"
 
 	SMA = {}
 	total = 0
@@ -76,10 +104,17 @@ def calc_SMA(prices, key, start=1):
 	return SMA
 
 
+
 def recent_risk_delta(SMA):
+	'''
+	Calculates the difference between the 10-day moving average and the 50-day moving average.
+
+	NOTE: this is a upward/downward + magnitude trend indicator: higher, positive numbers means rapid growth in short time; lower, negative numbers mean rapid loss in short time; whereas near-zero numbers mean
+	'''
 	assert SMA["10"] and SMA["50"], "Both 10-day MA and 50-day MA must exist"
 
 	return SMA["10"] - SMA["50"]
+
 
 
 def decide(risk, d_risk, cur_max_ratio):
@@ -87,11 +122,10 @@ def decide(risk, d_risk, cur_max_ratio):
 	Heuristic for BUY/SELL/HODL based on all metrics
 
 	params:
-		risk - 50-day MA to x-day MA ratio (x provided by user; most often 350)
-		d_risk - Change from 100-day MA to 50-day MA
+		risk - 50-day MA to x-day MA ratio (x provided by user; most often 200, as is indicator of golden cross or death cross)
+		d_risk - Change from 10-day MA to 50-day MA
 		cur_max_ratio - Current price to All-time High price ratio
 	'''
-	risk 
 
 	if d_risk > 0.05 and cur_max_ratio > 0.8:
 		if risk > 2.5:
@@ -118,6 +152,8 @@ def decide(risk, d_risk, cur_max_ratio):
 	
 	return "HODL"
 
+
+
 def generate_report(SMA, prices, key="350", start=1):
 	risk = SMA["50"]/SMA[key]
 	d_risk = recent_risk_delta(SMA)
@@ -126,6 +162,7 @@ def generate_report(SMA, prices, key="350", start=1):
 
 	return risk, d_risk, cur_max_ratio, decision
 	
+
 
 def print_report(SMA, prices, key="350", start=1, show_all=True):
 	if key in SMA.keys():
@@ -143,12 +180,18 @@ def print_report(SMA, prices, key="350", start=1, show_all=True):
 			print("DECISION:", decision)
 			return decision
 
+
+
 def most_recent_report(coin, key, days):
+	'''
+	Only provides a report for the present day's risk and investment decision
+	'''
 	prices = get_chart(coin, days+1)["prices"]
 	SMA = {}
+	today = date.today()
 
 	print(coin)
-	print("Present Day")
+	print(today)
 	prices = normalize(prices, 1)
 	SMA = calc_SMA(prices, key, 1)
 	print_report(SMA, prices, key, 1)
@@ -157,7 +200,13 @@ def most_recent_report(coin, key, days):
 	print("------------")
 
 
+
 def in_depth_report(coin, key, days):
+	'''
+	Gives metric and decision based on data up to a given point in history for a specified interval.
+
+	NOTE: key param is the x-day moving average (e.g., 200, 350, etc.) with which a risk ratio will be calculated using the 50-day moving average.
+	'''
 	prices_orig = get_chart(coin, days+1)["prices"]
 	SMA = {}
 	signal_changes = {}	
@@ -168,11 +217,12 @@ def in_depth_report(coin, key, days):
 	print(today)
 	prices_norm = normalize(prices_orig, 1)
 	SMA = calc_SMA(prices_norm, key, 1)
-	print_report(SMA, prices_norm, key, 1)
+	prev_signal = print_report(SMA, prices_norm, key, 1)
 	print("------------")
 	print()
 	print("------------")
-	
+
+	# calculates historical decisions based only on historical data
 	for i in range(2, days-int(key)):
 		print(today - timedelta(i))
 		prices_norm = normalize(prices_orig, i)
@@ -195,30 +245,3 @@ def in_depth_report(coin, key, days):
 		print("------------")
 	
 	return signal_changes
-
-
-def run():
-	while (True):
-		print("Available coins: ", coin_id)
-		coin = input("Which coin? ")
-
-		# not an option
-		if coin not in coin_id and coin != "all":
-			break
- 
-		key = input("What MA should the 50-day MA be compared to? (increments of 50) ")
-		days = int(input("How far back? (in days) "))
-	
-		# Report on all coins
-		if coin == "all":
-			for c in coin_id:
-				most_recent_report(c, key, days)
-			continue
-
-		# In-depth report on single coin
-		in_depth_report(coin, key, days)
-
-
-# Uncomment if running in CLI
-# Comment if running in Python Shell
-#run()
