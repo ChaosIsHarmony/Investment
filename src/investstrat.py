@@ -11,7 +11,7 @@ Interesting API calls:
 
 API_URL = "https://api.coingecko.com/api/v3"
 
-coin_id = ["algorand", "bitcoin", "cardano", "chainlink", "cosmos", "ethereum", "matic-network", "polkadot", "solana"]
+coin_id = ["algorand", "bitcoin", "cardano", "chainlink", "cosmos", "ethereum", "matic-network", "polkadot", "solana", "theta-token"]
 
 
 
@@ -93,10 +93,14 @@ def calc_SMA(prices, key, start=1):
 	SMA = {}
 	total = 0
 	for i in range(start, len(prices)+1):
-		if i-start == 10:
+		if i-start == 5:
+			SMA["5"] = total/5
+		elif i-start == 10:
 			SMA["10"] = total/10
 		elif i-start == 50:
 			SMA["50"] = total/50
+		elif i-start == 100:
+			SMA["100"] = total/100
 		elif i-start == int(key):
 			SMA[key] = total/int(key)
 		total += prices[-i][1]
@@ -111,36 +115,36 @@ def recent_risk_delta(SMA):
 
 	NOTE: this is a upward/downward + magnitude trend indicator: higher, positive numbers means rapid growth in short time; lower, negative numbers mean rapid loss in short time; whereas near-zero numbers mean
 	'''
-	assert SMA["10"] and SMA["50"], "Both 10-day MA and 50-day MA must exist"
+	assert SMA["5"] and SMA["10"] and SMA["50"] and SMA["100"], "5-day, 10-day, 50-day, and 100-day MA must exist"
 
-	return SMA["10"] - SMA["50"]
+	return SMA["5"] - SMA["10"], SMA["10"] - SMA["50"], SMA["50"] - SMA["100"]
 
 
 
-def decide(risk, d_risk, cur_max_ratio):
+def decide(risk, d_risk_5, d_risk_10, d_risk_50, cur_max_ratio):
 	'''
 	Heuristic for BUY/SELL/HODL based on all metrics
 
 	params:
 		risk - 50-day MA to x-day MA ratio (x provided by user; most often 200, as is indicator of golden cross or death cross)
-		d_risk - Change from 10-day MA to 50-day MA
+		d_risk - Changes between 5, 10, 50, and 100-day MAs
 		cur_max_ratio - Current price to All-time High price ratio
 	'''
 
-	if d_risk > 0.05 and cur_max_ratio > 0.8:
+	if d_risk_10 > 0.05 and cur_max_ratio > 0.8:
 		if risk > 2.5:
 			return "SELL 3Y"
 		elif risk > 2.25:
 			return "SELL 2Y"
 		elif risk > 1.75:
 			return "SELL Y"
-		elif d_risk > 0.15:
+		elif d_risk_10 > 0.15:
 			return "SELL Y"
 		else:
 			return "HODL"
-	elif risk < 1.25 and d_risk < -0.1 and cur_max_ratio < 0.6:
+	elif risk < 1.25 and d_risk_10 < -0.1 and cur_max_ratio < 0.6:
 		return "BUY 2X"
-	elif d_risk < -0.05 and cur_max_ratio < 0.7:
+	elif d_risk_10 < -0.05 and cur_max_ratio < 0.7:
 		if 1.0 <= risk < 1.5:
 			return "BUY X"
 		elif 0.75 <= risk < 1.0:
@@ -156,24 +160,29 @@ def decide(risk, d_risk, cur_max_ratio):
 
 def generate_report(SMA, prices, key="350", start=1):
 	risk = SMA["50"]/SMA[key]
-	d_risk = recent_risk_delta(SMA)
+	d_risk_5, d_risk_10, d_risk_50 = recent_risk_delta(SMA)
 	cur_max_ratio = prices[-start][1] / find_max(prices, start)
-	decision = decide(risk, d_risk, cur_max_ratio)
+	decision = decide(risk, d_risk_5, d_risk_10, d_risk_50, cur_max_ratio)
 
-	return risk, d_risk, cur_max_ratio, decision
+	return risk, d_risk_5, d_risk_10, d_risk_50, cur_max_ratio, decision
 	
 
 
 def print_report(SMA, prices, key="350", start=1, show_all=True):
 	if key in SMA.keys():
-		risk, d_risk, cur_max_ratio, decision = generate_report(SMA, prices, key, start)
+		risk, d_risk_5, d_risk_10, d_risk_50, cur_max_ratio, decision = generate_report(SMA, prices, key, start)
 		
 		if show_all or decision == "BUY" or decision == "SELL":
 			print(f"\tRisk 50/{key}: ", end="")
 			print(f"{risk:>16.4f}")
-			print("\t10 - 50 MA delta: ", end="")
-			print(f"{d_risk:>11.4f}")
-			print(f"\t\t10 SMA: {SMA['10']:.4f} | 50 SMA: {SMA['50']:.4f}" )
+			print("\tMA Deltas:")
+			print(f"\t\t5 SMA: {SMA['5']:.4f} | 10 SMA: {SMA['10']:.4f} | 50 SMA: {SMA['50']:.4f} | 100 SMA: {SMA['100']:.4f}" )
+			print("\t\t5 - 10 MA delta: ", end="")
+			print(f"{d_risk_5:>12.4f}")
+			print("\t\t10 - 50 MA delta: ", end="")
+			print(f"{d_risk_10:>11.4f}")
+			print("\t\t50 - 100 MA delta: ", end="")
+			print(f"{d_risk_50:>11.4f}")
 			print("\tCur/Max Price: ", end="")
 			print(f"{cur_max_ratio:>14.4f}")
 			print()
@@ -235,10 +244,10 @@ def in_depth_report(coin, key, days):
 		decision = print_report(SMA, prices_norm, key, i)
 		if decision != prev_signal:
 			risk = SMA["50"]/SMA[key]
-			d_risk = recent_risk_delta(SMA)
+			d_risk_5, d_risk_10, d_risk_50 = recent_risk_delta(SMA)
 			cur_max_ratio = prices_norm[-i][1] / find_max(prices_norm, i)
 
-			signal_changes[i] = [decision, (risk+d_risk+cur_max_ratio)]
+			signal_changes[i] = [decision, risk, d_risk_5, d_risk_10, d_risk_50, cur_max_ratio]
 			prev_signal = decision
 		print("------------")
 		print()
