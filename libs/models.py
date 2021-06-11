@@ -1,0 +1,3 @@
+
+
+DECISIONS = ["BUY 3X", "BUY 2X", "BUY X", "HODL", "SELL Y", "SELL 2Y", "SELL 3Y"]

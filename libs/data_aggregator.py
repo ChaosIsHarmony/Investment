@@ -1,15 +1,17 @@
 '''
-USED TO CREATE A DATASET WITH WHICH TO TRAIN SUPERVISED LEARNING ML ALGORITHMS.
+USED AS PART OF THE PROCESS TO CREATE A DATASET WITH WHICH TO TRAIN SUPERVISED LEARNING ML ALGORITHMS.
+
+FUNCTION: TO PULL DATA FROM COINGECKO DATABASE AND STORE AS A CSV.
 
 NOTE: THE 'SIGNAL' COLUMN IS FILLED IN BY A HUMAN IN HINDSIGHT WITH THE CORRECT ACTION GIVEN THE STATE OF THE MARKET AT THE TIME.
 '''
 import requests
 import json
 from datetime import date, datetime, timedelta
+import time
 import pandas as pd
 
-coin_id = ["algorand"]
-#coin_id = ["algorand", "bitcoin", "cardano", "chainlink", "cosmos", "ethereum", "matic-network", "polkadot", "solana", "theta-token"]
+coin_id = ["algorand", "bitcoin", "cardano", "chainlink", "cosmos", "ethereum", "matic-network", "polkadot", "solana", "theta-token"]
 
 API_URL = "https://api.coingecko.com/api/v3"
 
@@ -99,33 +101,46 @@ def extract_basic_data(data, date):
 	data_dict = {}
 
 	data_dict["date"] = date
-	data_dict["price"] = data["market_data"]["current_price"]["twd"]
-	data_dict["market_cap"] = data["market_data"]["market_cap"]["twd"]
-	data_dict["volume"] = data["market_data"]["total_volume"]["twd"]
-	data_dict["community_score"] = get_community_score(data["community_data"])
-	data_dict["dev_score"] = get_dev_score(data["developer_data"])
-	data_dict["public_interest_score"] = get_public_interest_score(data["public_interest_stats"])
+
+	if "market_data" in data.keys():
+		data_dict["price"] = data["market_data"]["current_price"]["twd"]
+		data_dict["market_cap"] = data["market_data"]["market_cap"]["twd"]
+		data_dict["volume"] = data["market_data"]["total_volume"]["twd"]
+	else:
+		data_dict["price"] = 0
+		data_dict["market_cap"] = 0
+		data_dict["volume"] = 0
+
+	if "community_data" in data.keys():
+		data_dict["community_score"] = get_community_score(data["community_data"])
+	else:
+		data_dict["community_score"] = 0
+
+	if "developer_data" in data.keys():
+		data_dict["dev_score"] = get_dev_score(data["developer_data"])
+	else:
+		data_dict["dev_score"] = 0
+
+	if "public_interest_stats" in data:
+		data_dict["public_interest_score"] = get_public_interest_score(data["public_interest_stats"])
+	else:
+		data_dict["public_interest_score"] = 0
 
 	return data_dict
 
 
-def process_data(data):
+def get_time():
 	'''
-	Processes the basic data provided by coingecko in the following ways:
-		
-		- Fills in missing values
-		- Normalizes all values by dividing by the max value in each category
-		- Calculates Simple Moving Averages for a variety of intervals
+	Returns current time rounded to milliseconds
 	'''
-	# Fill in missing values
-	# Normalize
-	# Calculate SMAs (5, 10, 25, 50, 75, 100, 125, 150, 175, 200, 225, 250)
-	pass
-
+	return int(round(time.time() * 1000))
 
 def run():
 
 	today = date.today()
+	api_calls = 0
+	api_call_cycle_start = get_time() 
+
 
 	for coin in coin_id:
 		date_delta = -1 
@@ -134,30 +149,43 @@ def run():
 		# Extract basic data
 		historical_data = []
 		while has_next:
-			date_delta+=1
-			if date_delta > 10:
-				break
+			# There is a limit of 100 api calls per minute
+			# But regularly returns a 434 even with much lower calls/minute
+			api_calls += 1
+			if api_calls > 70:
+				time_to_wait = 60 - ((get_time() - api_call_cycle_start) / 1000)
+				if time_to_wait > 0:
+					time.sleep(time_to_wait)
+	
+				api_call_cycle_start = get_time()
+				api_calls = 1
+				print(f"Slept for {time_to_wait} seconds.")
+
+			# Request data
+			date_delta+= 1
 			next_date = get_correct_date_format(today - timedelta(date_delta))
 			try:
 				data = get_historic_data(coin, next_date)
 			except Exception as e:
-				print("Error: " + e)
-				print(next_date)
-				print(date_delta)
-				has_next = False
+				print(f"Error: {e}")
+				print(f"Coin: {coin}")
+				print(f"Date that failed: {next_date}")
+				print(f"Days from today: {date_delta}")
 				continue
 
-			if "error" in data.keys():
+			if date_delta > 600 or "error" in data.keys():
 				has_next = False
 				continue	
 
-			historical_data.append(extract_data(data, next_date))
+			historical_data.append(extract_basic_data(data, next_date))
 		
-		# Clean/Process data
-		coin_data = pd.DataFrame(historical_data)
-		coin_data = process_data(coin_data)
 
 		# save as CSV
-		coin_data.to_csv(f"{coin}_data.csv")
+		coin_data = pd.DataFrame(historical_data)
+		coin_data.to_csv(f"datasets/{coin}_historical_data.csv")
+		
+		print(f"{coin} data successfully pulled and stored.")
+
+
 
 run()
