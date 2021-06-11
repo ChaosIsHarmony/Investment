@@ -30,6 +30,15 @@ def normalize_data(data):
 
 	return data
 
+def generate_SMA_lists_dict(list_size):
+	SMAs = {5: [], 10:[], 25: [], 50: [], 75: [], 100: [], 150: [], 200: [], 250: [], 300: [], 350: []}
+	
+	for i in range(list_size):
+		for key in SMAs.keys():
+			SMAs[key].append(0)
+
+	return SMAs
+
 
 def calculate_SMAs(data):
 	'''
@@ -41,16 +50,14 @@ def calculate_SMAs(data):
 
 	n_datapoints = data.shape[0]
 	totals = {5:0, 10:0, 25:0, 50:0, 75:0, 100:0, 150:0, 200:0, 250:0, 300:0, 350:0}
-	SMAs = {5: [], 10:[], 25: [], 50: [], 75: [], 100: [], 150: [], 200: [], 250: [], 300: [], 350: []}
-	print(n_datapoints)	
+	SMAs = generate_SMA_lists_dict(n_datapoints)
 	
 	for i, row in data.iterrows():
 		for key in totals.keys():
-			# plus 2 so that we don't get out of bounds error at beginning with 5 SMA
-			if key <= i-1:
-				totals[key] += data.loc[i, "price"]
+			totals[key] += data.loc[i, "price"]
+			if key <= i:
 				totals[key] -= data.loc[i-key, "price"]
-			SMAs[key].append(totals[key] / key)
+				SMAs[key][i] = totals[key] / key
 	
 	for key in SMAs.keys():
 		data[f"{key}_SMA"] = SMAs[key]
@@ -83,10 +90,7 @@ def run():
 
 	data = process_data(data)
 
-	print(data.head())
-	print(data.tail())
-
-	#data.to_csv(f"{coin}_historical_data_clean.csv")
+	data.to_csv(f"{coin}_historical_data_clean.csv")
 
 
 run()

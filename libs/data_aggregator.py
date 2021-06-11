@@ -144,6 +144,7 @@ def run():
 
 	for coin in coin_id:
 		date_delta = -1 
+		error_counter = 0
 		has_next = True
 
 		# Extract basic data
@@ -165,12 +166,16 @@ def run():
 			date_delta+= 1
 			next_date = get_correct_date_format(today - timedelta(date_delta))
 			try:
+				error_counter = 0
 				data = get_historic_data(coin, next_date)
 			except Exception as e:
 				print(f"Error: {e}")
 				print(f"Coin: {coin}")
 				print(f"Date that failed: {next_date}")
 				print(f"Days from today: {date_delta}")
+				error_counter += 1
+				if error_counter > 15:
+					has_next = False
 				continue
 
 			if date_delta > 600 or "error" in data.keys():
