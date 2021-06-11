@@ -10,6 +10,7 @@ import json
 from datetime import date, datetime, timedelta
 import time
 import pandas as pd
+import numpy as np
 
 coin_id = ["algorand", "bitcoin", "cardano", "chainlink", "cosmos", "ethereum", "matic-network", "polkadot", "solana", "theta-token"]
 
@@ -135,6 +136,22 @@ def get_time():
 	'''
 	return int(round(time.time() * 1000))
 
+
+def merge_datasets(list_of_datasets):
+	'''
+	Merges two or more datasets
+	
+	NOTE: param must be a list of pandas dataframes
+	'''
+	merged_data = pd.concat(list_of_datasets)
+	merged_data["date"] = pd.to_datetime(merged_data["date"], dayfirst=True, infer_datetime_format=True)
+	merged_data = merged_data.sort_values(by=["date"], ascending=False)
+	merged_data = merged_data.reset_index()
+	merged_data = merged_data.drop(columns=["Unnamed: 0", "index"])
+
+	merged_data.to_csv(f"datasets/raw/{coin}_historical_data.csv")
+
+
 def run():
 
 	today = date.today()
@@ -157,10 +174,10 @@ def run():
 				time_to_wait = 60 - ((get_time() - api_call_cycle_start) / 1000)
 				if time_to_wait > 0:
 					time.sleep(time_to_wait)
-	
+					print(f"Slept for {time_to_wait} seconds.")
+
 				api_call_cycle_start = get_time()
 				api_calls = 1
-				print(f"Slept for {time_to_wait} seconds.")
 
 			# Request data
 			date_delta+= 1
@@ -187,10 +204,10 @@ def run():
 
 		# save as CSV
 		coin_data = pd.DataFrame(historical_data)
-		coin_data.to_csv(f"datasets/{coin}_historical_data.csv")
+		coin_data.to_csv(f"datasets/raw/{coin}_historical_data.csv")
 		
 		print(f"{coin} data successfully pulled and stored.")
 
 
 
-run()
+#run()

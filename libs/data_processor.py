@@ -13,10 +13,16 @@ def handle_missing_data(data):
 			if row[column] == 0:
 				next_non_zero = 0
 				start_ind = i + 1
-				while next_non_zero == 0:
+				while next_non_zero == 0 and start_ind < data.shape[0]:
 					next_non_zero += data.loc[start_ind, column]
+					start_ind += 1
+					
 				# Take average of two closest data points
-				data.loc[i, column] = (data.loc[i-1, column] + next_non_zero) / 2
+				if next_non_zero > 0:
+					data.loc[i, column] = (data.loc[i-1, column] + next_non_zero) / 2
+				# Otherwise, just make same as one before it
+				elif i > 0:
+					data.loc[i, column] = data.loc[i-1, column]
 
 	return data
 
@@ -75,22 +81,28 @@ def process_data(data):
 	'''
 	# Fill in missing values
 	data = handle_missing_data(data)
+	print("Missing data handling complete.")
 	# Normalize
 	data = normalize_data(data)
+	print("Data normalization complete.")
 	# Calculate SMAs 
 	data = calculate_SMAs(data)
+	print("SMA calculation complete.")
 
 	return data
 
 
 def run():
-	coin = "algorand"
+	coins = ["algorand", "bitcoin", "cardano", "chainlink", "cosmos", "ethereum", "matic-network", "polkadot", "solana", "theta-token"]
 
-	data = pd.read_csv(f"{coin}_historical_data_cpy.csv")
+	for coin in coins:
+		print(coin)
 
-	data = process_data(data)
+		data = pd.read_csv(f"datasets/raw/{coin}_historical_data.csv")
 
-	data.to_csv(f"{coin}_historical_data_clean.csv")
+		data = process_data(data)
+
+		data.to_csv(f"datasets/clean/{coin}_historical_data_clean.csv")
 
 
 run()
