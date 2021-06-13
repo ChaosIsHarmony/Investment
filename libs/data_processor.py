@@ -1,108 +1,214 @@
 import pandas as pd
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import torch.optim as optim
+import torch.optim.lr_scheduler as lr_scheduler
+import time
+import random
 
+# correspond to signal column scale from 0-4
+DECISIONS = ["BUY 2X", "BUY X", "HODL", "SELL Y", "SELL 2Y"]
+N_SIGNALS = 5
+N_FEATURES = 17
+BATCH_SIZE = 7
+EPOCHS = 20
+LEARNING_RATE = 0.001
+MODEL_FILEPATH = "models/model.pt"
+MODEL_CHECKPOINT_FILEPATH = "models/model_checkpoint.pt"
 
-def handle_missing_data(data):
+coin = "bitcoin"
+
+# Load data
+data = pd.read_csv(f"datasets/complete/{coin}_historical_data_complete.csv")
+data = data.drop(columns=["Unnamed: 0", "date"])
+data["signal"] = data["signal"].astype("int64")
+
+# Split into training, testing
+# 85-15 split
+n_datapoints = data.shape[0]
+train_end = int(round(n_datapoints*0.85))
+
+def generate_dataset(data, limit, offset, data_aug_per_sample=0):
 	'''
-	Fills all NaN values with 0
-	Takes average of prior day and next day to calculate missing value
-	'''	
-	data = data.fillna(0)
-
-	for i, row in data.iterrows():
-		for column in data.columns[1:]:
-			if row[column] == 0:
-				next_non_zero = 0
-				start_ind = i + 1
-				while next_non_zero == 0 and start_ind < data.shape[0]:
-					next_non_zero += data.loc[start_ind, column]
-					start_ind += 1
-					
-				# Take average of two closest data points
-				if next_non_zero > 0:
-					data.loc[i, column] = (data.loc[i-1, column] + next_non_zero) / 2
-				# Otherwise, just make same as one before it
-				elif i > 0:
-					data.loc[i, column] = data.loc[i-1, column]
-
-	return data
-
-
-def normalize_data(data):
+	NOTE: data_aug_per_sample param determines how many extra datapoints to generate per each original datapoint.
 	'''
-	Normalizes data using min-max normalization, as Z-score normalization would be more suited to data with outliers
-	'''
-	for column in data.columns[2:]:
-		data[column] = (data[column]-data[column].min()) / (data[column].max() - data[column].min())
+	dataset = []
+	for row in range(offset, limit):
+		row_features = []
+		for feature in range(N_FEATURES):
+			row_features.append(data.iloc[row, feature])
+		datapoint_tuple = (row_features, data.iloc[row, -1])
+		dataset.append(datapoint_tuple)
 
-	return data
+		for i in range(data_aug_per_sample):
+			row_features_aug = []
+			for feature in range(N_FEATURES):
+				rand_factor = 1 + random.uniform(-0.00001, 0.0001)
+				row_features_aug.append(data.iloc[row, feature] * rand_factor)
+			datapoint_tuple = (row_features_aug, data.iloc[row, -1])
+			dataset.append(datapoint_tuple)
 
-def generate_SMA_lists_dict(list_size):
-	SMAs = {5: [], 10:[], 25: [], 50: [], 75: [], 100: [], 150: [], 200: [], 250: [], 300: [], 350: []}
+	return dataset
+
+
+train_data = generate_dataset(data, train_end, 0, 10)
+print(f"Length Training Data: {len(train_data)}")
+
+test_data = generate_dataset(data, n_datapoints, train_end, 0)
+print(f"Length Testing Data: {len(test_data)}") 
+
+# NN
+class CryptoSoothsayer(nn.Module):
+	def __init__(self, input_size, n_signals):
+		super(CryptoSoothsayer, self).__init__()
+		self.layer_1 = nn.Linear(input_size, 128)
+		self.layer_2 = nn.Linear(128, 256)
+		self.layer_2b = nn.Linear(256, 512)
+		self.layer_2c = nn.Linear(512, 1024)
+		self.layer_2d = nn.Linear(1024, 512)
+		self.layer_2e = nn.Linear(512, 256)
+		self.layer_3 = nn.Linear(256, 128)
+		self.layer_4 = nn.Linear(128, 64)
+		self.layer_5 = nn.Linear(64, 32)
+		self.layer_output = nn.Linear(32, n_signals)
+		self.dropout = nn.Dropout(0.25)
+
+
+	def forward(self, inputs):
+		out = self.dropout(F.relu(self.layer_1(inputs)))
+		out = self.dropout(F.relu(self.layer_2(out)))
+		out = self.dropout(F.relu(self.layer_2b(out)))
+		out = self.dropout(F.relu(self.layer_2c(out)))
+		out = self.dropout(F.relu(self.layer_2d(out)))
+		out = self.dropout(F.relu(self.layer_2e(out)))
+		out = self.dropout(F.relu(self.layer_3(out)))
+		out = self.dropout(F.relu(self.layer_4(out)))
+		out = self.dropout(F.relu(self.layer_5(out)))
+		out = self.layer_output(out)
+		log_probs = F.log_softmax(out, dim=1)
+		return log_probs
+
+
+# save model
+def save_checkpoint():
+	checkpoint = {
+		"model": model,
+		"state_dict": model.state_dict(),
+		"epochs": EPOCHS,
+		"average_loss": average_loss,
+		"device": device,
+		"optimizer_state": optimizer.state_dict(),
+		"batch_size": BATCH_SIZE
+	}
+	torch.save(checkpoint, MODEL_CHECKPOINT_FILEPATH)
+
+def save_model_state():
+	torch.save(model.state_dict(), MODEL_FILEPATH)
+
+
+
+# load model
+def load_checkpoint():
+	checkpoint = torch.load(MODEL_CHECKPOINT_FILEPATH)
+	model = checkpoint["model"]
+	model.optimizer_state = checkpoint["optimizer_state"]
+	model.load_state_dict(checkpoint["state_dict"])
+	model.device = checkpoint["device"]
+	model.average_loss = checkpoint["average_loss"]
 	
-	for i in range(list_size):
-		for key in SMAs.keys():
-			SMAs[key].append(0)
+	return model
 
-	return SMAs
-
-
-def calculate_SMAs(data):
-	'''
-	Calculates Simple Moving Averages to the maximum extent allowed by the data
-	'''
-	# reverse the dataframe for easier calculation logic
-	data = data.reindex(index=data.index[::-1]).reset_index()
-	data = data.drop(columns=["Unnamed: 0", "index"])
-
-	n_datapoints = data.shape[0]
-	totals = {5:0, 10:0, 25:0, 50:0, 75:0, 100:0, 150:0, 200:0, 250:0, 300:0, 350:0}
-	SMAs = generate_SMA_lists_dict(n_datapoints)
+def load_model():
+	model = CryptoSoothsayer(N_FEATURES, N_SIGNALS)
+	model.load_state_dict(torch.load(MODEL_FILEPATH))
 	
-	for i, row in data.iterrows():
-		for key in totals.keys():
-			totals[key] += data.loc[i, "price"]
-			if key <= i:
-				totals[key] -= data.loc[i-key, "price"]
-				SMAs[key][i] = totals[key] / key
-	
-	for key in SMAs.keys():
-		data[f"{key}_SMA"] = SMAs[key]
+	return model
+
+
+# Time sequence, so maybe shuffle is inappropriate
+# ACTUALLY: okay, because of SMAs providing historical info
+def shuffle_data(data):
+	size = len(data)
+	for row_ind in range(size):
+		swap_row_ind = random.randrange(size)
+		tmp_row = data[swap_row_ind]
+		data[swap_row_ind] = data[row_ind]
+		data[row_ind] = tmp_row
 
 	return data
 
 
-def process_data(data):
-	'''
-	Processes the basic data provided by coingecko in the following ways:
-		
-		- Fills in missing values
-		- Normalizes all values by dividing by the max value in each category
-		- Calculates Simple Moving Averages for a variety of intervals
-	'''
-	# Fill in missing values
-	data = handle_missing_data(data)
-	print("Missing data handling complete.")
-	# Normalize
-	data = normalize_data(data)
-	print("Data normalization complete.")
-	# Calculate SMAs 
-	data = calculate_SMAs(data)
-	print("SMA calculation complete.")
+def train(model, data, epochs):
+	for epoch in range(epochs):
+		steps = 0
+		print_every = 100
+		running_loss = 0
+		data = shuffle_data(data)
 
-	return data
+		for feature, target in data:
+			model.train()
+			feature_tensor = torch.tensor([feature], dtype=torch.float32)
+			feature_tensor = feature_tensor.to(device)
+			target_tensor = torch.tensor([target], dtype=torch.int64)
+			target_tensor = target_tensor.to(device)
+			# Forward
+			log_probs = model(feature_tensor)
+			loss = criterion(log_probs, target_tensor)
+			# Bacward
+			model.zero_grad()
+			loss.backward()
+			optimizer.step()
+			scheduler.step()
+			running_loss += loss.item()
+			steps += 1
+
+			if steps % print_every == 0:
+				model.eval()
+				cur_avg_loss = running_loss/print_every
+				average_loss.append(cur_avg_loss)
+				print(f"Epoch: {epoch+1} / {epochs} | Training Loss: {cur_avg_loss:.4f} | eta: {optimizer.state_dict()['param_groups'][0]['lr']:.6f}")
+				running_loss = 0
+
+	return model
 
 
-def run():
-	coins = ["algorand", "bitcoin", "cardano", "chainlink", "cosmos", "ethereum", "matic-network", "polkadot", "solana", "theta-token"]
+model = CryptoSoothsayer(N_FEATURES, N_SIGNALS)
+device = torch.device("cpu")
+model.to(device)
+criterion = nn.NLLLoss()
+optimizer = optim.AdamW(model.parameters(), lr=LEARNING_RATE)
+lambda1 = lambda epoch: 0.99999
+scheduler =  lr_scheduler.MultiplicativeLR(optimizer, lambda1)
+start_time = time.time()
+average_loss = []
 
-	for coin in coins:
-		print(coin)
+def train_and_save(model, train_data, epochs):
+	# Train
+	model = train(model, train_data, epochs)
+	print(f"Total training time: {round((time.time() - start_time)) / 60} mins.")
 
-		data = pd.read_csv(f"datasets/raw/{coin}_historical_data.csv")
+	# Save
+	save_checkpoint()
 
-		data = process_data(data)
+train_and_save(model, train_data, EPOCHS)
 
-		data.to_csv(f"datasets/clean/{coin}_historical_data_clean.csv")
+# Load
+model = load_checkpoint()
+model.eval()
+
+correct = 0
+for feature, target in test_data:
+	feature_tensor = torch.tensor([feature], dtype=torch.float32)
+	target_tensor = torch.tensor([target], dtype=torch.int64)
+
+	with torch.no_grad():
+		output = model(feature_tensor)
+
+	decision = torch.argmax(output, dim=1)
+
+	if decision == target_tensor:
+		correct += 1
 
 
-run()
+print(f"Model accuracy: {correct/len(test_data)}")

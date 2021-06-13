@@ -137,7 +137,7 @@ def get_time():
 	return int(round(time.time() * 1000))
 
 
-def merge_datasets(list_of_datasets):
+def merge_datasets(coin, list_of_datasets):
 	'''
 	Merges two or more datasets
 	
@@ -146,20 +146,51 @@ def merge_datasets(list_of_datasets):
 	merged_data = pd.concat(list_of_datasets)
 	merged_data["date"] = pd.to_datetime(merged_data["date"], dayfirst=True, infer_datetime_format=True)
 	merged_data = merged_data.sort_values(by=["date"], ascending=False)
+	merged_data = merged_data.drop_duplicates(subset=["date"])
 	merged_data = merged_data.reset_index()
 	merged_data = merged_data.drop(columns=["Unnamed: 0", "index"])
 
 	merged_data.to_csv(f"datasets/raw/{coin}_historical_data.csv")
 
+def merge():
+	data_to_merge = [pd.read_csv("datasets/raw/bitcoin_historical_data_earlier.csv"), pd.read_csv("datasets/raw/bitcoin_historical_data_later.csv")]
+	merge_datasets("bitcoin", data_to_merge)
+
+#merge()
+
+def fetch_missing_data(coin, num_days, start_delta):
+	today = date.today() - timedelta(start_delta)
+	historical_data = []
+
+	for i in range(num_days):	
+		next_date = get_correct_date_format(today - timedelta(i))
+		data = get_historic_data(coin, next_date)
+
+		historical_data.append(extract_basic_data(data, next_date))
+
+		# To help regulate the speed with which calls are being made
+		# to assuage 434 return codes
+		time.sleep(0.5)
+
+
+	# save as CSV
+	coin_data = pd.DataFrame(historical_data)
+	coin_data.to_csv(f"datasets/raw/{coin}_historical_data_past_sup.csv")
+		
+	print(f"{coin} data successfully pulled and stored.")
+
+#fetch_missing_data("bitcoin", 84, 368)
+
+
 
 def run():
 
-	today = date.today()
+	today = date.today() - timedelta(600)
 	api_calls = 0
 	api_call_cycle_start = get_time() 
 
 
-	for coin in coin_id:
+	for coin in ["bitcoin"]:#coin_id:
 		date_delta = -1 
 		error_counter = 0
 		has_next = True
@@ -204,7 +235,7 @@ def run():
 
 		# save as CSV
 		coin_data = pd.DataFrame(historical_data)
-		coin_data.to_csv(f"datasets/raw/{coin}_historical_data.csv")
+		coin_data.to_csv(f"datasets/raw/{coin}_historical_data_past.csv")
 		
 		print(f"{coin} data successfully pulled and stored.")
 
