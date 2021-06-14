@@ -12,8 +12,8 @@ DECISIONS = ["BUY 2X", "BUY X", "HODL", "SELL Y", "SELL 2Y"]
 N_SIGNALS = 5
 N_FEATURES = 17
 BATCH_SIZE = 7
-EPOCHS = 20
-LEARNING_RATE = 0.001
+EPOCHS = 10
+LEARNING_RATE = 0.005
 MODEL_FILEPATH = "models/model.pt"
 MODEL_CHECKPOINT_FILEPATH = "models/model_checkpoint.pt"
 
@@ -66,13 +66,15 @@ class CryptoSoothsayer(nn.Module):
 		self.layer_2 = nn.Linear(128, 256)
 		self.layer_2b = nn.Linear(256, 512)
 		self.layer_2c = nn.Linear(512, 1024)
-		self.layer_2d = nn.Linear(1024, 512)
-		self.layer_2e = nn.Linear(512, 256)
+		self.layer_2d = nn.Linear(1024, 2048)
+		self.layer_2e = nn.Linear(2048, 1024)
+		self.layer_2f = nn.Linear(1024, 512)
+		self.layer_2g = nn.Linear(512, 256)
 		self.layer_3 = nn.Linear(256, 128)
 		self.layer_4 = nn.Linear(128, 64)
 		self.layer_5 = nn.Linear(64, 32)
 		self.layer_output = nn.Linear(32, n_signals)
-		self.dropout = nn.Dropout(0.25)
+		self.dropout = nn.Dropout(0.35)
 
 
 	def forward(self, inputs):
@@ -82,6 +84,8 @@ class CryptoSoothsayer(nn.Module):
 		out = self.dropout(F.relu(self.layer_2c(out)))
 		out = self.dropout(F.relu(self.layer_2d(out)))
 		out = self.dropout(F.relu(self.layer_2e(out)))
+		out = self.dropout(F.relu(self.layer_2f(out)))
+		out = self.dropout(F.relu(self.layer_2g(out)))
 		out = self.dropout(F.relu(self.layer_3(out)))
 		out = self.dropout(F.relu(self.layer_4(out)))
 		out = self.dropout(F.relu(self.layer_5(out)))
@@ -170,7 +174,18 @@ def train(model, data, epochs):
 				print(f"Epoch: {epoch+1} / {epochs} | Training Loss: {cur_avg_loss:.4f} | eta: {optimizer.state_dict()['param_groups'][0]['lr']:.6f}")
 				running_loss = 0
 
+		print(f"Time elapsed by epoch {epoch+1}: {round((time.time() - start_time)) / 60} mins.")
+
 	return model
+
+
+def train_and_save(model, train_data, epochs):
+	# Train
+	model = train(model, train_data, epochs)
+	print(f"Total training time: {round((time.time() - start_time)) / 60} mins.")
+
+	# Save
+	save_checkpoint()
 
 
 model = CryptoSoothsayer(N_FEATURES, N_SIGNALS)
@@ -183,14 +198,7 @@ scheduler =  lr_scheduler.MultiplicativeLR(optimizer, lambda1)
 start_time = time.time()
 average_loss = []
 
-def train_and_save(model, train_data, epochs):
-	# Train
-	model = train(model, train_data, epochs)
-	print(f"Total training time: {round((time.time() - start_time)) / 60} mins.")
-
-	# Save
-	save_checkpoint()
-
+# Training
 train_and_save(model, train_data, EPOCHS)
 
 # Load
