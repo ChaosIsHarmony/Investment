@@ -78,16 +78,15 @@ print(f"Length Testing Data: {len(test_data)}")
 #
 # ------------ NEURAL NET RELATED -----------
 #
-# NN
 class CryptoSoothsayerBin(nn.Module):
 	def __init__(self, input_size, n_signals):
 		super(CryptoSoothsayerBin, self).__init__()
-		self.layer_1 = nn.Linear(input_size, 128)
-		self.layer_2 = nn.Linear(128, 256)
-		self.layer_2b = nn.Linear(256, 512)
-		self.layer_2c = nn.Linear(512, 1024)
-		self.layer_2d = nn.Linear(1024, 2048)
-		self.layer_2e = nn.Linear(2048, 1024)
+		self.layer_1 = nn.Linear(input_size, 32)
+		self.layer_2 = nn.Linear(32, 64)
+		self.layer_2b = nn.Linear(64, 128)
+		self.layer_2c = nn.Linear(128, 256)
+		self.layer_2d = nn.Linear(256, 512)
+		self.layer_2e = nn.Linear(512, 1024)
 		self.layer_2f = nn.Linear(1024, 512)
 		self.layer_2g = nn.Linear(512, 256)
 		self.layer_3 = nn.Linear(256, 128)
@@ -95,6 +94,21 @@ class CryptoSoothsayerBin(nn.Module):
 		self.layer_5 = nn.Linear(64, 32)
 		self.layer_output = nn.Linear(32, n_signals)
 		self.dropout = nn.Dropout(DROPOUT)
+
+		#super(CryptoSoothsayerBin, self).__init__()
+		#self.layer_1 = nn.Linear(input_size, 128)
+		#self.layer_2 = nn.Linear(128, 256)
+		#self.layer_2b = nn.Linear(256, 512)
+		#self.layer_2c = nn.Linear(512, 1024)
+		#self.layer_2d = nn.Linear(1024, 2048)
+		#self.layer_2e = nn.Linear(2048, 1024)
+		#self.layer_2f = nn.Linear(1024, 512)
+		#self.layer_2g = nn.Linear(512, 256)
+		#self.layer_3 = nn.Linear(256, 128)
+		#self.layer_4 = nn.Linear(128, 64)
+		#self.layer_5 = nn.Linear(64, 32)
+		#self.layer_output = nn.Linear(32, n_signals)
+		#self.dropout = nn.Dropout(DROPOUT)
 
 
 	def forward(self, inputs):
@@ -256,7 +270,7 @@ def get_model(model_index):
 #
 # ------------ MODEL TRAINING -----------
 #
-model = get_model(DEC)
+model = get_model(BIN)
 device = torch.device("cpu")
 model.to(device)
 criterion = nn.NLLLoss()
@@ -267,13 +281,13 @@ start_time = time.time()
 average_loss = []
 
 # Training
-train_and_save(model, train_data, EPOCHS, MODELS[DEC])
+train_and_save(model, train_data, EPOCHS, MODEL_CHECKPOINTS[BIN])
 
 #
 # ------------ MODEL TESTING -----------
 #
 # Load
-model = load_checkpoint()
+model = load_checkpoint(MODEL_CHECKPOINTS[BIN])
 model.eval()
 
 correct = 0
