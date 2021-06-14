@@ -1,0 +1,4 @@
+1.) Create complete dataset with only three decisions (BUY, HODL, SELL)
+2.) Features to add:
+	a.) More sentiment analysis data (how the public felt that day) [Where to find?]
+
