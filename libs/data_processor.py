@@ -12,13 +12,19 @@ DECISIONS = ["BUY 2X", "BUY X", "HODL", "SELL Y", "SELL 2Y"]
 N_SIGNALS = 5
 N_FEATURES = 17
 BATCH_SIZE = 7
-EPOCHS = 10
-LEARNING_RATE = 0.005
-MODEL_FILEPATH = "models/model.pt"
-MODEL_CHECKPOINT_FILEPATH = "models/model_checkpoint.pt"
+EPOCHS = 10 
+LEARNING_RATE = 0.001
+DROPOUT = 0.25
+BIN = 0
+DEC = 1
+MODELS = ["models/model_bin.pt", "models/model_dec.pt"]
+MODEL_CHECKPOINTS = ["models/model_checkpoint_bin.pt", "models/model_checkpoint_dec.pt"]
 
 coin = "bitcoin"
 
+#
+# ------------ DATA RELATED -----------
+#
 # Load data
 data = pd.read_csv(f"datasets/complete/{coin}_historical_data_complete.csv")
 data = data.drop(columns=["Unnamed: 0", "date"])
@@ -31,23 +37,33 @@ train_end = int(round(n_datapoints*0.85))
 
 def generate_dataset(data, limit, offset, data_aug_per_sample=0):
 	'''
-	NOTE: data_aug_per_sample param determines how many extra datapoints to generate per each original datapoint.
+	NOTES: 
+		- data_aug_per_sample param determines how many extra datapoints to generate per each original datapoint.
+		- signal_ratios variable is used to upsample underrepresented categories more than their counterparts when augmenting the data
 	'''
+	# to determine relative frequency of signals
+	new_data = data.iloc[:limit,:]
+	vals = new_data["signal"].value_counts().sort_index()
+	signal_ratios = [vals.max()/x for x in vals]
+
 	dataset = []
 	for row in range(offset, limit):
+		target = data.iloc[row, -1]
 		row_features = []
+
 		for feature in range(N_FEATURES):
 			row_features.append(data.iloc[row, feature])
-		datapoint_tuple = (row_features, data.iloc[row, -1])
+		datapoint_tuple = (row_features, target)
 		dataset.append(datapoint_tuple)
 
-		for i in range(data_aug_per_sample):
+		# this evens out the datapoints per category
+		for i in range(data_aug_per_sample * round(signal_ratios[target])):
 			row_features_aug = []
 			for feature in range(N_FEATURES):
-				rand_factor = 1 + random.uniform(-0.00001, 0.0001)
+				rand_factor = 1 + random.uniform(-0.00001, 0.00001)
 				row_features_aug.append(data.iloc[row, feature] * rand_factor)
-			datapoint_tuple = (row_features_aug, data.iloc[row, -1])
-			dataset.append(datapoint_tuple)
+			datapoint_tuple_aug = (row_features_aug, target)
+			dataset.append(datapoint_tuple_aug)
 
 	return dataset
 
@@ -58,10 +74,14 @@ print(f"Length Training Data: {len(train_data)}")
 test_data = generate_dataset(data, n_datapoints, train_end, 0)
 print(f"Length Testing Data: {len(test_data)}") 
 
+
+#
+# ------------ NEURAL NET RELATED -----------
+#
 # NN
-class CryptoSoothsayer(nn.Module):
+class CryptoSoothsayerBin(nn.Module):
 	def __init__(self, input_size, n_signals):
-		super(CryptoSoothsayer, self).__init__()
+		super(CryptoSoothsayerBin, self).__init__()
 		self.layer_1 = nn.Linear(input_size, 128)
 		self.layer_2 = nn.Linear(128, 256)
 		self.layer_2b = nn.Linear(256, 512)
@@ -74,7 +94,7 @@ class CryptoSoothsayer(nn.Module):
 		self.layer_4 = nn.Linear(128, 64)
 		self.layer_5 = nn.Linear(64, 32)
 		self.layer_output = nn.Linear(32, n_signals)
-		self.dropout = nn.Dropout(0.35)
+		self.dropout = nn.Dropout(DROPOUT)
 
 
 	def forward(self, inputs):
@@ -94,8 +114,41 @@ class CryptoSoothsayer(nn.Module):
 		return log_probs
 
 
+class CryptoSoothsayerDec(nn.Module):
+	def __init__(self, input_size, n_signals):
+		super(CryptoSoothsayerDec, self).__init__()
+		self.layer_1 = nn.Linear(input_size, 100)
+		self.layer_2 = nn.Linear(100, 250)
+		self.layer_2b = nn.Linear(250, 500)
+		self.layer_2c = nn.Linear(500, 1000)
+		self.layer_2d = nn.Linear(1000, 500)
+		self.layer_2e = nn.Linear(500, 250)
+		self.layer_3 = nn.Linear(250, 100)
+		self.layer_4 = nn.Linear(100, 50)
+		self.layer_5 = nn.Linear(50, 25)
+		self.layer_output = nn.Linear(25, n_signals)
+		self.dropout = nn.Dropout(DROPOUT)
+
+
+	def forward(self, inputs):
+		out = self.dropout(F.relu(self.layer_1(inputs)))
+		out = self.dropout(F.relu(self.layer_2(out)))
+		out = self.dropout(F.relu(self.layer_2b(out)))
+		out = self.dropout(F.relu(self.layer_2c(out)))
+		out = self.dropout(F.relu(self.layer_2d(out)))
+		out = self.dropout(F.relu(self.layer_2e(out)))
+		out = self.dropout(F.relu(self.layer_3(out)))
+		out = self.dropout(F.relu(self.layer_4(out)))
+		out = self.dropout(F.relu(self.layer_5(out)))
+		out = self.layer_output(out)
+		log_probs = F.log_softmax(out, dim=1)
+		return log_probs
+
+#
+# ------------ HELPER FUNCTIONS -----------
+#
 # save model
-def save_checkpoint():
+def save_checkpoint(filepath):
 	checkpoint = {
 		"model": model,
 		"state_dict": model.state_dict(),
@@ -103,18 +156,19 @@ def save_checkpoint():
 		"average_loss": average_loss,
 		"device": device,
 		"optimizer_state": optimizer.state_dict(),
-		"batch_size": BATCH_SIZE
+		"batch_size": BATCH_SIZE,
+		"dropout": DROPOUT
 	}
-	torch.save(checkpoint, MODEL_CHECKPOINT_FILEPATH)
+	torch.save(checkpoint, filepath)
 
-def save_model_state():
-	torch.save(model.state_dict(), MODEL_FILEPATH)
 
+def save_model_state(filepath):
+	torch.save(model.state_dict(), filepath)
 
 
 # load model
-def load_checkpoint():
-	checkpoint = torch.load(MODEL_CHECKPOINT_FILEPATH)
+def load_checkpoint(filepath):
+	checkpoint = torch.load(filepath)
 	model = checkpoint["model"]
 	model.optimizer_state = checkpoint["optimizer_state"]
 	model.load_state_dict(checkpoint["state_dict"])
@@ -123,10 +177,15 @@ def load_checkpoint():
 	
 	return model
 
-def load_model():
-	model = CryptoSoothsayer(N_FEATURES, N_SIGNALS)
-	model.load_state_dict(torch.load(MODEL_FILEPATH))
-	
+
+def load_model(filepath):
+	if filepath == MODELS[BIN]:
+		model = CryptoSoothsayerBin(N_FEATURES, N_SIGNALS)
+	else:
+		model = CryptoSoothsayerDec(N_FEATURES, N_SIGNALS)
+
+	model.load_state_dict(torch.load(filepath))
+
 	return model
 
 
@@ -159,7 +218,7 @@ def train(model, data, epochs):
 			# Forward
 			log_probs = model(feature_tensor)
 			loss = criterion(log_probs, target_tensor)
-			# Bacward
+			# Backward
 			model.zero_grad()
 			loss.backward()
 			optimizer.step()
@@ -179,16 +238,25 @@ def train(model, data, epochs):
 	return model
 
 
-def train_and_save(model, train_data, epochs):
+def train_and_save(model, train_data, epochs, filepath):
 	# Train
 	model = train(model, train_data, epochs)
 	print(f"Total training time: {round((time.time() - start_time)) / 60} mins.")
 
 	# Save
-	save_checkpoint()
+	save_checkpoint(filepath)
 
 
-model = CryptoSoothsayer(N_FEATURES, N_SIGNALS)
+def get_model(model_index):
+	if model_index == BIN:
+		return CryptoSoothsayerBin(N_FEATURES, N_SIGNALS)
+	elif model_index == DEC:
+		return CryptoSoothsayerDec(N_FEATURES, N_SIGNALS)
+
+#
+# ------------ MODEL TRAINING -----------
+#
+model = get_model(DEC)
 device = torch.device("cpu")
 model.to(device)
 criterion = nn.NLLLoss()
@@ -199,8 +267,11 @@ start_time = time.time()
 average_loss = []
 
 # Training
-train_and_save(model, train_data, EPOCHS)
+train_and_save(model, train_data, EPOCHS, MODELS[DEC])
 
+#
+# ------------ MODEL TESTING -----------
+#
 # Load
 model = load_checkpoint()
 model.eval()
