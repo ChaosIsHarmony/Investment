@@ -86,8 +86,10 @@ class CryptoSoothsayerBin(nn.Module):
 		self.layer_2 = nn.Linear(128, 256)
 		self.layer_2b = nn.Linear(256, 512)
 		self.layer_2c = nn.Linear(512, 1024)
-		self.layer_2d = nn.Linear(1024, 512)
-		self.layer_2e = nn.Linear(512, 256)
+		self.layer_2d = nn.Linear(1024, 2048)
+		self.layer_2e = nn.Linear(2048, 1024)
+		self.layer_2f = nn.Linear(1024, 512)
+		self.layer_2g = nn.Linear(512, 256)
 		self.layer_3 = nn.Linear(256, 128)
 		self.layer_4 = nn.Linear(128, 64)
 		self.layer_5 = nn.Linear(64, 32)
@@ -102,6 +104,8 @@ class CryptoSoothsayerBin(nn.Module):
 		out = self.dropout(F.relu(self.layer_2c(out)))
 		out = self.dropout(F.relu(self.layer_2d(out)))
 		out = self.dropout(F.relu(self.layer_2e(out)))
+		out = self.dropout(F.relu(self.layer_2f(out)))
+		out = self.dropout(F.relu(self.layer_2g(out)))
 		out = self.dropout(F.relu(self.layer_3(out)))
 		out = self.dropout(F.relu(self.layer_4(out)))
 		out = self.dropout(F.relu(self.layer_5(out)))
@@ -229,6 +233,8 @@ def train(model, data, epochs):
 				print(f"Epoch: {epoch+1} / {epochs} | Training Loss: {cur_avg_loss:.4f} | eta: {optimizer.state_dict()['param_groups'][0]['lr']:.6f}")
 				running_loss = 0
 
+		print(f"Time elapsed by epoch {epoch+1}: {round((time.time() - start_time)) / 60} mins.")
+
 	return model
 
 
@@ -260,8 +266,8 @@ scheduler =  lr_scheduler.MultiplicativeLR(optimizer, lambda1)
 start_time = time.time()
 average_loss = []
 
+# Training
 train_and_save(model, train_data, EPOCHS, MODELS[DEC])
-
 
 #
 # ------------ MODEL TESTING -----------
