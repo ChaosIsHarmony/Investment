@@ -3,6 +3,10 @@ import torch
 import time
 import random
 import neural_nets as nn
+'''
+WHEN testing need this version instead
+from utils import neural_nets as nn
+'''
 
 # correspond to signal column scale from 0-4
 DECISIONS = ["BUY 2X", "BUY X", "HODL", "SELL Y", "SELL 2Y"]
@@ -12,22 +16,13 @@ BIN = 0
 DEC = 1
 MODEL = "models/model.pt"
 MODEL_CHECKPOINT = "models/model_checkpoint.pt"
-
-coin = "bitcoin"
+DEVICE = torch.device("cpu")
+COIN = "bitcoin"
+AVERAGE_LOSS = []
 
 #
 # ------------ DATA RELATED -----------
 #
-# Load data
-data = pd.read_csv(f"datasets/complete/{coin}_historical_data_complete.csv")
-data = data.drop(columns=["Unnamed: 0", "date"])
-data["signal"] = data["signal"].astype("int64")
-
-# Split into training, testing
-# 85-15 split
-n_datapoints = data.shape[0]
-train_end = int(round(n_datapoints*0.85))
-
 def generate_dataset(data, limit, offset, data_aug_per_sample=0):
 	'''
 	NOTES: 
@@ -61,11 +56,25 @@ def generate_dataset(data, limit, offset, data_aug_per_sample=0):
 	return dataset
 
 
-train_data = generate_dataset(data, train_end, 0, 20)
-print(f"Length Training Data: {len(train_data)}")
+def get_datasets():
+	# Load data
+	data = pd.read_csv(f"datasets/complete/{COIN}_historical_data_complete.csv")
+	data = data.drop(columns=["Unnamed: 0", "date"])
+	data["signal"] = data["signal"].astype("int64")
 
-test_data = generate_dataset(data, n_datapoints, train_end, 0)
-print(f"Length Testing Data: {len(test_data)}") 
+	# Split into training, testing
+	# 85-15 split
+	n_datapoints = data.shape[0]
+	train_end = int(round(n_datapoints*0.85))
+
+
+	train_data = generate_dataset(data, train_end, 0, 20)
+	print(f"Length Training Data: {len(train_data)}")
+
+	test_data = generate_dataset(data, n_datapoints, train_end, 0)
+	print(f"Length Testing Data: {len(test_data)}") 
+
+	return train_data, test_data
 
 
 #
@@ -77,8 +86,8 @@ def save_checkpoint(filepath):
 		"model": model,
 		"state_dict": model.state_dict(),
 		"epochs": EPOCHS,
-		"average_loss": average_loss,
-		"device": device,
+		"average_loss": AVERAGE_LOSS,
+		"device": DEVICE,
 		"optimizer_state": nn.OPTIMIZER.state_dict(),
 		"batch_size": BATCH_SIZE,
 		"dropout": nn.DROPOUT
@@ -132,9 +141,9 @@ def train(model, data, epochs):
 		for feature, target in data:
 			model.train()
 			feature_tensor = torch.tensor([feature], dtype=torch.float32)
-			feature_tensor = feature_tensor.to(device)
+			feature_tensor = feature_tensor.to(DEVICE)
 			target_tensor = torch.tensor([target], dtype=torch.int64)
-			target_tensor = target_tensor.to(device)
+			target_tensor = target_tensor.to(DEVICE)
 			# Forward
 			log_probs = model(feature_tensor)
 			loss = nn.CRITERION(log_probs, target_tensor)
@@ -149,7 +158,7 @@ def train(model, data, epochs):
 			if steps % print_every == 0:
 				model.eval()
 				cur_avg_loss = running_loss/print_every
-				average_loss.append(cur_avg_loss)
+				AVERAGE_LOSS.append(cur_avg_loss)
 				print(f"Epoch: {epoch+1} / {epochs} | Training Loss: {cur_avg_loss:.4f} | eta: {nn.OPTIMIZER.state_dict()['param_groups'][0]['lr']:.6f}")
 				running_loss = 0
 
@@ -167,38 +176,42 @@ def train_and_save(model, train_data, epochs, filepath):
 	save_checkpoint(filepath)
 
 
+def run():
+	# get data
+	train_data, test_data = get_datasets()
 
-#
-# ------------ MODEL TRAINING -----------
-#
-model = nn.MODEL
-device = torch.device("cpu")
-model.to(device)
-start_time = time.time()
-average_loss = []
+	#
+	# ------------ MODEL TRAINING -----------
+	#
+	model = nn.MODEL
+	model.to(DEVICE)
+	start_time = time.time()
 
-# Training
-train_and_save(model, train_data, EPOCHS, MODEL_CHECKPOINT)
+	# Training
+	train_and_save(model, train_data, EPOCHS, MODEL_CHECKPOINT)
 
-#
-# ------------ MODEL TESTING -----------
-#
-# Load
-model = load_checkpoint(MODEL_CHECKPOINT)
-model.eval()
+	#
+	# ------------ MODEL TESTING -----------
+	#
+	# Load
+	model = load_checkpoint(MODEL_CHECKPOINT)
+	model.eval()
 
-correct = 0
-for feature, target in test_data:
-	feature_tensor = torch.tensor([feature], dtype=torch.float32)
-	target_tensor = torch.tensor([target], dtype=torch.int64)
+	correct = 0
+	for feature, target in test_data:
+		feature_tensor = torch.tensor([feature], dtype=torch.float32)
+		target_tensor = torch.tensor([target], dtype=torch.int64)
 
-	with torch.no_grad():
-		output = model(feature_tensor)
+		with torch.no_grad():
+			output = model(feature_tensor)
 
-	decision = torch.argmax(output, dim=1)
-
-	if decision == target_tensor:
-		correct += 1
+		decision = torch.argmax(output, dim=1)
+	
+		if decision == target_tensor:
+			correct += 1
 
 
-print(f"Model accuracy: {correct/len(test_data)}")
+	print(f"Model accuracy: {correct/len(test_data)}")
+
+
+run()

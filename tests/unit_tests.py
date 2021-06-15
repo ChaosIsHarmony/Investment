@@ -5,6 +5,8 @@ import src
 from src import investstrat as strat
 import utils
 from utils import data_preprocessor as dpp
+from utils import data_processor as dp
+from utils import neural_nets as nn
 
 import copy
 import pandas as pd
@@ -22,6 +24,15 @@ def run_tests():
 
 	# DATA PRE-PROCESSOR TESTS
 	test_handle_missing_data()
+	print("test_handle_missing_data() tests all passed")
+	test_normalize_data()
+	print("test_normalize_data() tests all passed")
+	test_calculate_SMAs()
+	print("test_calculate_SMAs() tests all passed")
+
+	# DATA PROCESSOR TESTS
+	test_generate_dataset()
+	print("test_generate_dataset() tests all passed")
 
 
 def test_find_max(prices):
@@ -84,13 +95,49 @@ def test_calc_SMA(prices):
 
 
 def test_handle_missing_data():
+	# zero in the middle
 	data = [['date', 1, 1, 1], 
 			['date', 0, 0, 0],
 			['date', 3, 3, 3]]
 	data = pd.DataFrame(data)
-	print(data)
+	data = dpp.handle_missing_data(data)
+	assert data.iloc[1, 1] == 2.0 and data.iloc[1, 2] == 2.0 and data.iloc[1, 3] == 2.0, "Zero in the middle test case failed."
+
+	# consecutive zeros
+	data = [['date', 1, 1, 1],
+			['date', 0, 0, 0],
+			['date', 0, 0, 0],
+			['date', 3, 3, 3]]
+	data = pd.DataFrame(data)
+	data = dpp.handle_missing_data(data)
+	assert data.iloc[1, 1] == 2.0 and data.iloc[1, 2] == 2.0 and data.iloc[1, 3] == 2.0, "Consecutive zeros test case failed."
+	assert data.iloc[2, 1] == 2.5 and data.iloc[2, 2] == 2.5 and data.iloc[2, 3] == 2.5, "Consecutive zeros test case failed."
+
+	# leading zero
+	data = [['date', 0, 0, 0],
+			['date', 1, 1, 1],
+			['date', 0, 0, 0],
+			['date', 3, 3, 3]]
+	data = pd.DataFrame(data)
+	data = dpp.handle_missing_data(data)
+	assert data.iloc[0, 1] == 1.0 and data.iloc[0, 2] == 1.0 and data.iloc[0, 3] == 1.0, "Leading zero test case failed."
+
+	# ending zero
+	data = [['date', 1, 1, 1],
+			['date', 1, 1, 1],
+			['date', 2, 2, 2],
+			['date', 0, 0, 0]]
+	data = pd.DataFrame(data)
+	data = dpp.handle_missing_data(data)
+	assert data.iloc[3, 1] == 2.0 and data.iloc[3, 2] == 2.0 and data.iloc[3, 3] == 2.0, "Ending zero test case failed."
 
 
+def test_normalize_data():
+	assert False	
 
 
-run_tests() 
+def test_calculate_SMAs():
+	assert False
+
+
+run_tests()

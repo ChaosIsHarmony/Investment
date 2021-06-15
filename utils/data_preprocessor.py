@@ -16,9 +16,12 @@ def handle_missing_data(data):
 				while next_non_zero == 0 and start_ind < data.shape[0]:
 					next_non_zero += data.loc[start_ind, column]
 					start_ind += 1
-					
+				
+				# leading zero
+				if i == 0:
+					data.loc[i, column] = next_non_zero
 				# Take average of two closest data points
-				if next_non_zero > 0:
+				elif next_non_zero > 0:
 					data.loc[i, column] = (data.loc[i-1, column] + next_non_zero) / 2
 				# Otherwise, just make same as one before it
 				elif i > 0:
@@ -105,7 +108,5 @@ def run():
 		data.to_csv(f"datasets/clean/{coin}_historical_data_clean.csv")
 
 
-should_run = input("Run the data_preprocessor and create new datasets? ")
 
-if should_run[0] == 'y' or should_run[0] == 'Y':
-	run()
+#run()
