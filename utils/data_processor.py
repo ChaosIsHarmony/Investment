@@ -11,7 +11,7 @@ from utils import neural_nets as nn
 # correspond to signal column scale from 0-4
 DECISIONS = ["BUY 2X", "BUY X", "HODL", "SELL Y", "SELL 2Y"]
 BATCH_SIZE = 7
-EPOCHS = 5 
+EPOCHS = 25 
 BIN = 0
 DEC = 1
 MODEL = "models/model.pt"

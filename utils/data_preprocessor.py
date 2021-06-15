@@ -96,7 +96,9 @@ def process_data(data):
 
 
 def run():
-	coins = ["algorand", "bitcoin", "cardano", "chainlink", "cosmos", "ethereum", "matic-network", "polkadot", "solana", "theta-token"]
+#	coins = ["algorand", "bitcoin", "cardano", "chainlink", "cosmos", "ethereum", "matic-network", "polkadot", "solana", "theta-token"]
+
+	coins = ["bitcoin"]
 
 	for coin in coins:
 		print(coin)
@@ -109,4 +111,4 @@ def run():
 
 
 
-#run()
+run()

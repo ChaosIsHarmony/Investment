@@ -6,8 +6,8 @@ import torch.optim.lr_scheduler as lr_scheduler
 
 
 N_SIGNALS = 5
-N_FEATURES = 17
-DROPOUT = 0.35
+N_FEATURES = 18
+DROPOUT = 0.2
 LEARNING_RATE = 0.001
 
 
