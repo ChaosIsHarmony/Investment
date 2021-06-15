@@ -11,7 +11,7 @@ from utils import neural_nets as nn
 # correspond to signal column scale from 0-4
 DECISIONS = ["BUY 2X", "BUY X", "HODL", "SELL Y", "SELL 2Y"]
 BATCH_SIZE = 7
-EPOCHS = 1 
+EPOCHS = 5 
 BIN = 0
 DEC = 1
 MODEL = "models/model.pt"
@@ -81,7 +81,7 @@ def get_datasets():
 # ------------ HELPER FUNCTIONS -----------
 #
 # save model
-def save_checkpoint(filepath):
+def save_checkpoint(filepath, model):
 	checkpoint = {
 		"model": model,
 		"state_dict": model.state_dict(),
@@ -111,7 +111,7 @@ def load_checkpoint(filepath):
 	return model
 
 
-def load_model(neural_net):
+def load_model(neural_net, filepath):
 	model = neural_net
 	model.load_state_dict(torch.load(filepath))
 
@@ -131,7 +131,7 @@ def shuffle_data(data):
 	return data
 
 
-def train(model, data, epochs):
+def train(model, data, epochs, start_time):
 	for epoch in range(epochs):
 		steps = 0
 		print_every = 1000
@@ -167,13 +167,13 @@ def train(model, data, epochs):
 	return model
 
 
-def train_and_save(model, train_data, epochs, filepath):
+def train_and_save(model, train_data, epochs, filepath, start_time):
 	# Train
-	model = train(model, train_data, epochs)
+	model = train(model, train_data, epochs, start_time)
 	print(f"Total training time: {round((time.time() - start_time)) / 60} mins.")
 
 	# Save
-	save_checkpoint(filepath)
+	save_checkpoint(filepath, model)
 
 
 def run():
@@ -188,7 +188,7 @@ def run():
 	start_time = time.time()
 
 	# Training
-	train_and_save(model, train_data, EPOCHS, MODEL_CHECKPOINT)
+	train_and_save(model, train_data, EPOCHS, MODEL_CHECKPOINT, start_time)
 
 	#
 	# ------------ MODEL TESTING -----------

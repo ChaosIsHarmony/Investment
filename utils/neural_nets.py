@@ -115,6 +115,38 @@ class CryptoSoothsayerBin_2(nn.Module):
 
 
 
+class CryptoSoothsayerBin_3(nn.Module):
+	def __init__(self, input_size, n_signals):
+		super(CryptoSoothsayerBin_3, self).__init__()
+		self.layer_1 = nn.Linear(input_size, 128)
+		self.layer_2 = nn.Linear(128, 512)
+		self.layer_3 = nn.Linear(512, 128)
+		self.layer_4 = nn.Linear(128, 512)
+		self.layer_5 = nn.Linear(512, 128)
+		self.layer_6 = nn.Linear(128, 256)
+		self.layer_7 = nn.Linear(256, 64)
+		self.layer_8 = nn.Linear(64, 128)
+		self.layer_9 = nn.Linear(128, 32)
+		self.layer_output = nn.Linear(32, n_signals)
+		self.dropout = nn.Dropout(DROPOUT)
+
+
+	def forward(self, inputs):
+		out = self.dropout(F.relu(self.layer_1(inputs)))
+		out = self.dropout(F.relu(self.layer_2(out)))
+		out = self.dropout(F.relu(self.layer_3(out)))
+		out = self.dropout(F.relu(self.layer_4(out)))
+		out = self.dropout(F.relu(self.layer_5(out)))
+		out = self.dropout(F.relu(self.layer_6(out)))
+		out = self.dropout(F.relu(self.layer_7(out)))
+		out = self.dropout(F.relu(self.layer_8(out)))
+		out = self.dropout(F.relu(self.layer_9(out)))
+		out = self.layer_output(out)
+		log_probs = F.log_softmax(out, dim=1)
+		return log_probs
+
+
+
 class CryptoSoothsayerDec_0(nn.Module):
 	def __init__(self, input_size, n_signals):
 		super(CryptoSoothsayerDec_0, self).__init__()
@@ -146,7 +178,7 @@ class CryptoSoothsayerDec_0(nn.Module):
 		return log_probs
 
 
-MODEL = CryptoSoothsayerBin_2(N_FEATURES, N_SIGNALS)
+MODEL = CryptoSoothsayerBin_3(N_FEATURES, N_SIGNALS)
 CRITERION = nn.NLLLoss()
 OPTIMIZER = optim.AdamW(MODEL.parameters(), lr=LEARNING_RATE)
 lambda1 = lambda epoch: 0.99999
