@@ -173,9 +173,9 @@ class CryptoSoothsayerDec_0(nn.Module):
 		return out 
 
 
-MODEL = CryptoSoothsayerBin_3(N_FEATURES, N_SIGNALS)
+MODEL = CryptoSoothsayerBin_2(N_FEATURES, N_SIGNALS)
 CRITERION = nn.CrossEntropyLoss()
-OPTIMIZER = optim.AdamW(MODEL.parameters(), lr=LEARNING_RATE)
+OPTIMIZER = optim.Adam(MODEL.parameters(), lr=LEARNING_RATE)
 lambda1 = lambda epoch: 0.99999
 SCHEDULER =  lr_scheduler.MultiplicativeLR(OPTIMIZER, lambda1)
 
