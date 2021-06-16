@@ -11,11 +11,11 @@ from utils import neural_nets as nn
 # correspond to signal column scale from 0-4
 DECISIONS = ["BUY 2X", "BUY X", "HODL", "SELL Y", "SELL 2Y"]
 BATCH_SIZE = 7
-EPOCHS = 10 
+EPOCHS = 30 
 BIN = 0
 DEC = 1
 MODEL = "models/model.pt"
-MODEL_CHECKPOINT = "models/model_checkpoint.pt"
+MODEL_CHECKPOINT = "models/model_checkpoint_63.pt"
 DEVICE = torch.device("cpu")
 COIN = "bitcoin"
 AVERAGE_LOSS = []
@@ -188,7 +188,7 @@ def run():
 	start_time = time.time()
 
 	# Training
-	train_and_save(model, train_data, EPOCHS, MODEL_CHECKPOINT, start_time)
+	#train_and_save(model, train_data, EPOCHS, MODEL_CHECKPOINT, start_time)
 
 	#
 	# ------------ MODEL TESTING -----------
