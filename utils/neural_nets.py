@@ -6,8 +6,8 @@ import torch.optim.lr_scheduler as lr_scheduler
 
 
 N_SIGNALS = 5
-N_FEATURES = 17
-DROPOUT = 0.2
+N_FEATURES = 18
+DROPOUT = 0.25
 LEARNING_RATE = 0.001
 
 
@@ -42,8 +42,7 @@ class CryptoSoothsayerBin_0(nn.Module):
 		out = self.dropout(F.relu(self.layer_4(out)))
 		out = self.dropout(F.relu(self.layer_5(out)))
 		out = self.layer_output(out)
-		log_probs = F.log_softmax(out, dim=1)
-		return log_probs
+		return out
 
 
 
@@ -78,8 +77,7 @@ class CryptoSoothsayerBin_1(nn.Module):
 		out = self.dropout(F.relu(self.layer_10(out)))
 		out = self.dropout(F.relu(self.layer_11(out)))
 		out = self.layer_output(out)
-		log_probs = F.log_softmax(out, dim=1)
-		return log_probs
+		return out
 
 
 
@@ -110,8 +108,7 @@ class CryptoSoothsayerBin_2(nn.Module):
 		out = self.dropout(F.relu(self.layer_8(out)))
 		out = self.dropout(F.relu(self.layer_9(out)))
 		out = self.layer_output(out)
-		log_probs = F.log_softmax(out, dim=1)
-		return log_probs
+		return out
 
 
 
@@ -142,8 +139,7 @@ class CryptoSoothsayerBin_3(nn.Module):
 		out = self.dropout(F.relu(self.layer_8(out)))
 		out = self.dropout(F.relu(self.layer_9(out)))
 		out = self.layer_output(out)
-		log_probs = F.log_softmax(out, dim=1)
-		return log_probs
+		return out
 
 
 
@@ -174,12 +170,11 @@ class CryptoSoothsayerDec_0(nn.Module):
 		out = self.dropout(F.relu(self.layer_8(out)))
 		out = self.dropout(F.relu(self.layer_9(out)))
 		out = self.layer_output(out)
-		log_probs = F.log_softmax(out, dim=1)
-		return log_probs
+		return out 
 
 
 MODEL = CryptoSoothsayerBin_3(N_FEATURES, N_SIGNALS)
-CRITERION = nn.NLLLoss()
+CRITERION = nn.CrossEntropyLoss()
 OPTIMIZER = optim.AdamW(MODEL.parameters(), lr=LEARNING_RATE)
 lambda1 = lambda epoch: 0.99999
 SCHEDULER =  lr_scheduler.MultiplicativeLR(OPTIMIZER, lambda1)

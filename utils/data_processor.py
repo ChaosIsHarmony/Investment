@@ -3,6 +3,7 @@ import torch
 import time
 import random
 import neural_nets as nn
+import numpy as np
 '''
 WHEN testing need this version instead
 from utils import neural_nets as nn
@@ -10,13 +11,12 @@ from utils import neural_nets as nn
 
 # correspond to signal column scale from 0-4
 DECISIONS = ["BUY 2X", "BUY X", "HODL", "SELL Y", "SELL 2Y"]
-BATCH_SIZE = 7
-EPOCHS = 1
+BATCH_SIZE = 512 
+EPOCHS = 2 
 MODEL = "models/model.pt"
 MODEL_CHECKPOINT = "models/model_checkpoint_64.pt"
 DEVICE = torch.device("cpu")
 COIN = "bitcoin"
-AVERAGE_LOSS = []
 
 #
 # ------------ DATA RELATED -----------
@@ -60,19 +60,23 @@ def get_datasets():
 	data = data.drop(columns=["Unnamed: 0", "date"])
 	data["signal"] = data["signal"].astype("int64")
 
-	# Split into training, testing
-	# 85-15 split
+	# Split into training, validation, testing
+	# 70-15-15 split
 	n_datapoints = data.shape[0]
-	train_end = int(round(n_datapoints*0.85))
+	train_end = int(round(n_datapoints*0.7))
+	valid_end = train_end + int(round(n_datapoints*0.15))
 
 
-	train_data = generate_dataset(data, train_end, 0, 20)
+	train_data = generate_dataset(data, train_end, 0, 16)
 	print(f"Length Training Data: {len(train_data)}")
 
-	test_data = generate_dataset(data, n_datapoints, train_end, 0)
+	valid_data = generate_dataset(data, train_end, 0, 4)
+	print(f"Length Validation Data: {len(valid_data)}")
+
+	test_data = generate_dataset(data, n_datapoints, valid_end, 0)
 	print(f"Length Testing Data: {len(test_data)}") 
 
-	return train_data, test_data
+	return train_data, valid_data, test_data
 
 
 #
@@ -84,7 +88,6 @@ def save_checkpoint(filepath, model):
 		"model": model,
 		"state_dict": model.state_dict(),
 		"epochs": EPOCHS,
-		"average_loss": AVERAGE_LOSS,
 		"device": DEVICE,
 		"optimizer_state": nn.OPTIMIZER.state_dict(),
 		"batch_size": BATCH_SIZE,
@@ -93,7 +96,7 @@ def save_checkpoint(filepath, model):
 	torch.save(checkpoint, filepath)
 
 
-def save_model_state(filepath):
+def save_model_state(filepath, model):
 	torch.save(model.state_dict(), filepath)
 
 
@@ -104,7 +107,6 @@ def load_checkpoint(filepath):
 	model.optimizer_state = checkpoint["optimizer_state"]
 	model.load_state_dict(checkpoint["state_dict"])
 	model.device = checkpoint["device"]
-	model.average_loss = checkpoint["average_loss"]
 	
 	return model
 
@@ -129,35 +131,54 @@ def shuffle_data(data):
 	return data
 
 
-def train(model, data, epochs, start_time):
-	for epoch in range(epochs):
+def train(model, train_data, valid_data, start_time):
+	min_valid_loss = np.inf
+	
+	for epoch in range(EPOCHS):
 		steps = 0
-		print_every = 1000
-		running_loss = 0
-		data = shuffle_data(data)
+		train_loss = 0.0
+		train_data = shuffle_data(train_data)
+		valid_data = shuffle_data(valid_data)
 
-		for feature, target in data:
+		for feature, target in train_data:
+			steps += 1
 			model.train()
+			# make data pytorch compatible
 			feature_tensor = torch.tensor([feature], dtype=torch.float32)
 			feature_tensor = feature_tensor.to(DEVICE)
 			target_tensor = torch.tensor([target], dtype=torch.int64)
 			target_tensor = target_tensor.to(DEVICE)
 			# Forward
-			log_probs = model(feature_tensor)
-			loss = nn.CRITERION(log_probs, target_tensor)
+			model_output = model(feature_tensor)
+			loss = nn.CRITERION(model_output, target_tensor)
 			# Backward
-			model.zero_grad()
+			nn.OPTIMIZER.zero_grad()
 			loss.backward()
 			nn.OPTIMIZER.step()
+			# adjust learning rate
 			nn.SCHEDULER.step()
-			running_loss += loss.item()
-			steps += 1
+			train_loss += loss.item() * feature_tensor.size(0)
+			print(f"FT size(0): {feature_tensor.size(0)}")
 
-			if steps % print_every == 0:
+			#validation
+			if steps % BATCH_SIZE == 0 or steps == len(train_data)-1:
 				model.eval()
-				cur_avg_loss = running_loss/print_every
-				AVERAGE_LOSS.append(cur_avg_loss)
-				print(f"Epoch: {epoch+1} / {epochs} | Training Loss: {cur_avg_loss:.4f} | eta: {nn.OPTIMIZER.state_dict()['param_groups'][0]['lr']:.6f}")
+				valid_loss = 0.0
+				for feature, target in valid_data:
+					# make data pytorch compatible
+					feature_tensor = torch.tensor([feature], dtype=torch.float32)
+					feature_tensor = feature_tensor.to(DEVICE)
+					target_tensor = torch.tensor([target], dtype=torch.int64)
+					target_tensor = target_tensor.to(DEVICE)
+					# model makes prediction
+					model_output = model(feature_tensor)
+					loss = nn.CRITERION(model_output, target_tensor)
+					valid_loss = loss.item() * feature_tensor.size(0)
+
+				if valid_loss < min_valid_loss:
+					min_valid_loss = valid_loss
+					save_model_state(MODEL, model)
+					print(f"Epoch: {epoch+1} / {EPOCHS} | Training Loss: {train_loss/steps:.4f} | Validation Loss: {min_valid_loss:.4f} | eta: {nn.OPTIMIZER.state_dict()['param_groups'][0]['lr']:.6f}")
 				running_loss = 0
 
 		print(f"Time elapsed by epoch {epoch+1}: {round((time.time() - start_time)) / 60} mins.")
@@ -165,39 +186,21 @@ def train(model, data, epochs, start_time):
 	return model
 
 
-def train_and_save(model, train_data, epochs, filepath, start_time):
+def train_and_save(model, train_data, valid_data, start_time):
 	# Train
-	model = train(model, train_data, epochs, start_time)
-	print(f"Total training time: {round((time.time() - start_time)) / 60} mins.")
+	model = train(model, train_data, valid_data, start_time)
 
 	# Save
-	save_checkpoint(filepath, model)
+	save_checkpoint(MODEL_CHECKPOINT, model)
 
 
-def run():
-	# 
-	# ------------ DATA GENERATION ----------
-	#
-	train_data, test_data = get_datasets()
-
-	#
-	# ------------ MODEL TRAINING -----------
-	#
-	model = nn.MODEL
-	model.to(DEVICE)
-	start_time = time.time()
-
-	# Training
-#	train_and_save(model, train_data, EPOCHS, MODEL_CHECKPOINT, start_time)
-
-	#
-	# ------------ MODEL TESTING -----------
-	#
-	# Load
-	model = load_checkpoint(MODEL_CHECKPOINT)
+def evaluate_model(model, test_data):
 	model.eval()
-
 	correct = 0
+	mostly_correct = 0
+	normal_fail = 0
+	nasty_fail = 0
+	catastrophic_fail = 0
 	for feature, target in test_data:
 		feature_tensor = torch.tensor([feature], dtype=torch.float32)
 		target_tensor = torch.tensor([target], dtype=torch.int64)
@@ -209,9 +212,50 @@ def run():
 	
 		if decision == target_tensor:
 			correct += 1
+		elif (target_tensor == 0 or target_tensor == 1) and (decision == 0 or decision == 1):
+			mostly_correct += 1
+		elif (target_tensor == 3 or target_tensor == 4) and (decision == 3 or decision == 4):
+			mostly_correct += 1
+		elif (target_tensor > 2 and decision < 2) or (target_tensor < 2 and decision > 2):
+			catastrophic_fail += 1
+		elif target_tensor == 2 and (decision == 0 or decision == 4):
+			nasty_fail += 1
+		else:
+			normal_fail += 1
+
+	print(f"Model perfect accuracy: {correct/len(test_data)}")
+	print(f"Model good enough accuracy: {(mostly_correct + correct)/len(test_data)}")
+	print(f"Model normal fail rate: {normal_fail/len(test_data)}")
+	print(f"Model nasty fail rate: {nasty_fail/len(test_data)}")
+	print(f"Model catastrophic fail rate: {catastrophic_fail/len(test_data)}")
 
 
-	print(f"Model accuracy: {correct/len(test_data)}")
+
+def run():
+	# 
+	# ------------ DATA GENERATION ----------
+	#
+	train_data, valid_data, test_data = get_datasets()
+
+	#
+	# ------------ MODEL TRAINING -----------
+	#
+	model = nn.MODEL
+	model.to(DEVICE)
+	start_time = time.time()
+
+	# Training
+	train_and_save(model, train_data, valid_data, start_time)
+
+	#
+	# ------------ MODEL TESTING -----------
+	#
+	# Load
+#	model = load_checkpoint(MODEL_CHECKPOINT)
+	model = load_model(nn.MODEL, MODEL)
+	evaluate_model(model, test_data)
+	
+	
 
 
 run()
