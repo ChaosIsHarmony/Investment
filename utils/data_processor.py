@@ -3,7 +3,6 @@ import torch
 import time
 import random
 import neural_nets as nn
-import numpy as np
 '''
 WHEN testing need this version instead
 from utils import neural_nets as nn
@@ -11,8 +10,9 @@ from utils import neural_nets as nn
 
 # correspond to signal column scale from 0-4
 DECISIONS = ["BUY 2X", "BUY X", "HODL", "SELL Y", "SELL 2Y"]
-BATCH_SIZE = 512 
-EPOCHS = 2 
+BATCH_SIZE = 1024 
+EPOCHS = 5 
+VALIDATION_DELTA_THRESHOLD = 0.26
 MODEL = "models/model.pt"
 MODEL_CHECKPOINT = "models/model_checkpoint.pt"
 DEVICE = torch.device("cpu")
@@ -132,7 +132,7 @@ def shuffle_data(data):
 
 
 def train(model, train_data, valid_data, start_time):
-	min_valid_loss = np.inf
+	min_valid_loss = -1 # will be set to first validation loss value 
 	
 	for epoch in range(EPOCHS):
 		steps = 0
@@ -158,7 +158,6 @@ def train(model, train_data, valid_data, start_time):
 			# adjust learning rate
 			nn.SCHEDULER.step()
 			train_loss += loss.item() * feature_tensor.size(0)
-			print(f"FT size(0): {feature_tensor.size(0)}")
 
 			#validation
 			if steps % BATCH_SIZE == 0 or steps == len(train_data)-1:
@@ -175,7 +174,7 @@ def train(model, train_data, valid_data, start_time):
 					loss = nn.CRITERION(model_output, target_tensor)
 					valid_loss = loss.item() * feature_tensor.size(0)
 
-				if valid_loss < min_valid_loss:
+				if (valid_loss < min_valid_loss and (min_valid_loss - valid_loss) < VALIDATION_DELTA_THRESHOLD) or min_valid_loss == -1:
 					min_valid_loss = valid_loss
 					save_model_state(MODEL, model)
 					print(f"Epoch: {epoch+1} / {EPOCHS} | Training Loss: {train_loss/steps:.4f} | Validation Loss: {min_valid_loss:.4f} | eta: {nn.OPTIMIZER.state_dict()['param_groups'][0]['lr']:.6f}")
@@ -223,11 +222,11 @@ def evaluate_model(model, test_data):
 		else:
 			normal_fail += 1
 
-	print(f"Model perfect accuracy: {correct/len(test_data)}")
-	print(f"Model good enough accuracy: {(mostly_correct + correct)/len(test_data)}")
-	print(f"Model normal fail rate: {normal_fail/len(test_data)}")
-	print(f"Model nasty fail rate: {nasty_fail/len(test_data)}")
-	print(f"Model catastrophic fail rate: {catastrophic_fail/len(test_data)}")
+	print(f"Model perfect accuracy: {correct/len(test_data):.4f}")
+	print(f"Model good enough accuracy: {(mostly_correct + correct)/len(test_data):.4f}")
+	print(f"Model normal fail rate: {normal_fail/len(test_data):.4f}")
+	print(f"Model nasty fail rate: {nasty_fail/len(test_data):.4f}")
+	print(f"Model catastrophic fail rate: {catastrophic_fail/len(test_data):.4f}")
 
 
 
@@ -245,14 +244,14 @@ def run():
 	start_time = time.time()
 
 	# Training
-#	train_and_save(model, train_data, valid_data, start_time)
+	train_and_save(model, train_data, valid_data, start_time)
 
 	#
 	# ------------ MODEL TESTING -----------
 	#
 	# Load
-	model = load_checkpoint(MODEL_CHECKPOINT)
-#	model = load_model(nn.MODEL, MODEL)
+#	model = load_checkpoint(MODEL_CHECKPOINT)
+	model = load_model(nn.MODEL, MODEL)
 	evaluate_model(model, test_data)
 	
 	
