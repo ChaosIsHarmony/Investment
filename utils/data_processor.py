@@ -198,6 +198,8 @@ def evaluate_model(model, test_data):
 	model.eval()
 	correct = 0
 	mostly_correct = 0
+	normal_fail = 0
+	nasty_fail = 0
 	catastrophic_fail = 0
 	for feature, target in test_data:
 		feature_tensor = torch.tensor([feature], dtype=torch.float32)
@@ -214,11 +216,17 @@ def evaluate_model(model, test_data):
 			mostly_correct += 1
 		elif (target_tensor == 3 or target_tensor == 4) and (decision == 3 or decision == 4):
 			mostly_correct += 1
-		elif target_tensor == 2 or (target_tensor > 2 and decision < 2) or (target_tensor < 2 and decision > 2):
+		elif (target_tensor > 2 and decision < 2) or (target_tensor < 2 and decision > 2):
 			catastrophic_fail += 1
+		elif target_tensor == 2 and (decision == 0 or decision == 4):
+			nasty_fail += 1
+		else:
+			normal_fail += 1
 
 	print(f"Model perfect accuracy: {correct/len(test_data)}")
-	print(f"Model general accuracy: {(mostly_correct + correct)/len(test_data)}")
+	print(f"Model good enough accuracy: {(mostly_correct + correct)/len(test_data)}")
+	print(f"Model normal fail rate: {normal_fail/len(test_data)}")
+	print(f"Model nasty fail rate: {nasty_fail/len(test_data)}")
 	print(f"Model catastrophic fail rate: {catastrophic_fail/len(test_data)}")
 
 
