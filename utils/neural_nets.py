@@ -6,8 +6,8 @@ import torch.optim.lr_scheduler as lr_scheduler
 
 
 N_SIGNALS = 5
-N_FEATURES = 18
-DROPOUT = 0.25
+N_FEATURES = 18#25
+DROPOUT = 0.3
 LEARNING_RATE = 0.001
 LEARNING_RATE_DECAY = 0.999999
 
@@ -43,7 +43,7 @@ class CryptoSoothsayer_Pi_0(nn.Module):
 
 
 	def get_class_name(self):
-		return "CryptoSoothersayer_Pi_0"
+		return "CryptoSoothsayer_Pi_0"
 
 
 
@@ -76,7 +76,7 @@ class CryptoSoothsayer_Pi_1(nn.Module):
 
 
 	def get_class_name(self):
-		return "CryptoSoothersayer_Pi_1"
+		return "CryptoSoothsayer_Pi_1"
 
 
 #
@@ -117,7 +117,7 @@ class CryptoSoothsayer_PC_0(nn.Module):
 
 
 	def get_class_name(self):
-		return "CryptoSoothersayer_PC_0"
+		return "CryptoSoothsayer_PC_0"
 
 
 #
@@ -156,7 +156,7 @@ class CryptoSoothsayer_Laptop_0(nn.Module):
 
 	
 	def get_class_name(self):
-		return "CryptoSoothersayer_Laptop_0"
+		return "CryptoSoothsayer_Laptop_0"
 
 
 
@@ -199,7 +199,7 @@ class CryptoSoothsayer_Laptop_1(nn.Module):
 
 	
 	def get_class_name(self):
-		return "CryptoSoothersayer_Laptop_1"
+		return "CryptoSoothsayer_Laptop_1"
 
 
 

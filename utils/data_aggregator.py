@@ -148,12 +148,12 @@ def merge_datasets(coin, list_of_datasets):
 	merged_data = merged_data.sort_values(by=["date"], ascending=False)
 	merged_data = merged_data.drop_duplicates(subset=["date"])
 	merged_data = merged_data.reset_index()
-	merged_data = merged_data.drop(columns=["Unnamed: 0", "index"])
+	merged_data = merged_data.drop(columns=["index"])
 
 	merged_data.to_csv(f"datasets/raw/{coin}_historical_data.csv")
 
 def merge(coin):
-	data_to_merge = [pd.read_csv(f"datasets/raw/{coin}_historical_data_earlier.csv"), pd.read_csv(f"datasets/raw/{coin}_historical_data_later.csv")]
+	data_to_merge = [pd.read_csv(f"datasets/raw/{coin}_historical_data_raw_by_range.csv"), pd.read_csv(f"datasets/raw/{coin}_historical_data_raw_by_date.csv"),pd.read_csv(f"datasets/raw/{coin}_historical_data_raw.csv")]
 	merge_datasets(coin, data_to_merge)
 
 #merge("matic-network")
@@ -171,10 +171,9 @@ def fetch_missing_data_by_dates(coin, dates):
 		# to assuage 434 return codes
 		time.sleep(0.5)
 
-
 	# save as CSV
 	coin_data = pd.DataFrame(historical_data)
-	coin_data.to_csv(f"datasets/raw/{coin}_historical_data_later.csv")
+	coin_data.to_csv(f"datasets/raw/{coin}_historical_data_by_date.csv")
 		
 	print(f"{coin} data successfully pulled and stored.")
 
@@ -195,10 +194,9 @@ def fetch_missing_data_by_range(coin, num_days, start_delta):
 		# to assuage 434 return codes
 		time.sleep(0.5)
 
-
 	# save as CSV
 	coin_data = pd.DataFrame(historical_data)
-	coin_data.to_csv(f"datasets/raw/{coin}_historical_data_later.csv")
+	coin_data.to_csv(f"datasets/raw/{coin}_historical_data_raw_by_range.csv")
 		
 	print(f"{coin} data successfully pulled and stored.")
 
@@ -207,11 +205,10 @@ def fetch_missing_data_by_range(coin, num_days, start_delta):
 
 
 def run():
-
-	today = date.today() - timedelta(600)
+	today = date.today()
+	how_far_back = 14
 	api_calls = 0
 	api_call_cycle_start = get_time() 
-
 
 	for coin in ["bitcoin"]:#coin_id:
 		date_delta = -1 
@@ -249,17 +246,15 @@ def run():
 					has_next = False
 				continue
 
-			if date_delta > 600 or "error" in data.keys():
+			if date_delta > how_far_back  or "error" in data.keys():
 				has_next = False
 				continue	
 
 			historical_data.append(extract_basic_data(data, next_date))
 		
-
 		# save as CSV
 		coin_data = pd.DataFrame(historical_data)
-		coin_data.to_csv(f"datasets/raw/{coin}_historical_data_past.csv")
-		
+		coin_data.to_csv(f"datasets/raw/{coin}_historical_data_raw.csv", index=False)
 		print(f"{coin} data successfully pulled and stored.")
 
 

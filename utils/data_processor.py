@@ -2,12 +2,13 @@ import pandas as pd
 import torch
 import time
 import random
-import neural_nets as nn
 import numpy as np
+#import neural_nets as nn
 '''
 WHEN testing need this version instead
-from utils import neural_nets as nn
 '''
+from utils import neural_nets as nn
+
 
 DEVICE = torch.device("cpu")
 nn.MODEL.to(DEVICE)
@@ -16,9 +17,9 @@ MODEL_CHECKPOINT_FILEPATH = f"models/checkpoint_{nn.MODEL.get_class_name()}.pt"
 # correspond to signal column scale from 0-4
 DECISIONS = ["BUY 2X", "BUY X", "HODL", "SELL Y", "SELL 2Y"]
 BATCH_SIZE = 256 
-EPOCHS = 5 
+EPOCHS = 2 
 COIN = "bitcoin"
-REPORTS = [f"Model: {nn.MODEL.get_class_name()}", f"Batch size: {BATCH_SIZE}", f"Epochs: {EPOCHS}", f"Coin: {COIN}"]
+REPORTS = [f"Model: {nn.MODEL.get_class_name()}", f"Learning rate: {nn.LEARNING_RATE}", f"Learning rate decay: {nn.LEARNING_RATE_DECAY}", f"Chance of dropout: {nn.DROPOUT}", f"Batch size: {BATCH_SIZE}", f"Epochs: {EPOCHS}", f"Coin: {COIN}"]
 
 #
 # ------------ DATA RELATED -----------
@@ -289,7 +290,7 @@ def run():
 	# ------------ MODEL TRAINING -----------
 	#
 	start_time = time.time()
-#	train_and_save(train_data, valid_data, start_time)
+	train_and_save(train_data, valid_data, start_time)
 
 	#
 	# ------------ MODEL TESTING -----------
@@ -313,4 +314,4 @@ def run():
 	
 
 
-run()
+#run()

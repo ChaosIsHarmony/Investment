@@ -1,0 +1,23 @@
+Model: CryptoSoothersayer_Laptop_0
+Batch size: 256
+Epochs: 3
+Coin: bitcoin
+Length Training Data: 22371
+Length Validation Data: 3317
+Length Testing Data: 127
+EVALUATE FULLY TRAINED MODEL
+POSITIVE:
+		Model perfect accuracy: 0.4646
+		Model good enough accuracy: 0.7559
+	NEGATIVE:
+		Model normal fail rate: 0.1260
+		Model nasty fail rate: 0.1181
+		Model catastrophic fail rate: 0.0000
+EVALUATE VALIDATION-BASED MODEL
+POSITIVE:
+		Model perfect accuracy: 0.4646
+		Model good enough accuracy: 0.7559
+	NEGATIVE:
+		Model normal fail rate: 0.1024
+		Model nasty fail rate: 0.1417
+		Model catastrophic fail rate: 0.0000
