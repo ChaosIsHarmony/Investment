@@ -33,6 +33,11 @@ def run_tests():
 	# DATA PROCESSOR TESTS
 	test_generate_dataset()
 	print("test_generate_dataset() tests all passed")
+	test_get_datasets()
+	print("test_get_datasets() tests all passed")
+	test_shuffle_data()
+	print("test_shuffle_data() tests all passed")
+
 
 
 def test_find_max(prices):
