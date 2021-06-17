@@ -46,6 +46,39 @@ class CryptoSoothsayer_Pi_0(nn.Module):
 		return "CryptoSoothersayer_Pi_0"
 
 
+
+class CryptoSoothsayer_Pi_1(nn.Module):
+	def __init__(self, input_size, n_signals):
+		super(CryptoSoothsayer_Pi_1, self).__init__()
+		self.layer_1 = nn.Linear(input_size, 64)
+		self.layer_2 = nn.Linear(64, 128)
+		self.layer_3 = nn.Linear(128, 256)
+		self.layer_4 = nn.Linear(256, 512)
+		self.layer_5 = nn.Linear(512, 1024)
+		self.layer_6 = nn.Linear(1024, 512)
+		self.layer_7 = nn.Linear(512, 256)
+		self.layer_8 = nn.Linear(256, 64)
+		self.layer_output = nn.Linear(64, n_signals)
+		self.dropout = nn.Dropout(DROPOUT)
+
+
+	def forward(self, inputs):
+		out = self.dropout(F.relu(self.layer_1(inputs)))
+		out = self.dropout(F.relu(self.layer_2(out)))
+		out = self.dropout(F.relu(self.layer_3(out)))
+		out = self.dropout(F.relu(self.layer_4(out)))
+		out = self.dropout(F.relu(self.layer_5(out)))
+		out = self.dropout(F.relu(self.layer_6(out)))
+		out = self.dropout(F.relu(self.layer_7(out)))
+		out = self.dropout(F.relu(self.layer_8(out)))
+		out = self.layer_output(out)
+		return out
+
+
+	def get_class_name(self):
+		return "CryptoSoothersayer_Pi_1"
+
+
 #
 # ---------- MODELS TRAINED ON OLD PC ----------
 #
