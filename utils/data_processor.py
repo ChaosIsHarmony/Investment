@@ -12,7 +12,7 @@ from utils import neural_nets as nn
 DECISIONS = ["BUY 2X", "BUY X", "HODL", "SELL Y", "SELL 2Y"]
 BATCH_SIZE = 2048 
 EPOCHS = 5 
-VALIDATION_DELTA_THRESHOLD = 0.26
+VALIDATION_DELTA_THRESHOLD = 0.3
 MODEL = "models/model.pt"
 MODEL_CHECKPOINT = "models/model_checkpoint.pt"
 DEVICE = torch.device("cpu")

@@ -1,0 +1,23 @@
+Length Training Data: 22371
+Length Validation Data: 6039
+Length Testing Data: 127
+Epoch: 1 / 5 | Training Loss: 1.5728 | Validation Loss: 0.5168 | eta: 0.000980
+Time elapsed by epoch 1: 91.91666666666667 mins.
+Time elapsed by epoch 2: 184.6 mins.
+Epoch: 3 / 5 | Training Loss: 0.6243 | Validation Loss: 0.5072 | eta: 0.000601
+Epoch: 3 / 5 | Training Loss: 0.5904 | Validation Loss: 0.4585 | eta: 0.000554
+Epoch: 3 / 5 | Training Loss: 0.5840 | Validation Loss: 0.4101 | eta: 0.000543
+Epoch: 3 / 5 | Training Loss: 0.5780 | Validation Loss: 0.3797 | eta: 0.000532
+Epoch: 3 / 5 | Training Loss: 0.5618 | Validation Loss: 0.3692 | eta: 0.000511
+Time elapsed by epoch 3: 283.98333333333335 mins.
+Epoch: 4 / 5 | Training Loss: 1.1526 | Validation Loss: 0.3289 | eta: 0.000491
+Epoch: 4 / 5 | Training Loss: 0.6686 | Validation Loss: 0.3111 | eta: 0.000425
+Epoch: 4 / 5 | Training Loss: 0.6342 | Validation Loss: 0.2917 | eta: 0.000409
+Time elapsed by epoch 4: 382.18333333333334 mins.
+Epoch: 5 / 5 | Training Loss: 0.4413 | Validation Loss: 0.0000 | eta: 0.000400
+Time elapsed by epoch 5: 484.8666666666667 mins.
+Model perfect accuracy: 0.4961
+Model good enough accuracy: 0.6693
+Model normal fail rate: 0.0157
+Model nasty fail rate: 0.2362
+Model catastrophic fail rate: 0.0787
