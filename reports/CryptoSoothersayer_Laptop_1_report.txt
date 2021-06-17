@@ -1,0 +1,53 @@
+Model: CryptoSoothersayer_Laptop_1
+Batch size: 256
+Epochs: 3
+Coin: bitcoin
+Length Training Data: 22371
+Length Validation Data: 3317
+Length Testing Data: 127
+Training Loss: 1.6126 | Validation Loss: 1.6074 | eta: 0.001000
+Training Loss: 1.6382 | Validation Loss: 1.5541 | eta: 0.000998
+Training Loss: 1.7779 | Validation Loss: 1.5333 | eta: 0.000996
+Training Loss: 1.7664 | Validation Loss: 1.5324 | eta: 0.000995
+Training Loss: 1.7192 | Validation Loss: 1.5310 | eta: 0.000994
+Training Loss: 1.7072 | Validation Loss: 1.5296 | eta: 0.000993
+Training Loss: 1.6906 | Validation Loss: 1.5244 | eta: 0.000992
+Training Loss: 1.6865 | Validation Loss: 1.5161 | eta: 0.000991
+Training Loss: 1.6747 | Validation Loss: 1.4359 | eta: 0.000989
+Training Loss: 1.6699 | Validation Loss: 1.4282 | eta: 0.000989
+Training Loss: 1.6628 | Validation Loss: 1.2292 | eta: 0.000988
+Training Loss: 1.6268 | Validation Loss: 1.0635 | eta: 0.000987
+Training Loss: 1.6124 | Validation Loss: 0.9852 | eta: 0.000986
+Training Loss: 1.5951 | Validation Loss: 0.8808 | eta: 0.000986
+Training Loss: 1.5826 | Validation Loss: 0.8565 | eta: 0.000985
+Training Loss: 1.5235 | Validation Loss: 0.8235 | eta: 0.000983
+Training Loss: 1.4875 | Validation Loss: 0.8209 | eta: 0.000982
+Training Loss: 1.4661 | Validation Loss: 0.7519 | eta: 0.000981
+Training Loss: 1.4101 | Validation Loss: 0.6953 | eta: 0.000978
+Time elapsed by epoch 1: 27.083333333333332 mins.
+Training Loss: 0.9534 | Validation Loss: 0.6464 | eta: 0.000974
+Training Loss: 0.9954 | Validation Loss: 0.6172 | eta: 0.000964
+Training Loss: 0.9808 | Validation Loss: 0.6132 | eta: 0.000962
+Training Loss: 0.9671 | Validation Loss: 0.5919 | eta: 0.000960
+Time elapsed by epoch 2: 56.31666666666667 mins.
+Training Loss: 0.8473 | Validation Loss: 0.5606 | eta: 0.000950
+Training Loss: 0.8552 | Validation Loss: 0.5528 | eta: 0.000946
+Training Loss: 0.8457 | Validation Loss: 0.5326 | eta: 0.000941
+Training Loss: 0.8350 | Validation Loss: 0.5032 | eta: 0.000937
+Time elapsed by epoch 3: 95.55 mins.
+EVALUATE FULLY TRAINED MODEL
+POSITIVE:
+		Model perfect accuracy: 0.4882
+		Model good enough accuracy: 0.6220
+	NEGATIVE:
+		Model normal fail rate: 0.0000
+		Model nasty fail rate: 0.2441
+		Model catastrophic fail rate: 0.1339
+EVALUATE VALIDATION-BASED MODEL
+POSITIVE:
+		Model perfect accuracy: 0.4882
+		Model good enough accuracy: 0.6220
+	NEGATIVE:
+		Model normal fail rate: 0.0000
+		Model nasty fail rate: 0.2441
+		Model catastrophic fail rate: 0.1339

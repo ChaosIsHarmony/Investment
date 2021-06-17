@@ -9,14 +9,14 @@ WHEN testing need this version instead
 from utils import neural_nets as nn
 '''
 
-# correspond to signal column scale from 0-4
 DEVICE = torch.device("cpu")
 nn.MODEL.to(DEVICE)
 MODEL_FILEPATH = f"models/{nn.MODEL.get_class_name()}.pt"
 MODEL_CHECKPOINT_FILEPATH = f"models/checkpoint_{nn.MODEL.get_class_name()}.pt"
+# correspond to signal column scale from 0-4
 DECISIONS = ["BUY 2X", "BUY X", "HODL", "SELL Y", "SELL 2Y"]
 BATCH_SIZE = 256 
-EPOCHS = 3
+EPOCHS = 5 
 COIN = "bitcoin"
 REPORTS = [f"Model: {nn.MODEL.get_class_name()}", f"Batch size: {BATCH_SIZE}", f"Epochs: {EPOCHS}", f"Coin: {COIN}"]
 
@@ -289,7 +289,7 @@ def run():
 	# ------------ MODEL TRAINING -----------
 	#
 	start_time = time.time()
-	train_and_save(train_data, valid_data, start_time)
+#	train_and_save(train_data, valid_data, start_time)
 
 	#
 	# ------------ MODEL TESTING -----------

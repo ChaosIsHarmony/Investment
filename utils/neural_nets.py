@@ -175,5 +175,3 @@ CRITERION = nn.CrossEntropyLoss()
 OPTIMIZER = optim.Adam(MODEL.parameters(), lr=LEARNING_RATE)
 lambda1 = lambda epoch: LEARNING_RATE_DECAY 
 SCHEDULER =  lr_scheduler.MultiplicativeLR(OPTIMIZER, lambda1)
-
-
