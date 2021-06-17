@@ -271,7 +271,7 @@ def join_all_reports():
 
 
 def generate_report():
-	report = open(f"{nn.MODEL.get_class_name()}_report.txt", "w")
+	report = open(f"reports/{nn.MODEL.get_class_name()}_report.txt", "w")
 	report.write(join_all_reports())
 	report.close()
 

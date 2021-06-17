@@ -26,7 +26,7 @@ def get_historic_data(coin, date):
 
 def get_correct_date_format(date):
 	'''
-	Puts the Python datetime into a format the coingecko api finds more copacetic
+	Puts the Python datetime into a format the coingecko api finds more copacetic i.e., dd-mm-yyyy
 	'''
 	well_formed_date = ""
 	if date.day < 10:
@@ -152,13 +152,36 @@ def merge_datasets(coin, list_of_datasets):
 
 	merged_data.to_csv(f"datasets/raw/{coin}_historical_data.csv")
 
-def merge():
-	data_to_merge = [pd.read_csv("datasets/raw/bitcoin_historical_data_earlier.csv"), pd.read_csv("datasets/raw/bitcoin_historical_data_later.csv")]
-	merge_datasets("bitcoin", data_to_merge)
+def merge(coin):
+	data_to_merge = [pd.read_csv(f"datasets/raw/{coin}_historical_data_earlier.csv"), pd.read_csv(f"datasets/raw/{coin}_historical_data_later.csv")]
+	merge_datasets(coin, data_to_merge)
 
-#merge()
+#merge("matic-network")
 
-def fetch_missing_data(coin, num_days, start_delta):
+
+def fetch_missing_data_by_dates(coin, dates):
+	historical_data = []
+
+	for date in dates:	
+		data = get_historic_data(coin, date)
+
+		historical_data.append(extract_basic_data(data, date))
+
+		# To help regulate the speed with which calls are being made
+		# to assuage 434 return codes
+		time.sleep(0.5)
+
+
+	# save as CSV
+	coin_data = pd.DataFrame(historical_data)
+	coin_data.to_csv(f"datasets/raw/{coin}_historical_data_later.csv")
+		
+	print(f"{coin} data successfully pulled and stored.")
+
+#fetch_missing_data_by_dates("matic-network", ["21-10-2019", "22-10-2019", "30-04-2021", "01-05-2021"])
+
+
+def fetch_missing_data_by_range(coin, num_days, start_delta):
 	today = date.today() - timedelta(start_delta)
 	historical_data = []
 
@@ -175,11 +198,11 @@ def fetch_missing_data(coin, num_days, start_delta):
 
 	# save as CSV
 	coin_data = pd.DataFrame(historical_data)
-	coin_data.to_csv(f"datasets/raw/{coin}_historical_data_past_sup.csv")
+	coin_data.to_csv(f"datasets/raw/{coin}_historical_data_later.csv")
 		
 	print(f"{coin} data successfully pulled and stored.")
 
-#fetch_missing_data("bitcoin", 84, 368)
+#fetch_missing_data_by_range("chainlink", 84, 368)
 
 
 
