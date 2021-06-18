@@ -1,26 +1,30 @@
 Model: CryptoSoothsayer_Laptop_1
 Learning rate: 0.001
-Learning rate decay: 0.99999
-Chance of dropout: 0.25
-Batch size: 256
-Epochs: 2
+Learning rate decay: 0.999999
+Chance of dropout: 0.35
+Batch size: 512
+Epochs: 3
 Coin: bitcoin
 Length Training Data: 22371
 Length Validation Data: 3317
 Length Testing Data: 127
 EVALUATE FULLY TRAINED MODEL
-POSITIVE:
-		Model perfect accuracy: 0.4882
-		Model good enough accuracy: 0.6220
+
+	POSITIVE:
+		[++] Perfect accuracy:     0.4882
+		[+] Model good enough accuracy:     0.6220
 	NEGATIVE:
-		Model normal fail rate: 0.0000
-		Model nasty fail rate: 0.2441
-		Model catastrophic fail rate: 0.1339
+		[-] Told to hodl but should have sold/bought rate:     0.0000
+		[--] Should have hodled but told to sell/buy rate:     0.2441
+		[---] Told to do the opposite of correct move rate:     0.1339
+		
 EVALUATE VALIDATION-BASED MODEL
-POSITIVE:
-		Model perfect accuracy: 0.4882
-		Model good enough accuracy: 0.6220
+
+	POSITIVE:
+		[++] Perfect accuracy:     0.1339
+		[+] Model good enough accuracy:     0.6220
 	NEGATIVE:
-		Model normal fail rate: 0.0000
-		Model nasty fail rate: 0.2441
-		Model catastrophic fail rate: 0.1339
+		[-] Told to hodl but should have sold/bought rate:     0.0000
+		[--] Should have hodled but told to sell/buy rate:     0.2441
+		[---] Told to do the opposite of correct move rate:     0.1339
+		

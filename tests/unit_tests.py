@@ -61,6 +61,7 @@ def test_handle_missing_data():
 	assert data.iloc[3, 1] == 2.0 and data.iloc[3, 2] == 2.0 and data.iloc[3, 3] == 2.0, "Ending zero test case failed."
 
 
+
 def test_normalize_data():
 	data = [['2020-10-01', 1, 1, 1], 
 			['2020-10-02', 0, 0, 0],
@@ -69,6 +70,7 @@ def test_normalize_data():
 	data = pd.DataFrame(data, columns=["date", 1, 2, 3])
 	data = dpp.normalize_data(data)
 	assert data.iloc[0,1] == 1/3 and data.iloc[1,1] == 0 and data.iloc[2,1] == 1 and data.iloc[3,1] == 1, "Normalize data test failed."
+
 
 
 def test_calculate_price_SMAs():
@@ -81,7 +83,8 @@ def test_calculate_price_SMAs():
 	(498+497+496+495+494)/5 == data.iloc[5,2]
 	Must start at 6th item from the last in order to be able to subtract
 	'''
-	assert (498+497+496+495+494)/5 == data.iloc[5,2]
+	assert (498+497+496+495+494)/5 == data.iloc[5,2], "The 5-day price SMA test failed."
+
 
 
 def test_calculate_fear_greed_SMAs():

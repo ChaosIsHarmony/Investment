@@ -24,6 +24,18 @@ REPORTS = [f"Model: {nn.MODEL.get_class_name()}", f"Learning rate: {nn.LEARNING_
 #
 # ------------ DATA RELATED -----------
 #
+def shuffle_data(data):
+	size = len(data)
+	for row_ind in range(size):
+		swap_row_ind = random.randrange(size)
+		tmp_row = data[swap_row_ind]
+		data[swap_row_ind] = data[row_ind]
+		data[row_ind] = tmp_row
+
+	return data
+
+
+
 def generate_dataset(data, limit, offset, data_aug_per_sample=0):
 	'''
 	NOTES: 
@@ -62,6 +74,7 @@ def get_datasets():
 	data = pd.read_csv(f"datasets/complete/{COIN}_historical_data_complete.csv")
 	data = data.drop(columns=["date"])
 	data["signal"] = data["signal"].astype("int64")
+	data = shuffle_data(data)
 
 	# Split into training, validation, testing
 	# 70-15-15 split
@@ -124,18 +137,6 @@ def load_model(neural_net, filepath):
 #
 # ----------- TRAINING FUNCTIONS ----------
 #
-def shuffle_data(data):
-	size = len(data)
-	for row_ind in range(size):
-		swap_row_ind = random.randrange(size)
-		tmp_row = data[swap_row_ind]
-		data[swap_row_ind] = data[row_ind]
-		data[row_ind] = tmp_row
-
-	return data
-
-
-
 def convert_to_tensor(feature, target):
 	feature_tensor = torch.tensor([feature], dtype=torch.float32)
 	feature_tensor = feature_tensor.to(DEVICE)
@@ -194,8 +195,6 @@ def train(train_data, valid_data, start_time):
 	for epoch in range(EPOCHS):
 		steps = 0
 		train_loss = 0.0
-		train_data = shuffle_data(train_data)
-		valid_data = shuffle_data(valid_data)
 
 		for feature, target in train_data:
 			steps += 1
@@ -223,7 +222,7 @@ def evaluate_model(model, test_data):
 	model.eval()
 	correct = 0
 	mostly_correct = 0
-	normal_fail = 0
+	safe_fail = 0
 	nasty_fail = 0
 	catastrophic_fail = 0
 	for feature, target in test_data:
@@ -235,27 +234,35 @@ def evaluate_model(model, test_data):
 			output = model(feature_tensor)
 
 		decision = torch.argmax(output, dim=1)
-	
+
+		# flawless
 		if decision == target_tensor:
 			correct += 1
+		# correct direction, but extent was wrong (e.g., target = BUY X, decision = BUY 2X)
 		elif (target_tensor == 0 or target_tensor == 1) and (decision == 0 or decision == 1):
 			mostly_correct += 1
+		# correct direction, but extent was wrong (e.g., target = SELL X, decision = SELL 2X)
 		elif (target_tensor == 3 or target_tensor == 4) and (decision == 3 or decision == 4):
 			mostly_correct += 1
+		# catastrophic failure (e.g., told to buy when should have sold)
 		elif (target_tensor > 2 and decision < 2) or (target_tensor < 2 and decision > 2):
 			catastrophic_fail += 1
-		elif target_tensor == 2 and (decision == 0 or decision == 4):
+		# severe failure (e.g., should have hodled but was told to buy or sell
+		elif target_tensor == 2 and (decision < 2 or decision > 2):
 			nasty_fail += 1
+		# decision was to hodl, but should have sold or bought
 		else:
-			normal_fail += 1
+			safe_fail += 1
 
-	report = f"""POSITIVE:
-		Model perfect accuracy: {correct/len(test_data):.4f}
-		Model good enough accuracy: {(mostly_correct + correct)/len(test_data):.4f}
+	report = f"""
+	POSITIVE:
+		[++] Perfect accuracy: {correct/len(test_data):>10.4f}
+		[+] Model good enough accuracy: {(mostly_correct + correct)/len(test_data):>10.4f}
 	NEGATIVE:
-		Model normal fail rate: {normal_fail/len(test_data):.4f}
-		Model nasty fail rate: {nasty_fail/len(test_data):.4f}
-		Model catastrophic fail rate: {catastrophic_fail/len(test_data):.4f}"""
+		[-] Told to hodl but should have sold/bought rate: {safe_fail/len(test_data):>10.4f}
+		[--] Should have hodled but told to sell/buy rate: {nasty_fail/len(test_data):>10.4f}
+		[---] Told to do the opposite of correct move rate: {catastrophic_fail/len(test_data):>10.4f}
+		"""
 	REPORTS.append(report)
 	print(report)
 

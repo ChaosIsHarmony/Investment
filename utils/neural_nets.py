@@ -7,9 +7,9 @@ import torch.optim.lr_scheduler as lr_scheduler
 
 N_SIGNALS = 5
 N_FEATURES = 26
-DROPOUT = 0.3
-LEARNING_RATE = 0.001
-LEARNING_RATE_DECAY = 0.999999
+DROPOUT = 0.35
+LEARNING_RATE = 0.0025
+LEARNING_RATE_DECAY = 0.9999
 
 #
 # ---------- MODELS TRAINED ON RASPBERRY PI ----------
@@ -165,18 +165,18 @@ class CryptoSoothsayer_Laptop_1(nn.Module):
 		super(CryptoSoothsayer_Laptop_1, self).__init__()
 		self.layer_1 = nn.Linear(input_size, 256)
 		self.layer_2 = nn.Linear(256, 1024)
-		self.layer_3 = nn.Linear(1024, 2048)
-		self.layer_4 = nn.Linear(2048, 512)
-		self.layer_5 = nn.Linear(512, 1024)
+		self.layer_3 = nn.Linear(1024, 512)
+		self.layer_4 = nn.Linear(512, 256)
+		self.layer_5 = nn.Linear(256, 1024)
 		self.layer_6 = nn.Linear(1024, 512)
-		self.layer_7 = nn.Linear(512, 1024)
-		self.layer_8 = nn.Linear(1024, 256)
-		self.layer_9 = nn.Linear(256, 512)
-		self.layer_10 = nn.Linear(512, 128)
-		self.layer_11 = nn.Linear(128, 256)
-		self.layer_12 = nn.Linear(256, 128)
-		self.layer_13 = nn.Linear(128, 64)
-		self.layer_output = nn.Linear(64, n_signals)
+		self.layer_7 = nn.Linear(512, 256)
+		self.layer_8 = nn.Linear(256, 1024)
+		self.layer_9 = nn.Linear(1024, 512)
+		self.layer_10 = nn.Linear(512, 256)
+		self.layer_11 = nn.Linear(256, 128)
+		self.layer_12 = nn.Linear(128, 64)
+		self.layer_13 = nn.Linear(64, 32)
+		self.layer_output = nn.Linear(32, n_signals)
 		self.dropout = nn.Dropout(DROPOUT)
 
 
