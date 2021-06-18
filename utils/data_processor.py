@@ -74,6 +74,7 @@ def get_datasets():
 	data = pd.read_csv(f"datasets/complete/{COIN}_historical_data_complete.csv")
 	data = data.drop(columns=["date"])
 	data["signal"] = data["signal"].astype("int64")
+        print(data)
 	data = shuffle_data(data)
 
 	# Split into training, validation, testing
