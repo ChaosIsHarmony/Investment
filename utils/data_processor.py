@@ -11,8 +11,8 @@ from utils import neural_nets as nn
 
 # correspond to signal column scale from 0-4
 DECISIONS = ["BUY 2X", "BUY X", "HODL", "SELL Y", "SELL 2Y"]
-BATCH_SIZE = 512 
-EPOCHS = 2 
+BATCH_SIZE = 256 
+EPOCHS = 5
 MODEL = "models/model.pt"
 MODEL_CHECKPOINT = "models/model_checkpoint.pt"
 DEVICE = torch.device("cpu")
@@ -158,7 +158,6 @@ def train(model, train_data, valid_data, start_time):
 			# adjust learning rate
 			nn.SCHEDULER.step()
 			train_loss += loss.item() * feature_tensor.size(0)
-			print(f"FT size(0): {feature_tensor.size(0)}")
 
 			#validation
 			if steps % BATCH_SIZE == 0 or steps == len(train_data)-1:
@@ -245,14 +244,14 @@ def run():
 	start_time = time.time()
 
 	# Training
-#	train_and_save(model, train_data, valid_data, start_time)
+	train_and_save(model, train_data, valid_data, start_time)
 
 	#
 	# ------------ MODEL TESTING -----------
 	#
 	# Load
-	model = load_checkpoint(MODEL_CHECKPOINT)
-#	model = load_model(nn.MODEL, MODEL)
+#	model = load_checkpoint(MODEL_CHECKPOINT)
+	model = load_model(nn.MODEL, MODEL)
 	evaluate_model(model, test_data)
 	
 	
