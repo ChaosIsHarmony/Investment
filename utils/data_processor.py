@@ -74,7 +74,7 @@ def get_datasets():
 	data = pd.read_csv(f"datasets/complete/{COIN}_historical_data_complete.csv")
 	data = data.drop(columns=["date"])
 	data["signal"] = data["signal"].astype("int64")
-	data = shuffle_data(data)
+	data = data.sample(frac=1).reset_index(drop=True)
 
 	# Split into training, validation, testing
 	# 70-15-15 split
@@ -192,6 +192,9 @@ def validate_model(valid_data, train_loss, min_valid_loss):
 def train(train_data, valid_data, start_time):
 	min_valid_loss = np.inf 
 	
+	train_data = shuffle_data(train_data)
+	valid_data = shuffle_data(valid_data)
+
 	for epoch in range(EPOCHS):
 		steps = 0
 		train_loss = 0.0
