@@ -150,13 +150,19 @@ def merge_datasets(coin, list_of_datasets):
 	merged_data = merged_data.reset_index()
 	merged_data = merged_data.drop(columns=["index"])
 
-	merged_data.to_csv(f"datasets/raw/{coin}_historical_data.csv")
+	merged_data.to_csv(f"datasets/raw/{coin}_historical_data.csv", index=False)
 
-def merge(coin):
-	data_to_merge = [pd.read_csv(f"datasets/raw/{coin}_historical_data_raw_by_range.csv"), pd.read_csv(f"datasets/raw/{coin}_historical_data_raw_by_date.csv"),pd.read_csv(f"datasets/raw/{coin}_historical_data_raw.csv")]
+
+
+def merge(coin, data_to_merge):
 	merge_datasets(coin, data_to_merge)
 
-#merge("matic-network")
+
+by_range = pd.read_csv(f"datasets/raw/{coin}_historical_data_raw_by_range.csv")
+by_date = pd.read_csv(f"datasets/raw/{coin}_historical_data_raw_by_date.csv")
+prev_data = pd.read_csv(f"datasets/raw/{coin}_historical_data_raw.csv")
+data_to_merge = [by_range, by_date, prev_data]
+#merge("matic-network", data_to_merge)
 
 
 def fetch_missing_data_by_dates(coin, dates):
@@ -173,7 +179,7 @@ def fetch_missing_data_by_dates(coin, dates):
 
 	# save as CSV
 	coin_data = pd.DataFrame(historical_data)
-	coin_data.to_csv(f"datasets/raw/{coin}_historical_data_by_date.csv")
+	coin_data.to_csv(f"datasets/raw/{coin}_historical_data_by_date.csv", index=False)
 		
 	print(f"{coin} data successfully pulled and stored.")
 
@@ -196,7 +202,7 @@ def fetch_missing_data_by_range(coin, num_days, start_delta):
 
 	# save as CSV
 	coin_data = pd.DataFrame(historical_data)
-	coin_data.to_csv(f"datasets/raw/{coin}_historical_data_raw_by_range.csv")
+	coin_data.to_csv(f"datasets/raw/{coin}_historical_data_raw_by_range.csv", index=False)
 		
 	print(f"{coin} data successfully pulled and stored.")
 
@@ -204,9 +210,11 @@ def fetch_missing_data_by_range(coin, num_days, start_delta):
 
 
 
-def run():
+def run(how_far_back):
+	'''
+	NOTE: param how_far_back indicates how many days counting backwards from today to collect data for.
+	'''
 	today = date.today()
-	how_far_back = 14
 	api_calls = 0
 	api_call_cycle_start = get_time() 
 
@@ -259,4 +267,4 @@ def run():
 
 
 
-#run()
+#run(14)

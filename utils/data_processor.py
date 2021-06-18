@@ -3,11 +3,11 @@ import torch
 import time
 import random
 import numpy as np
-#import neural_nets as nn
+import neural_nets as nn
 '''
 WHEN testing need this version instead
 '''
-from utils import neural_nets as nn
+#from utils import neural_nets as nn
 
 
 DEVICE = torch.device("cpu")
@@ -17,7 +17,7 @@ MODEL_CHECKPOINT_FILEPATH = f"models/checkpoint_{nn.MODEL.get_class_name()}.pt"
 # correspond to signal column scale from 0-4
 DECISIONS = ["BUY 2X", "BUY X", "HODL", "SELL Y", "SELL 2Y"]
 BATCH_SIZE = 256 
-EPOCHS = 2 
+EPOCHS = 3 
 COIN = "bitcoin"
 REPORTS = [f"Model: {nn.MODEL.get_class_name()}", f"Learning rate: {nn.LEARNING_RATE}", f"Learning rate decay: {nn.LEARNING_RATE_DECAY}", f"Chance of dropout: {nn.DROPOUT}", f"Batch size: {BATCH_SIZE}", f"Epochs: {EPOCHS}", f"Coin: {COIN}"]
 
@@ -60,7 +60,7 @@ def generate_dataset(data, limit, offset, data_aug_per_sample=0):
 def get_datasets():
 	# Load data
 	data = pd.read_csv(f"datasets/complete/{COIN}_historical_data_complete.csv")
-	data = data.drop(columns=["Unnamed: 0", "date"])
+	data = data.drop(columns=["date"])
 	data["signal"] = data["signal"].astype("int64")
 
 	# Split into training, validation, testing
@@ -314,4 +314,4 @@ def run():
 	
 
 
-#run()
+run()
