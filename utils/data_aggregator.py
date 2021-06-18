@@ -26,7 +26,7 @@ def get_historic_data(coin, date):
 
 def get_correct_date_format(date):
 	'''
-	Puts the Python datetime into a format the coingecko api finds more copacetic
+	Puts the Python datetime into a format the coingecko api finds more copacetic i.e., dd-mm-yyyy
 	'''
 	well_formed_date = ""
 	if date.day < 10:
@@ -148,17 +148,45 @@ def merge_datasets(coin, list_of_datasets):
 	merged_data = merged_data.sort_values(by=["date"], ascending=False)
 	merged_data = merged_data.drop_duplicates(subset=["date"])
 	merged_data = merged_data.reset_index()
-	merged_data = merged_data.drop(columns=["Unnamed: 0", "index"])
+	merged_data = merged_data.drop(columns=["index"])
 
-	merged_data.to_csv(f"datasets/raw/{coin}_historical_data.csv")
+	merged_data.to_csv(f"datasets/raw/{coin}_historical_data.csv", index=False)
 
-def merge():
-	data_to_merge = [pd.read_csv("datasets/raw/bitcoin_historical_data_earlier.csv"), pd.read_csv("datasets/raw/bitcoin_historical_data_later.csv")]
-	merge_datasets("bitcoin", data_to_merge)
 
-#merge()
 
-def fetch_missing_data(coin, num_days, start_delta):
+def merge(coin, data_to_merge):
+	merge_datasets(coin, data_to_merge)
+
+
+by_range = pd.read_csv(f"datasets/raw/{coin}_historical_data_raw_by_range.csv")
+by_date = pd.read_csv(f"datasets/raw/{coin}_historical_data_raw_by_date.csv")
+prev_data = pd.read_csv(f"datasets/raw/{coin}_historical_data_raw.csv")
+data_to_merge = [by_range, by_date, prev_data]
+#merge("matic-network", data_to_merge)
+
+
+def fetch_missing_data_by_dates(coin, dates):
+	historical_data = []
+
+	for date in dates:	
+		data = get_historic_data(coin, date)
+
+		historical_data.append(extract_basic_data(data, date))
+
+		# To help regulate the speed with which calls are being made
+		# to assuage 434 return codes
+		time.sleep(0.5)
+
+	# save as CSV
+	coin_data = pd.DataFrame(historical_data)
+	coin_data.to_csv(f"datasets/raw/{coin}_historical_data_by_date.csv", index=False)
+		
+	print(f"{coin} data successfully pulled and stored.")
+
+#fetch_missing_data_by_dates("matic-network", ["21-10-2019", "22-10-2019", "30-04-2021", "01-05-2021"])
+
+
+def fetch_missing_data_by_range(coin, num_days, start_delta):
 	today = date.today() - timedelta(start_delta)
 	historical_data = []
 
@@ -172,23 +200,23 @@ def fetch_missing_data(coin, num_days, start_delta):
 		# to assuage 434 return codes
 		time.sleep(0.5)
 
-
 	# save as CSV
 	coin_data = pd.DataFrame(historical_data)
-	coin_data.to_csv(f"datasets/raw/{coin}_historical_data_past_sup.csv")
+	coin_data.to_csv(f"datasets/raw/{coin}_historical_data_raw_by_range.csv", index=False)
 		
 	print(f"{coin} data successfully pulled and stored.")
 
-#fetch_missing_data("bitcoin", 84, 368)
+#fetch_missing_data_by_range("chainlink", 84, 368)
 
 
 
-def run():
-
-	today = date.today() - timedelta(600)
+def run(how_far_back):
+	'''
+	NOTE: param how_far_back indicates how many days counting backwards from today to collect data for.
+	'''
+	today = date.today()
 	api_calls = 0
 	api_call_cycle_start = get_time() 
-
 
 	for coin in ["bitcoin"]:#coin_id:
 		date_delta = -1 
@@ -226,19 +254,17 @@ def run():
 					has_next = False
 				continue
 
-			if date_delta > 600 or "error" in data.keys():
+			if date_delta > how_far_back  or "error" in data.keys():
 				has_next = False
 				continue	
 
 			historical_data.append(extract_basic_data(data, next_date))
 		
-
 		# save as CSV
 		coin_data = pd.DataFrame(historical_data)
-		coin_data.to_csv(f"datasets/raw/{coin}_historical_data_past.csv")
-		
+		coin_data.to_csv(f"datasets/raw/{coin}_historical_data_raw.csv", index=False)
 		print(f"{coin} data successfully pulled and stored.")
 
 
 
-#run()
+#run(14)

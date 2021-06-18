@@ -6,25 +6,25 @@ import torch.optim.lr_scheduler as lr_scheduler
 
 
 N_SIGNALS = 5
-N_FEATURES = 18
-DROPOUT = 0.25
+N_FEATURES = 26
+DROPOUT = 0.3
 LEARNING_RATE = 0.001
+LEARNING_RATE_DECAY = 0.999999
 
-
-class CryptoSoothsayerBin_0(nn.Module):
+#
+# ---------- MODELS TRAINED ON RASPBERRY PI ----------
+#
+class CryptoSoothsayer_Pi_0(nn.Module):
 	def __init__(self, input_size, n_signals):
-		super(CryptoSoothsayerBin_0, self).__init__()
+		super(CryptoSoothsayer_Pi_0, self).__init__()
 		self.layer_1 = nn.Linear(input_size, 32)
 		self.layer_2 = nn.Linear(32, 64)
-		self.layer_2b = nn.Linear(64, 128)
-		self.layer_2c = nn.Linear(128, 256)
-		self.layer_2d = nn.Linear(256, 512)
-		self.layer_2e = nn.Linear(512, 1024)
-		self.layer_2f = nn.Linear(1024, 512)
-		self.layer_2g = nn.Linear(512, 256)
-		self.layer_3 = nn.Linear(256, 128)
-		self.layer_4 = nn.Linear(128, 64)
-		self.layer_5 = nn.Linear(64, 32)
+		self.layer_3 = nn.Linear(64, 128)
+		self.layer_4 = nn.Linear(128, 256)
+		self.layer_5 = nn.Linear(256, 128)
+		self.layer_6 = nn.Linear(128, 512)
+		self.layer_7 = nn.Linear(512, 128)
+		self.layer_8 = nn.Linear(128, 32)
 		self.layer_output = nn.Linear(32, n_signals)
 		self.dropout = nn.Dropout(DROPOUT)
 
@@ -32,23 +32,59 @@ class CryptoSoothsayerBin_0(nn.Module):
 	def forward(self, inputs):
 		out = self.dropout(F.relu(self.layer_1(inputs)))
 		out = self.dropout(F.relu(self.layer_2(out)))
-		out = self.dropout(F.relu(self.layer_2b(out)))
-		out = self.dropout(F.relu(self.layer_2c(out)))
-		out = self.dropout(F.relu(self.layer_2d(out)))
-		out = self.dropout(F.relu(self.layer_2e(out)))
-		out = self.dropout(F.relu(self.layer_2f(out)))
-		out = self.dropout(F.relu(self.layer_2g(out)))
 		out = self.dropout(F.relu(self.layer_3(out)))
 		out = self.dropout(F.relu(self.layer_4(out)))
 		out = self.dropout(F.relu(self.layer_5(out)))
+		out = self.dropout(F.relu(self.layer_6(out)))
+		out = self.dropout(F.relu(self.layer_7(out)))
+		out = self.dropout(F.relu(self.layer_8(out)))
 		out = self.layer_output(out)
 		return out
 
 
+	def get_class_name(self):
+		return "CryptoSoothsayer_Pi_0"
 
-class CryptoSoothsayerBin_1(nn.Module):
+
+
+class CryptoSoothsayer_Pi_1(nn.Module):
 	def __init__(self, input_size, n_signals):
-		super(CryptoSoothsayerBin_1, self).__init__()
+		super(CryptoSoothsayer_Pi_1, self).__init__()
+		self.layer_1 = nn.Linear(input_size, 64)
+		self.layer_2 = nn.Linear(64, 128)
+		self.layer_3 = nn.Linear(128, 256)
+		self.layer_4 = nn.Linear(256, 512)
+		self.layer_5 = nn.Linear(512, 1024)
+		self.layer_6 = nn.Linear(1024, 512)
+		self.layer_7 = nn.Linear(512, 256)
+		self.layer_8 = nn.Linear(256, 64)
+		self.layer_output = nn.Linear(64, n_signals)
+		self.dropout = nn.Dropout(DROPOUT)
+
+
+	def forward(self, inputs):
+		out = self.dropout(F.relu(self.layer_1(inputs)))
+		out = self.dropout(F.relu(self.layer_2(out)))
+		out = self.dropout(F.relu(self.layer_3(out)))
+		out = self.dropout(F.relu(self.layer_4(out)))
+		out = self.dropout(F.relu(self.layer_5(out)))
+		out = self.dropout(F.relu(self.layer_6(out)))
+		out = self.dropout(F.relu(self.layer_7(out)))
+		out = self.dropout(F.relu(self.layer_8(out)))
+		out = self.layer_output(out)
+		return out
+
+
+	def get_class_name(self):
+		return "CryptoSoothsayer_Pi_1"
+
+
+#
+# ---------- MODELS TRAINED ON OLD PC ----------
+#
+class CryptoSoothsayer_PC_0(nn.Module):
+	def __init__(self, input_size, n_signals):
+		super(CryptoSoothsayer_PC_0, self).__init__()
 		self.layer_1 = nn.Linear(input_size, 128)
 		self.layer_2 = nn.Linear(128, 256)
 		self.layer_3 = nn.Linear(256, 512)
@@ -80,20 +116,27 @@ class CryptoSoothsayerBin_1(nn.Module):
 		return out
 
 
+	def get_class_name(self):
+		return "CryptoSoothsayer_PC_0"
 
-class CryptoSoothsayerBin_2(nn.Module):
+
+#
+# ---------- MODELS TRAINED ON LAPTOP ----------
+#
+class CryptoSoothsayer_Laptop_0(nn.Module):
 	def __init__(self, input_size, n_signals):
-		super(CryptoSoothsayerBin_2, self).__init__()
-		self.layer_1 = nn.Linear(input_size, 2048)
-		self.layer_2 = nn.Linear(2048, 1024)
+		super(CryptoSoothsayer_Laptop_0, self).__init__()
+		self.layer_1 = nn.Linear(input_size, 256)
+		self.layer_2 = nn.Linear(256, 1024)
 		self.layer_3 = nn.Linear(1024, 512)
-		self.layer_4 = nn.Linear(512, 256)
-		self.layer_5 = nn.Linear(256, 128)
-		self.layer_6 = nn.Linear(128, 64)
-		self.layer_7 = nn.Linear(64, 32)
-		self.layer_8 = nn.Linear(32, 16)
-		self.layer_9 = nn.Linear(16, 8)
-		self.layer_output = nn.Linear(8, n_signals)
+		self.layer_4 = nn.Linear(512, 1024)
+		self.layer_5 = nn.Linear(1024, 256)
+		self.layer_6 = nn.Linear(256, 512)
+		self.layer_7 = nn.Linear(512, 128)
+		self.layer_8 = nn.Linear(128, 256)
+		self.layer_9 = nn.Linear(256, 128)
+		self.layer_10 = nn.Linear(128, 64)
+		self.layer_output = nn.Linear(64, n_signals)
 		self.dropout = nn.Dropout(DROPOUT)
 
 
@@ -107,24 +150,33 @@ class CryptoSoothsayerBin_2(nn.Module):
 		out = self.dropout(F.relu(self.layer_7(out)))
 		out = self.dropout(F.relu(self.layer_8(out)))
 		out = self.dropout(F.relu(self.layer_9(out)))
+		out = self.dropout(F.relu(self.layer_10(out)))
 		out = self.layer_output(out)
 		return out
 
+	
+	def get_class_name(self):
+		return "CryptoSoothsayer_Laptop_0"
 
 
-class CryptoSoothsayerBin_3(nn.Module):
+
+class CryptoSoothsayer_Laptop_1(nn.Module):
 	def __init__(self, input_size, n_signals):
-		super(CryptoSoothsayerBin_3, self).__init__()
-		self.layer_1 = nn.Linear(input_size, 128)
-		self.layer_2 = nn.Linear(128, 512)
-		self.layer_3 = nn.Linear(512, 128)
-		self.layer_4 = nn.Linear(128, 512)
-		self.layer_5 = nn.Linear(512, 128)
-		self.layer_6 = nn.Linear(128, 256)
-		self.layer_7 = nn.Linear(256, 64)
-		self.layer_8 = nn.Linear(64, 128)
-		self.layer_9 = nn.Linear(128, 32)
-		self.layer_output = nn.Linear(32, n_signals)
+		super(CryptoSoothsayer_Laptop_1, self).__init__()
+		self.layer_1 = nn.Linear(input_size, 256)
+		self.layer_2 = nn.Linear(256, 1024)
+		self.layer_3 = nn.Linear(1024, 2048)
+		self.layer_4 = nn.Linear(2048, 512)
+		self.layer_5 = nn.Linear(512, 1024)
+		self.layer_6 = nn.Linear(1024, 512)
+		self.layer_7 = nn.Linear(512, 1024)
+		self.layer_8 = nn.Linear(1024, 256)
+		self.layer_9 = nn.Linear(256, 512)
+		self.layer_10 = nn.Linear(512, 128)
+		self.layer_11 = nn.Linear(128, 256)
+		self.layer_12 = nn.Linear(256, 128)
+		self.layer_13 = nn.Linear(128, 64)
+		self.layer_output = nn.Linear(64, n_signals)
 		self.dropout = nn.Dropout(DROPOUT)
 
 
@@ -138,45 +190,21 @@ class CryptoSoothsayerBin_3(nn.Module):
 		out = self.dropout(F.relu(self.layer_7(out)))
 		out = self.dropout(F.relu(self.layer_8(out)))
 		out = self.dropout(F.relu(self.layer_9(out)))
+		out = self.dropout(F.relu(self.layer_10(out)))
+		out = self.dropout(F.relu(self.layer_11(out)))
+		out = self.dropout(F.relu(self.layer_12(out)))
+		out = self.dropout(F.relu(self.layer_13(out)))
 		out = self.layer_output(out)
 		return out
 
+	
+	def get_class_name(self):
+		return "CryptoSoothsayer_Laptop_1"
 
 
-class CryptoSoothsayerDec_0(nn.Module):
-	def __init__(self, input_size, n_signals):
-		super(CryptoSoothsayerDec_0, self).__init__()
-		self.layer_1 = nn.Linear(input_size, 100)
-		self.layer_2 = nn.Linear(100, 250)
-		self.layer_3 = nn.Linear(250, 500)
-		self.layer_4 = nn.Linear(500, 1000)
-		self.layer_5 = nn.Linear(1000, 500)
-		self.layer_6 = nn.Linear(500, 250)
-		self.layer_7 = nn.Linear(250, 100)
-		self.layer_8 = nn.Linear(100, 50)
-		self.layer_9 = nn.Linear(50, 25)
-		self.layer_output = nn.Linear(25, n_signals)
-		self.dropout = nn.Dropout(DROPOUT)
 
-
-	def forward(self, inputs):
-		out = self.dropout(F.relu(self.layer_1(inputs)))
-		out = self.dropout(F.relu(self.layer_2(out)))
-		out = self.dropout(F.relu(self.layer_3(out)))
-		out = self.dropout(F.relu(self.layer_4(out)))
-		out = self.dropout(F.relu(self.layer_5(out)))
-		out = self.dropout(F.relu(self.layer_6(out)))
-		out = self.dropout(F.relu(self.layer_7(out)))
-		out = self.dropout(F.relu(self.layer_8(out)))
-		out = self.dropout(F.relu(self.layer_9(out)))
-		out = self.layer_output(out)
-		return out 
-
-
-MODEL = CryptoSoothsayerBin_3(N_FEATURES, N_SIGNALS)
+MODEL = CryptoSoothsayer_Laptop_1(N_FEATURES, N_SIGNALS)
 CRITERION = nn.CrossEntropyLoss()
-OPTIMIZER = optim.AdamW(MODEL.parameters(), lr=LEARNING_RATE)
-lambda1 = lambda epoch: 0.99999
+OPTIMIZER = optim.Adam(MODEL.parameters(), lr=LEARNING_RATE)
+lambda1 = lambda epoch: LEARNING_RATE_DECAY 
 SCHEDULER =  lr_scheduler.MultiplicativeLR(OPTIMIZER, lambda1)
-
-
