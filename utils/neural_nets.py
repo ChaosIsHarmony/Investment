@@ -7,9 +7,9 @@ import torch.optim.lr_scheduler as lr_scheduler
 
 N_SIGNALS = 5
 N_FEATURES = 26
-DROPOUT = 0.35
-LEARNING_RATE = 0.0025
-LEARNING_RATE_DECAY = 0.9999
+DROPOUT = 0.3
+LEARNING_RATE = 0.0015
+LEARNING_RATE_DECAY = 0.99995
 
 #
 # ---------- MODELS TRAINED ON RASPBERRY PI ----------

@@ -3,11 +3,11 @@ import torch
 import time
 import random
 import numpy as np
-import neural_nets as nn
+#import neural_nets as nn
 '''
 WHEN testing need this version instead
 '''
-#from utils import neural_nets as nn
+from utils import neural_nets as nn
 
 
 DEVICE = torch.device("cpu")
@@ -25,6 +25,9 @@ REPORTS = [f"Model: {nn.MODEL.get_class_name()}", f"Learning rate: {nn.LEARNING_
 # ------------ DATA RELATED -----------
 #
 def shuffle_data(data):
+	'''
+	Used for shuffling the data during the training/validation phases.
+	'''
 	size = len(data)
 	for row_ind in range(size):
 		swap_row_ind = random.randrange(size)
@@ -38,8 +41,9 @@ def shuffle_data(data):
 
 def generate_dataset(data, limit, offset, data_aug_per_sample=0):
 	'''
+	Returns a list of tuples, of which the first element of the tuple is the list of values for the features and the second is the target value
 	NOTES: 
-		- data_aug_per_sample param determines how many extra datapoints to generate per each original datapoint.
+		- data_aug_per_sample param determines how many extra datapoints to generate per each original datapoint * its frequenct metric (i.e., signal_ratios)
 		- signal_ratios variable is used to upsample underrepresented categories more than their counterparts when augmenting the data
 	'''
 	# to determine relative frequency of signals
@@ -324,4 +328,4 @@ def run():
 	
 
 
-run()
+#run()

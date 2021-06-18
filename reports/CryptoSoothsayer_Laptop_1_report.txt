@@ -1,30 +1,43 @@
 Model: CryptoSoothsayer_Laptop_1
-Learning rate: 0.001
-Learning rate decay: 0.999999
-Chance of dropout: 0.35
-Batch size: 512
+Learning rate: 0.0025
+Learning rate decay: 0.999975
+Chance of dropout: 0.3
+Batch size: 256
 Epochs: 3
 Coin: bitcoin
-Length Training Data: 22371
-Length Validation Data: 3317
+Length Training Data: 21379
+Length Validation Data: 3193
 Length Testing Data: 127
+Training Loss: 1.6502 | Validation Loss: 1.6089 | eta: 0.002484
+Training Loss: 1.6929 | Validation Loss: 1.6034 | eta: 0.002468
+Time elapsed by epoch 1: 12.95 mins.
+Time elapsed by epoch 2: 26.583333333333332 mins.
+Training Loss: 1.6094 | Validation Loss: 1.5827 | eta: 0.000722
+Training Loss: 1.6087 | Validation Loss: 1.5395 | eta: 0.000691
+Training Loss: 1.6019 | Validation Loss: 1.5274 | eta: 0.000656
+Training Loss: 1.5873 | Validation Loss: 1.5263 | eta: 0.000581
+Training Loss: 1.5866 | Validation Loss: 1.5156 | eta: 0.000577
+Training Loss: 1.5852 | Validation Loss: 1.4887 | eta: 0.000574
+Training Loss: 1.5798 | Validation Loss: 1.4561 | eta: 0.000556
+Training Loss: 1.5694 | Validation Loss: 1.4025 | eta: 0.000524
+Time elapsed by epoch 3: 44.25 mins.
 EVALUATE FULLY TRAINED MODEL
 
 	POSITIVE:
-		[++] Perfect accuracy:     0.4882
-		[+] Model good enough accuracy:     0.6220
+		[++] Perfect accuracy:     0.2441
+		[+] Model good enough accuracy:     0.4173
 	NEGATIVE:
 		[-] Told to hodl but should have sold/bought rate:     0.0000
-		[--] Should have hodled but told to sell/buy rate:     0.2441
+		[--] Should have hodled but told to sell/buy rate:     0.4488
 		[---] Told to do the opposite of correct move rate:     0.1339
 		
 EVALUATE VALIDATION-BASED MODEL
 
 	POSITIVE:
-		[++] Perfect accuracy:     0.1339
-		[+] Model good enough accuracy:     0.6220
+		[++] Perfect accuracy:     0.3071
+		[+] Model good enough accuracy:     0.4646
 	NEGATIVE:
 		[-] Told to hodl but should have sold/bought rate:     0.0000
-		[--] Should have hodled but told to sell/buy rate:     0.2441
-		[---] Told to do the opposite of correct move rate:     0.1339
+		[--] Should have hodled but told to sell/buy rate:     0.4488
+		[---] Told to do the opposite of correct move rate:     0.0866
 		
