@@ -17,7 +17,7 @@ MODEL_CHECKPOINT_FILEPATH = f"models/checkpoint_{nn.MODEL.get_class_name()}.pt"
 # correspond to signal column scale from 0-4
 DECISIONS = ["BUY 2X", "BUY X", "HODL", "SELL Y", "SELL 2Y"]
 BATCH_SIZE = 256 
-EPOCHS = 1
+EPOCHS = 5 
 COIN = "bitcoin"
 REPORTS = [f"Model: {nn.MODEL.get_class_name()}", f"Learning rate: {nn.LEARNING_RATE}", f"Learning rate decay: {nn.LEARNING_RATE_DECAY}", f"Chance of dropout: {nn.DROPOUT}", f"Batch size: {BATCH_SIZE}", f"Epochs: {EPOCHS}", f"Coin: {COIN}"]
 
@@ -25,6 +25,9 @@ REPORTS = [f"Model: {nn.MODEL.get_class_name()}", f"Learning rate: {nn.LEARNING_
 # ------------ DATA RELATED -----------
 #
 def shuffle_data(data):
+	'''
+	Used for shuffling the data during the training/validation phases.
+	'''
 	size = len(data)
 	for row_ind in range(size):
 		swap_row_ind = random.randrange(size)
@@ -38,8 +41,9 @@ def shuffle_data(data):
 
 def generate_dataset(data, limit, offset, data_aug_per_sample=0):
 	'''
+	Returns a list of tuples, of which the first element of the tuple is the list of values for the features and the second is the target value
 	NOTES: 
-		- data_aug_per_sample param determines how many extra datapoints to generate per each original datapoint.
+		- data_aug_per_sample param determines how many extra datapoints to generate per each original datapoint * its frequenct metric (i.e., signal_ratios)
 		- signal_ratios variable is used to upsample underrepresented categories more than their counterparts when augmenting the data
 	'''
 	# to determine relative frequency of signals
@@ -83,10 +87,10 @@ def get_datasets():
 	valid_end = train_end + int(round(n_datapoints*0.15))
 
 
-	train_data = generate_dataset(data, train_end, 0, 16)
+	train_data = generate_dataset(data, train_end, 0, 32)
 	REPORTS.append(f"Length Training Data: {len(train_data)}")
 
-	valid_data = generate_dataset(data, train_end, 0, 2)
+	valid_data = generate_dataset(data, train_end, 0, 4)
 	REPORTS.append(f"Length Validation Data: {len(valid_data)}")
 
 	test_data = generate_dataset(data, n_datapoints, valid_end, 0)

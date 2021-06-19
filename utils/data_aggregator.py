@@ -5,6 +5,7 @@ FUNCTION: TO PULL DATA FROM COINGECKO DATABASE AND STORE AS A CSV.
 
 NOTE: THE 'SIGNAL' COLUMN IS FILLED IN BY A HUMAN IN HINDSIGHT WITH THE CORRECT ACTION GIVEN THE STATE OF THE MARKET AT THE TIME.
 '''
+import os
 import requests
 import json
 from datetime import date, datetime, timedelta
@@ -14,14 +15,29 @@ import numpy as np
 
 coin_id = ["algorand", "bitcoin", "cardano", "chainlink", "cosmos", "ethereum", "matic-network", "polkadot", "solana", "theta-token"]
 
-API_URL = "https://api.coingecko.com/api/v3"
+
+
+def get_fear_greed():
+	'''
+	Pulls the data for the fear and greed index at the time it's called.
+	Returns an int.
+	'''
+	return int(requests.get("https://api.alternative.me/fng/?date_format=cn").json()["data"][0]["value"])
+
+
+
+def get_fear_greed_by_range(n_days):
+	return requests.get(f"https://api.alternative.me/fng/?limit={n_days}&date_format=cn").json()["data"]
+	
 
 
 def get_historic_data(coin, date):
 	'''
-	Pulls all data from coingecko for specified coin on specified date
+	Pulls all data from coingecko for specified coin on specified date.
+	Returns a dictionary.
 	'''
-	return requests.get(API_URL + f"/coins/{coin}/history?date={date}").json()
+	return requests.get(f"https://api.coingecko.com/api/v3/coins/{coin}/history?date={date}").json()
+
 
 
 def get_correct_date_format(date):
@@ -44,6 +60,7 @@ def get_correct_date_format(date):
 	return well_formed_date
 
 
+
 def get_community_score(data):
 	'''
 	Calculates a score for a coin's community health based on social media presence (Facebook, Twitter, & Reddit)
@@ -56,6 +73,7 @@ def get_community_score(data):
 			score += float(data[key])
 
 	return score
+
 
 
 def get_dev_score(data):
@@ -82,6 +100,7 @@ def get_dev_score(data):
 	return score
 
 
+
 def get_public_interest_score(data):
 	'''
 	Calculates the score related to searches for the coin
@@ -95,13 +114,17 @@ def get_public_interest_score(data):
 	return score
 
 
+
 def extract_basic_data(data, date):
 	'''
-	Extracts all useful information from the coingecko data
+	Extracts all useful information from the coingecko data.
+	Returns a dictionary.
 	'''
 	data_dict = {}
 
-	data_dict["date"] = date
+	date = datetime.strptime(date, "%d-%m-%Y")
+	
+	data_dict["date"] = str(date.year) + "-" + str(date.month) + "-" + str(date.day)
 
 	if "market_data" in data.keys():
 		data_dict["price"] = data["market_data"]["current_price"]["twd"]
@@ -130,11 +153,13 @@ def extract_basic_data(data, date):
 	return data_dict
 
 
+
 def get_time():
 	'''
 	Returns current time rounded to milliseconds
 	'''
 	return int(round(time.time() * 1000))
+
 
 
 def merge_datasets(coin, list_of_datasets):
@@ -146,29 +171,39 @@ def merge_datasets(coin, list_of_datasets):
 	merged_data = pd.concat(list_of_datasets)
 	merged_data["date"] = pd.to_datetime(merged_data["date"], dayfirst=True, infer_datetime_format=True)
 	merged_data = merged_data.sort_values(by=["date"], ascending=False)
-	merged_data = merged_data.drop_duplicates(subset=["date"])
+	merged_data = merged_data.drop_duplicates(subset=["date", "price", "market_cap", "volume"])
 	merged_data = merged_data.reset_index()
 	merged_data = merged_data.drop(columns=["index"])
 
-	merged_data.to_csv(f"datasets/raw/{coin}_historical_data.csv", index=False)
+	merged_data.to_csv(f"datasets/raw/{coin}_historical_data_raw.csv", index=False)
 
 
 
-def merge(coin, data_to_merge):
+def merge_new_dataset_with_old(coin, by_range=True):
+	'''
+	Merges all previous datasets with the newly fetched data.
+	NOTE: Assumes fetch_missing_data_by_range or fetch_missing_data_by_date have been called first.
+	'''
+	data_to_merge = [pd.read_csv(f"datasets/raw/{coin}_historical_data_raw.csv")]
+
+	if by_range:
+		data_to_merge.append(pd.read_csv(f"datasets/raw/{coin}_historical_data_raw_by_range.csv"))
+		os.remove(f"datasets/raw/{coin}_historical_data_raw_by_range.csv")
+	else:
+		data_to_merge.append(pd.read_csv(f"datasets/raw/{coin}_historical_data_raw_by_date.csv"))
+		os.remove(f"datasets/raw/{coin}_historical_data_raw_by_range.csv")
+
 	merge_datasets(coin, data_to_merge)
 
 
-by_range = pd.read_csv(f"datasets/raw/{coin}_historical_data_raw_by_range.csv")
-by_date = pd.read_csv(f"datasets/raw/{coin}_historical_data_raw_by_date.csv")
-prev_data = pd.read_csv(f"datasets/raw/{coin}_historical_data_raw.csv")
-data_to_merge = [by_range, by_date, prev_data]
-#merge("matic-network", data_to_merge)
-
 
 def fetch_missing_data_by_dates(coin, dates):
+	'''
+	WARNING: Cannot automatically fetch Fear/Greed index
+	'''
 	historical_data = []
 
-	for date in dates:	
+	for date in dates:
 		data = get_historic_data(coin, date)
 
 		historical_data.append(extract_basic_data(data, date))
@@ -183,18 +218,21 @@ def fetch_missing_data_by_dates(coin, dates):
 		
 	print(f"{coin} data successfully pulled and stored.")
 
-#fetch_missing_data_by_dates("matic-network", ["21-10-2019", "22-10-2019", "30-04-2021", "01-05-2021"])
 
 
-def fetch_missing_data_by_range(coin, num_days, start_delta):
+def fetch_missing_data_by_range(coin, n_days, start_delta):
 	today = date.today() - timedelta(start_delta)
 	historical_data = []
+	fear_greed = get_fear_greed_by_range(n_days)
+	fear_greed_ind = 0
 
-	for i in range(num_days):	
+	for i in range(n_days):
 		next_date = get_correct_date_format(today - timedelta(i))
 		data = get_historic_data(coin, next_date)
-
-		historical_data.append(extract_basic_data(data, next_date))
+		daily_data = extract_basic_data(data, next_date)
+		daily_data["fear_greed"] = fear_greed[fear_greed_ind]["value"]
+		fear_greed_ind += 1
+		historical_data.append(daily_data)
 
 		# To help regulate the speed with which calls are being made
 		# to assuage 434 return codes
@@ -206,8 +244,6 @@ def fetch_missing_data_by_range(coin, num_days, start_delta):
 		
 	print(f"{coin} data successfully pulled and stored.")
 
-#fetch_missing_data_by_range("chainlink", 84, 368)
-
 
 
 def run(how_far_back):
@@ -217,10 +253,12 @@ def run(how_far_back):
 	today = date.today()
 	api_calls = 0
 	api_call_cycle_start = get_time() 
-
-	for coin in ["bitcoin"]:#coin_id:
+	fear_greed = get_fear_greed_by_range(how_far_back)
+	
+	for coin in ["bitcoin"]: #coin_id:
 		date_delta = -1 
 		error_counter = 0
+		fear_greed_ind = 0
 		has_next = True
 
 		# Extract basic data
@@ -239,7 +277,7 @@ def run(how_far_back):
 				api_calls = 1
 
 			# Request data
-			date_delta+= 1
+			date_delta += 1
 			next_date = get_correct_date_format(today - timedelta(date_delta))
 			try:
 				error_counter = 0
@@ -254,11 +292,15 @@ def run(how_far_back):
 					has_next = False
 				continue
 
-			if date_delta > how_far_back  or "error" in data.keys():
+			if date_delta >= how_far_back  or "error" in data.keys():
 				has_next = False
-				continue	
+				continue
 
-			historical_data.append(extract_basic_data(data, next_date))
+			daily_data = extract_basic_data(data, next_date)
+			daily_data["fear_greed"] = fear_greed[fear_greed_ind]["value"]
+			fear_greed_ind += 1
+
+			historical_data.append(daily_data)
 		
 		# save as CSV
 		coin_data = pd.DataFrame(historical_data)
@@ -267,4 +309,4 @@ def run(how_far_back):
 
 
 
-#run(14)
+#run(4)
