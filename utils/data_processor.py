@@ -15,7 +15,7 @@ nn.MODEL.to(DEVICE)
 MODEL_FILEPATH = f"models/{nn.MODEL.get_class_name()}.pt"
 MODEL_CHECKPOINT_FILEPATH = f"models/checkpoint_{nn.MODEL.get_class_name()}.pt"
 BATCH_SIZE = 256 
-EPOCHS = 5 
+EPOCHS = 1 
 COIN = "bitcoin"
 REPORTS = [f"Model: {nn.MODEL.get_class_name()}", f"Learning rate: {nn.LEARNING_RATE}", f"Learning rate decay: {nn.LEARNING_RATE_DECAY}", f"Chance of dropout: {nn.DROPOUT}", f"Batch size: {BATCH_SIZE}", f"Epochs: {EPOCHS}", f"Coin: {COIN}"]
 
