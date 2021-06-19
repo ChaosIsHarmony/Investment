@@ -31,14 +31,17 @@ def process_new_data():
 
 
 def generate_signals():
+	with open("reports/best_performers.txt") as f:
+		best = f.read().splitlines() 
+
 	coin = "bitcoin"
 	for coin in dt_agg.coin_id:
 		data = pd.read_csv(f"datasets/clean/{coin}_historical_data_clean.csv")
 		# extracts the most recent data as a python list
-		data = data[data["date"] == str(date.today())].values.tolist()[0][1:-8]
+		data = data[data["date"] == str(date.today())].values.tolist()[0][1:]
 		n_votes = [0, 0, 0, 0, 0] # buy 2x, buy x, etc.
-		models = [nn.CryptoSoothsayer_Laptop_0(nn.N_FEATURES-8, nn.N_SIGNALS), nn.CryptoSoothsayer_Pi_0(nn.N_FEATURES-8, nn.N_SIGNALS)]
-		model_fp = {models[0]: "models/CryptoSoothsayer_Laptop_0_46-76.pt", models[1]: "models/CryptoSoothsayer_Pi_0_57-70.pt"}
+		models = [nn.CryptoSoothsayer_Laptop_0(nn.N_FEATURES, nn.N_SIGNALS), nn.CryptoSoothsayer_Laptop_0(nn.N_FEATURES, nn.N_SIGNALS)]
+		model_fp = {models[0]: best[0], models[1]: best[1]}
 	
 		for model in models:
 			model.load_state_dict(torch.load(model_fp[model]))
@@ -60,7 +63,7 @@ def generate_signals():
 		Above likewise applies to SELL, and HODL signals.
 		If split (e.g., SELL Y, BUY X, and HODL), then HODL.
 		'''
-		n_votes = torch.tensor([n_votes], dtype=torch.float32)
+		n_votes = torch.tensor(n_votes, dtype=torch.float32)
 		signal = DECISIONS[torch.argmax(n_votes)]
 		print(f"Signal for {coin}: {signal}")
 

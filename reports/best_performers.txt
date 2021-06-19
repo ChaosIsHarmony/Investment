@@ -1,0 +1,2 @@
+models/CryptoSoothsayer_Laptop_0_70s.pt
+models/CryptoSoothsayer_Laptop_0_60s.pt
