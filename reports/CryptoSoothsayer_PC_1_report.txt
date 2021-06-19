@@ -1,0 +1,85 @@
+Model: CryptoSoothsayer_PC_1
+Learning rate: 0.0015
+Learning rate decay: 0.9999875
+Chance of dropout: 0.15
+Batch size: 256
+Epochs: 3
+Coin: bitcoin
+Length Training Data: 44243
+Length Validation Data: 6051
+Length Testing Data: 127
+Training Loss: 1.6130 | Validation Loss: 1.7641 | eta: 0.001495
+Training Loss: 1.5333 | Validation Loss: 1.3164 | eta: 0.001490
+Training Loss: 1.4863 | Validation Loss: 1.2275 | eta: 0.001486
+Training Loss: 1.3808 | Validation Loss: 1.1484 | eta: 0.001462
+Training Loss: 1.3323 | Validation Loss: 1.0457 | eta: 0.001453
+Training Loss: 1.3206 | Validation Loss: 1.0031 | eta: 0.001448
+Training Loss: 1.2525 | Validation Loss: 0.9726 | eta: 0.001416
+Training Loss: 1.1880 | Validation Loss: 0.9640 | eta: 0.001367
+Training Loss: 1.1826 | Validation Loss: 0.9393 | eta: 0.001363
+Training Loss: 1.1538 | Validation Loss: 0.8838 | eta: 0.001337
+Training Loss: 1.1275 | Validation Loss: 0.8240 | eta: 0.001303
+Training Loss: 1.1080 | Validation Loss: 0.8201 | eta: 0.001282
+Training Loss: 1.0987 | Validation Loss: 0.7800 | eta: 0.001266
+Training Loss: 1.0767 | Validation Loss: 0.7666 | eta: 0.001230
+Training Loss: 1.0726 | Validation Loss: 0.7268 | eta: 0.001222
+Training Loss: 1.0657 | Validation Loss: 0.7080 | eta: 0.001214
+Training Loss: 1.0356 | Validation Loss: 0.6986 | eta: 0.001172
+Training Loss: 1.0217 | Validation Loss: 0.6773 | eta: 0.001143
+Training Loss: 1.0189 | Validation Loss: 0.6153 | eta: 0.001139
+Training Loss: 0.9962 | Validation Loss: 0.5818 | eta: 0.001114
+Training Loss: 0.9677 | Validation Loss: 0.5710 | eta: 0.001072
+Training Loss: 0.9594 | Validation Loss: 0.5689 | eta: 0.001055
+Training Loss: 0.9492 | Validation Loss: 0.5417 | eta: 0.001042
+Training Loss: 0.9439 | Validation Loss: 0.5026 | eta: 0.001035
+Training Loss: 0.9041 | Validation Loss: 0.4836 | eta: 0.000971
+Training Loss: 0.8843 | Validation Loss: 0.4817 | eta: 0.000931
+Training Loss: 0.8805 | Validation Loss: 0.4700 | eta: 0.000925
+Time elapsed by epoch 1: 19.683333333333334 mins.
+Training Loss: 0.6537 | Validation Loss: 0.4626 | eta: 0.000838
+Training Loss: 0.6174 | Validation Loss: 0.4297 | eta: 0.000820
+Training Loss: 0.5924 | Validation Loss: 0.4214 | eta: 0.000769
+Training Loss: 0.5883 | Validation Loss: 0.4110 | eta: 0.000762
+Training Loss: 0.5875 | Validation Loss: 0.3929 | eta: 0.000719
+Training Loss: 0.5766 | Validation Loss: 0.3711 | eta: 0.000668
+Training Loss: 0.5656 | Validation Loss: 0.3614 | eta: 0.000623
+Training Loss: 0.5633 | Validation Loss: 0.3610 | eta: 0.000617
+Training Loss: 0.5619 | Validation Loss: 0.3604 | eta: 0.000613
+Training Loss: 0.5576 | Validation Loss: 0.3581 | eta: 0.000597
+Training Loss: 0.5558 | Validation Loss: 0.3427 | eta: 0.000595
+Training Loss: 0.5526 | Validation Loss: 0.3222 | eta: 0.000588
+Training Loss: 0.5302 | Validation Loss: 0.3152 | eta: 0.000515
+Training Loss: 0.5270 | Validation Loss: 0.3096 | eta: 0.000509
+Training Loss: 0.5230 | Validation Loss: 0.3043 | eta: 0.000496
+Time elapsed by epoch 2: 49.233333333333334 mins.
+Training Loss: 0.4183 | Validation Loss: 0.2880 | eta: 0.000449
+Training Loss: 0.4170 | Validation Loss: 0.2877 | eta: 0.000422
+Training Loss: 0.4251 | Validation Loss: 0.2753 | eta: 0.000393
+Training Loss: 0.4213 | Validation Loss: 0.2680 | eta: 0.000387
+Training Loss: 0.4103 | Validation Loss: 0.2672 | eta: 0.000365
+Training Loss: 0.4126 | Validation Loss: 0.2637 | eta: 0.000362
+Training Loss: 0.4061 | Validation Loss: 0.2625 | eta: 0.000352
+Training Loss: 0.4057 | Validation Loss: 0.2597 | eta: 0.000350
+Training Loss: 0.4024 | Validation Loss: 0.2402 | eta: 0.000343
+Training Loss: 0.3932 | Validation Loss: 0.2170 | eta: 0.000317
+Time elapsed by epoch 3: 85.0 mins.
+EVALUATE FULLY TRAINED MODEL
+
+	POSITIVE:
+		[++] Perfect accuracy:     0.8740
+		[+] Model good enough accuracy:     0.9213
+	NEGATIVE:
+		[-] Told to hodl but should have sold/bought rate:     0.0000
+		[--] Should have hodled but told to sell/buy rate:     0.0787
+		[---] Told to do the opposite of correct move rate:     0.0000
+		
+EVALUATE VALIDATION-BASED MODEL
+
+	POSITIVE:
+		[++] Perfect accuracy:     0.8819
+		[+] Model good enough accuracy:     0.8976
+	NEGATIVE:
+		[-] Told to hodl but should have sold/bought rate:     0.0000
+		[--] Should have hodled but told to sell/buy rate:     0.1024
+		[---] Told to do the opposite of correct move rate:     0.0000
+		
