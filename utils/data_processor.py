@@ -302,7 +302,7 @@ def run():
 	# ------------ MODEL TRAINING -----------
 	#
 	start_time = time.time()
-#	train_and_save(train_data, valid_data, start_time)
+	train_and_save(train_data, valid_data, start_time)
 
 	#
 	# ------------ MODEL TESTING -----------

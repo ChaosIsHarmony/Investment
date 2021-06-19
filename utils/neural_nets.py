@@ -9,7 +9,7 @@ N_SIGNALS = 5
 N_FEATURES = 26
 DROPOUT = 0.15
 LEARNING_RATE = 0.0015
-LEARNING_RATE_DECAY = 0.999985
+LEARNING_RATE_DECAY = 0.99999
 
 #
 # ---------- MODELS TRAINED ON RASPBERRY PI ----------
@@ -85,18 +85,18 @@ class CryptoSoothsayer_Pi_1(nn.Module):
 class CryptoSoothsayer_PC_0(nn.Module):
 	def __init__(self, input_size, n_signals):
 		super(CryptoSoothsayer_PC_0, self).__init__()
-		self.layer_1 = nn.Linear(input_size, 100)
-		self.layer_2 = nn.Linear(100, 200)
-		self.layer_3 = nn.Linear(200, 500)
-		self.layer_4 = nn.Linear(500, 1000)
-		self.layer_5 = nn.Linear(1000, 2000)
-		self.layer_6 = nn.Linear(2000, 1000)
-		self.layer_7 = nn.Linear(1000, 500)
-		self.layer_8 = nn.Linear(500, 200)
-		self.layer_9 = nn.Linear(200, 100)
-		self.layer_10 = nn.Linear(100, 50)
-		self.layer_11 = nn.Linear(50, 25)
-		self.layer_output = nn.Linear(25, n_signals)
+		self.layer_1 = nn.Linear(input_size, 128)
+		self.layer_2 = nn.Linear(128, 256)
+		self.layer_3 = nn.Linear(256, 512)
+		self.layer_4 = nn.Linear(512, 1024)
+		self.layer_5 = nn.Linear(1024, 2048)
+		self.layer_6 = nn.Linear(2048, 1024)
+		self.layer_7 = nn.Linear(1024, 512)
+		self.layer_8 = nn.Linear(512, 256)
+		self.layer_9 = nn.Linear(256, 128)
+		self.layer_10 = nn.Linear(128, 64)
+		self.layer_11 = nn.Linear(64, 32)
+		self.layer_output = nn.Linear(32, n_signals)
 		self.dropout = nn.Dropout(DROPOUT)
 
 
@@ -153,6 +153,7 @@ class CryptoSoothsayer_PC_1(nn.Module):
 
 	def get_class_name(self):
 		return "CryptoSoothsayer_PC_1"
+
 
 
 #
@@ -275,7 +276,7 @@ class CryptoSoothsayer_Laptop_2(nn.Module):
 
 
 
-MODEL = CryptoSoothsayer_PC_1(N_FEATURES, N_SIGNALS)
+MODEL = CryptoSoothsayer_Laptop_0(N_FEATURES, N_SIGNALS)
 CRITERION = nn.CrossEntropyLoss()
 OPTIMIZER = optim.Adam(MODEL.parameters(), lr=LEARNING_RATE)
 lambda1 = lambda epoch: LEARNING_RATE_DECAY 

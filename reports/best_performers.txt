@@ -1,2 +1,3 @@
 models/CryptoSoothsayer_Laptop_0_70s.pt
 models/CryptoSoothsayer_Laptop_0_60s.pt
+models/CryptoSoothsayer_PC_1_60s.pt

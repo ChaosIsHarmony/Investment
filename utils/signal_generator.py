@@ -40,11 +40,28 @@ def generate_signals():
 		# extracts the most recent data as a python list
 		data = data[data["date"] == str(date.today())].values.tolist()[0][1:]
 		n_votes = [0, 0, 0, 0, 0] # buy 2x, buy x, etc.
-		models = [nn.CryptoSoothsayer_Laptop_0(nn.N_FEATURES, nn.N_SIGNALS), nn.CryptoSoothsayer_Laptop_0(nn.N_FEATURES, nn.N_SIGNALS)]
-		model_fp = {models[0]: best[0], models[1]: best[1]}
-	
-		for model in models:
-			model.load_state_dict(torch.load(model_fp[model]))
+		
+		models = {}
+		for i in range(3):
+			if "Laptop_0" in best[i]:
+				models[best[i]] = nn.CryptoSoothsayer_Laptop_0(nn.N_FEATURES, nn.N_SIGNALS)
+			elif "Laptop_1" in best[i]:
+				models[best[i]] = nn.CryptoSoothsayer_Laptop_1(nn.N_FEATURES, nn.N_SIGNALS)
+			elif "Laptop_2" in best[i]:
+				models[best[i]] = nn.CryptoSoothsayer_Laptop_2(nn.N_FEATURES, nn.N_SIGNALS)
+			elif "Pi_0" in best[i]:
+				models[best[i]] = nn.CryptoSoothsayer_Pi_0(nn.N_FEATURES, nn.N_SIGNALS)
+			elif "Pi_1" in best[i]:
+				models[best[i]] = nn.CryptoSoothsayer_Pi_1(nn.N_FEATURES, nn.N_SIGNALS)
+			elif "PC_0" in best[i]:
+				models[best[i]] = nn.CryptoSoothsayer_PC_0(nn.N_FEATURES, nn.N_SIGNALS)
+			elif "PC_1" in best[i]:
+				models[best[i]] = nn.CryptoSoothsayer_PC_1(nn.N_FEATURES, nn.N_SIGNALS)
+
+
+		for filepath in models.keys():
+			model = models[filepath]
+			model.load_state_dict(torch.load(filepath))
 			model.to(torch.device("cpu"))
 			model.eval()
 			feature_tensor = torch.tensor([data], dtype=torch.float32)
