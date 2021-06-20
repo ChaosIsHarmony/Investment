@@ -12,8 +12,8 @@ WHEN testing need this version instead
 
 DEVICE = torch.device("cpu")
 nn.MODEL.to(DEVICE)
-MODEL_FILEPATH = f"models/{nn.MODEL.get_class_name()}.pt"
-MODEL_CHECKPOINT_FILEPATH = f"models/checkpoint_{nn.MODEL.get_class_name()}.pt"
+MODEL_FILEPATH = f"models/{nn.MODEL.get_class_name()}_88s.pt"
+MODEL_CHECKPOINT_FILEPATH = f"models/checkpoint_{nn.MODEL.get_class_name()}_88s.pt"
 BATCH_SIZE = 256 
 EPOCHS = 1 
 COIN = "bitcoin"
@@ -302,7 +302,7 @@ def run():
 	# ------------ MODEL TRAINING -----------
 	#
 	start_time = time.time()
-	train_and_save(train_data, valid_data, start_time)
+#	train_and_save(train_data, valid_data, start_time)
 
 	#
 	# ------------ MODEL TESTING -----------
@@ -322,7 +322,7 @@ def run():
 	#
 	# ---------- GENERATE REPORT -----------
 	#
-	generate_report()
+#	generate_report()
 	
 
 
