@@ -76,7 +76,6 @@ def get_datasets():
 	data = pd.read_csv(f"datasets/complete/{COIN}_historical_data_complete.csv")
 	data = data.drop(columns=["date"])
 	data["signal"] = data["signal"].astype("int64")
-	data = data.sample(frac=1).reset_index(drop=True)
 
 	# Split into training, validation, testing
 	# 70-15-15 split
@@ -169,6 +168,7 @@ def take_one_step(feature, target, train_loss):
 
 
 def validate_model(valid_data, train_loss, min_valid_loss):
+	valid_data = shuffle_data(valid_data)
 	nn.MODEL.eval()
 	valid_loss = 0.0
 	for feature, target in valid_data:

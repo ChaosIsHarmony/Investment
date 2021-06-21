@@ -36,6 +36,44 @@ def handle_missing_data(data, start_date, end_date):
 
 
 
+def normalize_data_non_prescient(data):
+	'''
+	Normalizes data using min-max normalization but only up until the given point in history, e.g., datapoint for 2021/02/28 does not have any knowledge of data from 01/03/2021 and onwards.
+	'''
+	data_cp = data.copy(deep=True)
+
+	# 1st row items only have themselves as history
+	for column in range(1, data.shape[1]):
+		data_cp.iloc[0, column] = 1.0
+
+	for i in range(1, data.shape[0]):
+		for column in range(1, data.shape[1]):
+			col_max = data.iloc[:i+1, column].max()
+			col_min = data.iloc[:i+1, column].min()
+			# to avoid division by zero
+			if col_max == col_min and col_max != 0:
+				col_min -= 1
+			elif col_max == 0:
+				col_max += 1
+			data_cp.iloc[i, column] = (data.iloc[i, column] - col_min) / (col_max - col_min)
+
+	# last row
+	for column in range(1, data.shape[1]):
+		col_max = data.iloc[:, column].max()
+		col_min = data.iloc[:, column].min()
+		if col_max == col_min and col_max != 0:
+			col_min -= 1
+		elif col_max == 0:
+			col_max += 1
+		data_cp.iloc[-1, column] = (data.iloc[-1, column] - col_min) / (col_max - col_min)
+
+	# fear and greed index is out of 100
+	data_cp["fear_greed"] = (data["fear_greed"] - data["fear_greed"].min()) / (data["fear_greed"].max() - data["fear_greed"].min())
+
+	return data_cp
+
+
+
 def normalize_data(data):
 	'''
 	Normalizes data using min-max normalization, as Z-score normalization would be more suited to data with outliers.
@@ -43,6 +81,9 @@ def normalize_data(data):
 	'''
 	for column in data.columns[1:]:
 		data[column] = (data[column]-data[column].min()) / (data[column].max() - data[column].min())
+
+	# in case there were division by zero errors leading to NaN
+	data = data.fillna(0)
 
 	return data
 
@@ -139,19 +180,20 @@ def process_data(data, start_date, end_date):
 	# Fill in missing values
 	data = handle_missing_data(data, start_date, end_date)
 	print("Missing data handling complete.")
-	# Normalize
-	data = normalize_data(data)
-	print("Data normalization complete.")
 	# Calculate SMAs 
 	data = calculate_SMAs(data)
 	print("SMA calculation complete.")
+	# Normalize, must happen after SMA calculation or will skew results
+	data = normalize_data_non_prescient(data)
+	print("Data normalization complete.")
 
 	return data
 
 
 
 def run():
-	coins = ["algorand", "bitcoin", "cardano", "chainlink", "cosmos", "ethereum", "matic-network", "theta-token"]  
+	coins = ["bitcoin"]
+	#coins = ["algorand", "bitcoin", "cardano", "chainlink", "cosmos", "ethereum", "matic-network", "theta-token"]  
 	# The following two coins have shorter histories and require a different start date {polkadot = 2020-08-23; solana = 2020-04-11}
 	#coins = ["polkadot"]
 	#coins = ["solana"]
@@ -170,4 +212,4 @@ def run():
 
 
 
-#run()
+run()
