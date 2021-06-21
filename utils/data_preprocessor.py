@@ -186,14 +186,14 @@ def process_data(data, start_date, end_date):
 	# Normalize, must happen after SMA calculation or will skew results
 	data = normalize_data_non_prescient(data)
 	print("Data normalization complete.")
+	print()
 
 	return data
 
 
 
 def run():
-	coins = ["bitcoin"]
-	#coins = ["algorand", "bitcoin", "cardano", "chainlink", "cosmos", "ethereum", "matic-network", "theta-token"]  
+	coins = ["algorand", "bitcoin", "cardano", "chainlink", "cosmos", "ethereum", "matic-network", "theta-token"]  
 	# The following two coins have shorter histories and require a different start date {polkadot = 2020-08-23; solana = 2020-04-11}
 	#coins = ["polkadot"]
 	#coins = ["solana"]
@@ -212,4 +212,4 @@ def run():
 
 
 
-run()
+#run()

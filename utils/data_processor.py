@@ -12,10 +12,10 @@ WHEN testing need this version instead
 
 DEVICE = torch.device("cpu")
 nn.MODEL.to(DEVICE)
-MODEL_FILEPATH = f"models/{nn.MODEL.get_class_name()}_88s.pt"
-MODEL_CHECKPOINT_FILEPATH = f"models/checkpoint_{nn.MODEL.get_class_name()}_88s.pt"
+MODEL_FILEPATH = f"models/{nn.MODEL.get_class_name()}.pt"
+MODEL_CHECKPOINT_FILEPATH = f"models/checkpoint_{nn.MODEL.get_class_name()}.pt"
 BATCH_SIZE = 256 
-EPOCHS = 1 
+EPOCHS = 5 
 COIN = "bitcoin"
 REPORTS = [f"Model: {nn.MODEL.get_class_name()}", f"Learning rate: {nn.LEARNING_RATE}", f"Learning rate decay: {nn.LEARNING_RATE_DECAY}", f"Chance of dropout: {nn.DROPOUT}", f"Batch size: {BATCH_SIZE}", f"Epochs: {EPOCHS}", f"Coin: {COIN}"]
 
@@ -41,7 +41,7 @@ def generate_dataset(data, limit, offset, data_aug_per_sample=0):
 	'''
 	Returns a list of tuples, of which the first element of the tuple is the list of values for the features and the second is the target value
 	NOTES: 
-		- data_aug_per_sample param determines how many extra datapoints to generate per each original datapoint * its frequenct metric (i.e., signal_ratios)
+		- data_aug_per_sample param determines how many extra datapoints to generate per each original datapoint * its frequency metric (i.e., signal_ratios)
 		- signal_ratios variable is used to upsample underrepresented categories more than their counterparts when augmenting the data
 	'''
 	# to determine relative frequency of signals
@@ -149,6 +149,7 @@ def convert_to_tensor(feature, target):
 
 
 def take_one_step(feature, target, train_loss):
+	# set to train mode here to activate components like dropout
 	nn.MODEL.train()
 	# make data pytorch compatible
 	feature_tensor, target_tensor = convert_to_tensor(feature, target)
@@ -168,7 +169,7 @@ def take_one_step(feature, target, train_loss):
 
 
 def validate_model(valid_data, train_loss, min_valid_loss):
-	valid_data = shuffle_data(valid_data)
+	# set to evaluate mode to turn off components like dropout
 	nn.MODEL.eval()
 	valid_loss = 0.0
 	for feature, target in valid_data:
@@ -195,7 +196,6 @@ def train(train_data, valid_data, start_time):
 	min_valid_loss = np.inf 
 	
 	train_data = shuffle_data(train_data)
-	valid_data = shuffle_data(valid_data)
 
 	for epoch in range(EPOCHS):
 		steps = 0
@@ -232,8 +232,6 @@ def evaluate_model(model, test_data):
 	catastrophic_fail = 0
 	for feature, target in test_data:
 		feature_tensor, target_tensor = convert_to_tensor(feature, target)
-		#feature_tensor = torch.tensor([feature], dtype=torch.float32)
-		#target_tensor = torch.tensor([target], dtype=torch.int64)
 
 		with torch.no_grad():
 			output = model(feature_tensor)
@@ -302,7 +300,7 @@ def run():
 	# ------------ MODEL TRAINING -----------
 	#
 	start_time = time.time()
-#	train_and_save(train_data, valid_data, start_time)
+	train_and_save(train_data, valid_data, start_time)
 
 	#
 	# ------------ MODEL TESTING -----------
@@ -322,7 +320,7 @@ def run():
 	#
 	# ---------- GENERATE REPORT -----------
 	#
-#	generate_report()
+	generate_report()
 	
 
 

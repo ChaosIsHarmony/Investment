@@ -5,98 +5,55 @@ Chance of dropout: 0.15
 Batch size: 256
 Epochs: 5
 Coin: bitcoin
-Length Training Data: 38355
-Length Validation Data: 5315
-Length Testing Data: 127
-Training Loss: 1.6176 | Validation Loss: 1.6100 | eta: 0.001496
-Training Loss: 1.6159 | Validation Loss: 1.6067 | eta: 0.001492
-Training Loss: 1.6140 | Validation Loss: 1.6067 | eta: 0.001489
-Training Loss: 1.6811 | Validation Loss: 1.6063 | eta: 0.001477
-Training Loss: 1.6720 | Validation Loss: 1.6060 | eta: 0.001473
-Training Loss: 1.6627 | Validation Loss: 1.5985 | eta: 0.001470
-Training Loss: 1.6556 | Validation Loss: 1.4815 | eta: 0.001458
-Training Loss: 1.6460 | Validation Loss: 1.4516 | eta: 0.001451
-Training Loss: 1.6309 | Validation Loss: 1.4191 | eta: 0.001440
-Training Loss: 1.6282 | Validation Loss: 1.3984 | eta: 0.001436
-Training Loss: 1.5978 | Validation Loss: 1.3318 | eta: 0.001421
-Training Loss: 1.5845 | Validation Loss: 1.2655 | eta: 0.001400
-Training Loss: 1.5763 | Validation Loss: 1.2583 | eta: 0.001396
-Training Loss: 1.5678 | Validation Loss: 1.2535 | eta: 0.001393
-Training Loss: 1.5588 | Validation Loss: 1.1865 | eta: 0.001386
-Training Loss: 1.5437 | Validation Loss: 1.1560 | eta: 0.001378
-Training Loss: 1.5274 | Validation Loss: 1.1375 | eta: 0.001368
-Training Loss: 1.4787 | Validation Loss: 1.1312 | eta: 0.001340
-Training Loss: 1.4550 | Validation Loss: 1.0642 | eta: 0.001320
-Training Loss: 1.4456 | Validation Loss: 1.0320 | eta: 0.001310
-Training Loss: 1.4399 | Validation Loss: 1.0116 | eta: 0.001306
-Training Loss: 1.4155 | Validation Loss: 0.9976 | eta: 0.001290
-Training Loss: 1.3783 | Validation Loss: 0.9677 | eta: 0.001260
-Training Loss: 1.3723 | Validation Loss: 0.9394 | eta: 0.001254
-Training Loss: 1.3022 | Validation Loss: 0.9157 | eta: 0.001191
-Training Loss: 1.3024 | Validation Loss: 0.9049 | eta: 0.001182
-Training Loss: 1.2997 | Validation Loss: 0.8939 | eta: 0.001179
-Training Loss: 1.2698 | Validation Loss: 0.8592 | eta: 0.001141
-Training Loss: 1.2584 | Validation Loss: 0.8411 | eta: 0.001129
-Training Loss: 1.2550 | Validation Loss: 0.8395 | eta: 0.001126
-Training Loss: 1.2385 | Validation Loss: 0.7861 | eta: 0.001109
-Time elapsed by epoch 1: 21.516666666666666 mins.
-Training Loss: 0.8444 | Validation Loss: 0.7805 | eta: 0.001020
-Training Loss: 0.8836 | Validation Loss: 0.7738 | eta: 0.001017
-Training Loss: 0.9240 | Validation Loss: 0.7691 | eta: 0.001001
-Training Loss: 0.9063 | Validation Loss: 0.7343 | eta: 0.000964
-Training Loss: 0.8901 | Validation Loss: 0.7194 | eta: 0.000949
-Training Loss: 0.8899 | Validation Loss: 0.7118 | eta: 0.000942
-Training Loss: 0.8805 | Validation Loss: 0.6810 | eta: 0.000899
-Training Loss: 0.8659 | Validation Loss: 0.6486 | eta: 0.000879
-Training Loss: 0.8640 | Validation Loss: 0.6482 | eta: 0.000865
-Training Loss: 0.8578 | Validation Loss: 0.6350 | eta: 0.000859
-Training Loss: 0.8593 | Validation Loss: 0.6051 | eta: 0.000844
-Training Loss: 0.8411 | Validation Loss: 0.5819 | eta: 0.000808
-Training Loss: 0.8244 | Validation Loss: 0.5807 | eta: 0.000758
-Training Loss: 0.8180 | Validation Loss: 0.5419 | eta: 0.000750
-Training Loss: 0.8140 | Validation Loss: 0.5228 | eta: 0.000740
-Time elapsed by epoch 2: 50.11666666666667 mins.
-Training Loss: 0.6958 | Validation Loss: 0.5052 | eta: 0.000645
-Training Loss: 0.6780 | Validation Loss: 0.5049 | eta: 0.000613
-Training Loss: 0.6757 | Validation Loss: 0.4942 | eta: 0.000608
-Training Loss: 0.6683 | Validation Loss: 0.4926 | eta: 0.000599
-Training Loss: 0.6628 | Validation Loss: 0.4920 | eta: 0.000593
-Training Loss: 0.6628 | Validation Loss: 0.4600 | eta: 0.000565
-Training Loss: 0.6576 | Validation Loss: 0.4516 | eta: 0.000490
-Time elapsed by epoch 3: 83.36666666666666 mins.
-Training Loss: 0.6746 | Validation Loss: 0.4480 | eta: 0.000457
-Training Loss: 0.5972 | Validation Loss: 0.4444 | eta: 0.000435
-Training Loss: 0.5929 | Validation Loss: 0.4417 | eta: 0.000434
-Training Loss: 0.5894 | Validation Loss: 0.4266 | eta: 0.000433
-Training Loss: 0.5781 | Validation Loss: 0.4252 | eta: 0.000399
-Training Loss: 0.5752 | Validation Loss: 0.4107 | eta: 0.000397
-Training Loss: 0.5723 | Validation Loss: 0.3891 | eta: 0.000388
-Training Loss: 0.5784 | Validation Loss: 0.3834 | eta: 0.000385
-Training Loss: 0.5709 | Validation Loss: 0.3760 | eta: 0.000369
-Training Loss: 0.5607 | Validation Loss: 0.3672 | eta: 0.000342
-Time elapsed by epoch 4: 117.03333333333333 mins.
-Training Loss: 0.4826 | Validation Loss: 0.3629 | eta: 0.000298
-Training Loss: 0.4853 | Validation Loss: 0.3563 | eta: 0.000295
-Training Loss: 0.4822 | Validation Loss: 0.3472 | eta: 0.000294
-Training Loss: 0.5465 | Validation Loss: 0.3338 | eta: 0.000252
-Time elapsed by epoch 5: 149.78333333333333 mins.
+Length Training Data: 44537
+Length Validation Data: 6093
+Length Testing Data: 129
+Training Loss: 1.6244 | Validation Loss: 1.6049 | eta: 0.001496
+Training Loss: 1.6129 | Validation Loss: 1.6047 | eta: 0.001447
+Training Loss: 1.6120 | Validation Loss: 1.5371 | eta: 0.001443
+Training Loss: 1.6101 | Validation Loss: 1.5370 | eta: 0.001436
+Training Loss: 1.6072 | Validation Loss: 1.5155 | eta: 0.001425
+Training Loss: 1.6009 | Validation Loss: 1.4856 | eta: 0.001421
+Training Loss: 1.5961 | Validation Loss: 1.4850 | eta: 0.001418
+Training Loss: 1.5927 | Validation Loss: 1.4760 | eta: 0.001396
+Training Loss: 1.5905 | Validation Loss: 1.4725 | eta: 0.001393
+Training Loss: 1.5893 | Validation Loss: 1.3091 | eta: 0.001378
+Training Loss: 1.5758 | Validation Loss: 1.2194 | eta: 0.001368
+Training Loss: 1.5678 | Validation Loss: 1.1233 | eta: 0.001364
+Training Loss: 1.5417 | Validation Loss: 1.0843 | eta: 0.001354
+Training Loss: 1.5337 | Validation Loss: 1.0104 | eta: 0.001351
+Training Loss: 1.4897 | Validation Loss: 0.9409 | eta: 0.001330
+Training Loss: 1.4807 | Validation Loss: 0.8788 | eta: 0.001327
+Training Loss: 1.4186 | Validation Loss: 0.7619 | eta: 0.001300
+Training Loss: 1.3350 | Validation Loss: 0.7007 | eta: 0.001254
+Training Loss: 1.2919 | Validation Loss: 0.6711 | eta: 0.001228
+Training Loss: 1.2523 | Validation Loss: 0.6635 | eta: 0.001201
+Training Loss: 1.2463 | Validation Loss: 0.5973 | eta: 0.001197
+Time elapsed by epoch 1: 24.5 mins.
+Training Loss: 0.7477 | Validation Loss: 0.5668 | eta: 0.000888
+Time elapsed by epoch 2: 60.78333333333333 mins.
+Training Loss: 0.6295 | Validation Loss: 0.5561 | eta: 0.000603
+Time elapsed by epoch 3: 102.83333333333333 mins.
+Time elapsed by epoch 4: 146.93333333333334 mins.
+Training Loss: 0.5447 | Validation Loss: 0.5000 | eta: 0.000192
+Time elapsed by epoch 5: 194.06666666666666 mins.
 EVALUATE FULLY TRAINED MODEL
 
 	POSITIVE:
-		[++] Perfect accuracy:     0.6693
-		[+] Model good enough accuracy:     0.7087
+		[++] Perfect accuracy:     0.0930
+		[+] Model good enough accuracy:     0.5349
 	NEGATIVE:
-		[-] Told to hodl but should have sold/bought rate:     0.0315
-		[--] Should have hodled but told to sell/buy rate:     0.2520
-		[---] Told to do the opposite of correct move rate:     0.0079
+		[-] Told to hodl but should have sold/bought rate:     0.1783
+		[--] Should have hodled but told to sell/buy rate:     0.2016
+		[---] Told to do the opposite of correct move rate:     0.0853
 		
 EVALUATE VALIDATION-BASED MODEL
 
 	POSITIVE:
-		[++] Perfect accuracy:     0.7717
-		[+] Model good enough accuracy:     0.7874
+		[++] Perfect accuracy:     0.1938
+		[+] Model good enough accuracy:     0.5736
 	NEGATIVE:
-		[-] Told to hodl but should have sold/bought rate:     0.0315
-		[--] Should have hodled but told to sell/buy rate:     0.1811
-		[---] Told to do the opposite of correct move rate:     0.0000
+		[-] Told to hodl but should have sold/bought rate:     0.1783
+		[--] Should have hodled but told to sell/buy rate:     0.2016
+		[---] Told to do the opposite of correct move rate:     0.0465
 		

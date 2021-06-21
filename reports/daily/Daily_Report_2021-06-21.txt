@@ -1,0 +1,416 @@
+Report for ALGORAND:
+Basic Stats
+[1.0 is the highest; 0.0 is the lowest]
+price:		0.506287
+market_cap:	0.000661
+volume:		0.000975
+fear/greed	0.172414 [Extreme Fear]
+
+Price Ratios
+[>0 means greater risk/overvalued; <0 means less risk/undervalued]
+5-day:10-day:	 0.957598
+10-day:25-day:	 0.951154
+25-day:50-day:	 0.847151
+50-day:200-day:	 0.811008
+
+Price Deltas
+[<0 shows a decrease; >0 shows an increase]
+5-day -> Present:		-0.119490
+10-day -> 5-day:		-0.027709
+25-day -> 10-day:		-0.033559
+50-day -> 25-day:		-0.123962
+75-day -> 50-day:		-0.106631
+
+Fear/Greed Deltas
+[>0 is greedier; <0 is more fearful]
+3-day -> Present:	-0.063502
+5-day -> 3-day:		-0.015148
+7-day -> 5-day		-0.036170
+9-day -> 7-day:		 0.002198
+11-day -> 9-day:	 0.004180
+
+Action Signals
+Signal by best nn:	BUY 2X
+Signal by votes:	BUY 2X
+Signal by weights:	BUY 2X
+	Weights:	[tensor(-18.5615), tensor(-64.6728), tensor(-61.5208), tensor(-326.5145), tensor(-455.9288)]
+	Diff 1st and 2nd:	  14.3198
+	Diff 1st and last:	 145.7891
+
+
+
+
+Report for BITCOIN:
+Basic Stats
+[1.0 is the highest; 0.0 is the lowest]
+price:		0.524371
+market_cap:	0.000501
+volume:		0.000191
+fear/greed	0.200000 [Fear]
+
+Price Ratios
+[>0 means greater risk/overvalued; <0 means less risk/undervalued]
+5-day:10-day:	 0.955893
+10-day:25-day:	 0.990239
+25-day:50-day:	 0.836464
+50-day:200-day:	 0.731001
+
+Price Deltas
+[<0 shows a decrease; >0 shows an increase]
+5-day -> Present:		-0.054410
+10-day -> 5-day:		-0.026706
+25-day -> 10-day:		-0.005968
+50-day -> 25-day:		-0.119545
+75-day -> 50-day:		-0.107498
+
+Fear/Greed Deltas
+[>0 is greedier; <0 is more fearful]
+3-day -> Present:	-0.035915
+5-day -> 3-day:		-0.015148
+7-day -> 5-day		-0.036170
+9-day -> 7-day:		 0.002198
+11-day -> 9-day:	 0.004180
+
+Action Signals
+Signal by best nn:	BUY 2X
+Signal by votes:	BUY 2X
+Signal by weights:	BUY 2X
+	Weights:	[tensor(-28.4551), tensor(-110.1658), tensor(-106.3967), tensor(-581.2078), tensor(-791.2715)]
+	Diff 1st and 2nd:	  25.9806
+	Diff 1st and last:	 254.2721
+
+
+
+
+Report for CARDANO:
+Basic Stats
+[1.0 is the highest; 0.0 is the lowest]
+price:		0.619286
+market_cap:	0.000698
+volume:		0.000200
+fear/greed	0.172414 [Extreme Fear]
+
+Price Ratios
+[>0 means greater risk/overvalued; <0 means less risk/undervalued]
+5-day:10-day:	 0.889231
+10-day:25-day:	 0.846011
+25-day:50-day:	 0.905169
+50-day:200-day:	 1.000000
+
+Price Deltas
+[<0 shows a decrease; >0 shows an increase]
+5-day -> Present:		-0.061672
+10-day -> 5-day:		-0.084825
+25-day -> 10-day:		-0.139386
+50-day -> 25-day:		-0.094831
+75-day -> 50-day:		 0.000000
+
+Fear/Greed Deltas
+[>0 is greedier; <0 is more fearful]
+3-day -> Present:	-0.063502
+5-day -> 3-day:		-0.015148
+7-day -> 5-day		-0.036170
+9-day -> 7-day:		 0.002198
+11-day -> 9-day:	 0.004180
+
+Action Signals
+Signal by best nn:	SELL Y
+Signal by votes:	SELL Y
+Signal by weights:	SELL Y
+	Weights:	[tensor(-1163.0801), tensor(-1092.7025), tensor(-138.9809), tensor(-63.3833), tensor(-726.1473)]
+	Diff 1st and 2nd:	  25.1992
+	Diff 1st and last:	 366.5656
+
+
+
+
+Report for CHAINLINK:
+Basic Stats
+[1.0 is the highest; 0.0 is the lowest]
+price:		0.397281
+market_cap:	0.000420
+volume:		0.000691
+fear/greed	0.172414 [Extreme Fear]
+
+Price Ratios
+[>0 means greater risk/overvalued; <0 means less risk/undervalued]
+5-day:10-day:	 0.938902
+10-day:25-day:	 0.778259
+25-day:50-day:	 0.726250
+50-day:200-day:	 0.839148
+
+Price Deltas
+[<0 shows a decrease; >0 shows an increase]
+5-day -> Present:		-0.048035
+10-day -> 5-day:		-0.028979
+25-day -> 10-day:		-0.135136
+50-day -> 25-day:		-0.229717
+75-day -> 50-day:		-0.114078
+
+Fear/Greed Deltas
+[>0 is greedier; <0 is more fearful]
+3-day -> Present:	-0.063502
+5-day -> 3-day:		-0.015148
+7-day -> 5-day		-0.036170
+9-day -> 7-day:		 0.002198
+11-day -> 9-day:	 0.004180
+
+Action Signals
+Signal by best nn:	HODL
+Signal by votes:	HODL
+Signal by weights:	HODL
+	Weights:	[tensor(-43.6417), tensor(-50.1406), tensor(-15.0969), tensor(-113.2130), tensor(-148.0581)]
+	Diff 1st and 2nd:	   9.5149
+	Diff 1st and last:	  44.3204
+
+
+
+
+Report for COSMOS:
+Basic Stats
+[1.0 is the highest; 0.0 is the lowest]
+price:		0.372941
+market_cap:	0.000445
+volume:		0.000997
+fear/greed	0.172414 [Extreme Fear]
+
+Price Ratios
+[>0 means greater risk/overvalued; <0 means less risk/undervalued]
+5-day:10-day:	 0.952462
+10-day:25-day:	 0.854613
+25-day:50-day:	 0.739261
+50-day:200-day:	 0.755967
+
+Price Deltas
+[<0 shows a decrease; >0 shows an increase]
+5-day -> Present:		-0.081961
+10-day -> 5-day:		-0.022704
+25-day -> 10-day:		-0.081251
+50-day -> 25-day:		-0.197110
+75-day -> 50-day:		-0.109460
+
+Fear/Greed Deltas
+[>0 is greedier; <0 is more fearful]
+3-day -> Present:	-0.063502
+5-day -> 3-day:		-0.015148
+7-day -> 5-day		-0.036170
+9-day -> 7-day:		 0.002198
+11-day -> 9-day:	 0.004180
+
+Action Signals
+Signal by best nn:	BUY 2X
+Signal by votes:	BUY 2X
+Signal by weights:	BUY 2X
+	Weights:	[tensor(-104.6224), tensor(-451.0912), tensor(-466.9626), tensor(-2514.4399), tensor(-3500.9028)]
+	Diff 1st and 2nd:	 115.4896
+	Diff 1st and last:	1132.0935
+
+
+
+
+Report for ETHEREUM:
+Basic Stats
+[1.0 is the highest; 0.0 is the lowest]
+price:		0.522039
+market_cap:	0.000529
+volume:		0.000187
+fear/greed	0.172414 [Extreme Fear]
+
+Price Ratios
+[>0 means greater risk/overvalued; <0 means less risk/undervalued]
+5-day:10-day:	 0.927463
+10-day:25-day:	 0.823953
+25-day:50-day:	 0.758642
+50-day:200-day:	 0.982952
+
+Price Deltas
+[<0 shows a decrease; >0 shows an increase]
+5-day -> Present:		-0.047821
+10-day -> 5-day:		-0.044569
+25-day -> 10-day:		-0.131280
+50-day -> 25-day:		-0.237243
+75-day -> 50-day:		-0.017048
+
+Fear/Greed Deltas
+[>0 is greedier; <0 is more fearful]
+3-day -> Present:	-0.063502
+5-day -> 3-day:		-0.015148
+7-day -> 5-day		-0.036170
+9-day -> 7-day:		 0.002198
+11-day -> 9-day:	 0.004180
+
+Action Signals
+Signal by best nn:	BUY 2X
+Signal by votes:	BUY 2X
+Signal by weights:	BUY 2X
+	Weights:	[tensor(-19.8169), tensor(-46.8605), tensor(-45.8097), tensor(-240.4820), tensor(-340.7408)]
+	Diff 1st and 2nd:	   8.6643
+	Diff 1st and last:	 106.9746
+
+
+
+
+Report for MATIC-NETWORK:
+Basic Stats
+[1.0 is the highest; 0.0 is the lowest]
+price:		0.566185
+market_cap:	0.000828
+volume:		0.000178
+fear/greed	0.172414 [Extreme Fear]
+
+Price Ratios
+[>0 means greater risk/overvalued; <0 means less risk/undervalued]
+5-day:10-day:	 0.960978
+10-day:25-day:	 0.831246
+25-day:50-day:	 0.917755
+50-day:200-day:	 1.000000
+
+Price Deltas
+[<0 shows a decrease; >0 shows an increase]
+5-day -> Present:		-0.166926
+10-day -> 5-day:		-0.029769
+25-day -> 10-day:		-0.154874
+50-day -> 25-day:		-0.082245
+75-day -> 50-day:		 0.000000
+
+Fear/Greed Deltas
+[>0 is greedier; <0 is more fearful]
+3-day -> Present:	-0.063502
+5-day -> 3-day:		-0.015148
+7-day -> 5-day		-0.036170
+9-day -> 7-day:		 0.002198
+11-day -> 9-day:	 0.004180
+
+Action Signals
+Signal by best nn:	SELL Y
+Signal by votes:	SELL Y
+Signal by weights:	SELL Y
+	Weights:	[tensor(-1088.6238), tensor(-1004.0909), tensor(-126.1346), tensor(-58.0972), tensor(-672.0018)]
+	Diff 1st and 2nd:	  22.6792
+	Diff 1st and last:	 343.5089
+
+
+
+
+Report for POLKADOT:
+Basic Stats
+[1.0 is the highest; 0.0 is the lowest]
+price:		0.385343
+market_cap:	0.000367
+volume:		0.000201
+fear/greed	0.152941 [Extreme Fear]
+
+Price Ratios
+[>0 means greater risk/overvalued; <0 means less risk/undervalued]
+5-day:10-day:	 0.951193
+10-day:25-day:	 0.915630
+25-day:50-day:	 0.765092
+50-day:200-day:	 0.731490
+
+Price Deltas
+[<0 shows a decrease; >0 shows an increase]
+5-day -> Present:		-0.102085
+10-day -> 5-day:		-0.025011
+25-day -> 10-day:		-0.047218
+50-day -> 25-day:		-0.171833
+75-day -> 50-day:		-0.103863
+
+Fear/Greed Deltas
+[>0 is greedier; <0 is more fearful]
+3-day -> Present:	-0.082974
+5-day -> 3-day:		-0.015148
+7-day -> 5-day		-0.036170
+9-day -> 7-day:		 0.002198
+11-day -> 9-day:	 0.004180
+
+Action Signals
+Signal by best nn:	HODL
+Signal by votes:	HODL
+Signal by weights:	HODL
+	Weights:	[tensor(-140.2317), tensor(-205.9094), tensor(-58.9703), tensor(-357.3322), tensor(-447.1791)]
+	Diff 1st and 2nd:	  27.0871
+	Diff 1st and last:	 129.4029
+
+
+
+
+Report for SOLANA:
+Basic Stats
+[1.0 is the highest; 0.0 is the lowest]
+price:		0.619959
+market_cap:	0.000797
+volume:		0.000310
+fear/greed	0.152941 [Extreme Fear]
+
+Price Ratios
+[>0 means greater risk/overvalued; <0 means less risk/undervalued]
+5-day:10-day:	 0.946758
+10-day:25-day:	 1.019962
+25-day:50-day:	 0.832597
+50-day:200-day:	 0.970633
+
+Price Deltas
+[<0 shows a decrease; >0 shows an increase]
+5-day -> Present:		-0.160433
+10-day -> 5-day:		-0.043886
+25-day -> 10-day:		 0.016132
+50-day -> 25-day:		-0.162487
+75-day -> 50-day:		-0.029367
+
+Fear/Greed Deltas
+[>0 is greedier; <0 is more fearful]
+3-day -> Present:	-0.082974
+5-day -> 3-day:		-0.015148
+7-day -> 5-day		-0.036170
+9-day -> 7-day:		 0.002198
+11-day -> 9-day:	 0.004180
+
+Action Signals
+Signal by best nn:	SELL Y
+Signal by votes:	SELL Y
+Signal by weights:	SELL Y
+	Weights:	[tensor(-720.3748), tensor(-1194.8167), tensor(-199.8542), tensor(-108.5864), tensor(-710.8572)]
+	Diff 1st and 2nd:	  30.4226
+	Diff 1st and last:	 362.0768
+
+
+
+
+Report for THETA-TOKEN:
+Basic Stats
+[1.0 is the highest; 0.0 is the lowest]
+price:		0.606094
+market_cap:	0.000643
+volume:		0.099321
+fear/greed	0.172414 [Extreme Fear]
+
+Price Ratios
+[>0 means greater risk/overvalued; <0 means less risk/undervalued]
+5-day:10-day:	 1.012966
+10-day:25-day:	 1.021941
+25-day:50-day:	 0.881356
+50-day:200-day:	 0.747137
+
+Price Deltas
+[<0 shows a decrease; >0 shows an increase]
+5-day -> Present:		-0.075574
+10-day -> 5-day:		 0.008726
+25-day -> 10-day:		 0.014448
+50-day -> 25-day:		-0.088643
+75-day -> 50-day:		-0.175327
+
+Fear/Greed Deltas
+[>0 is greedier; <0 is more fearful]
+3-day -> Present:	-0.063502
+5-day -> 3-day:		-0.015148
+7-day -> 5-day		-0.036170
+9-day -> 7-day:		 0.002198
+11-day -> 9-day:	 0.004180
+
+Action Signals
+Signal by best nn:	BUY 2X
+Signal by votes:	BUY 2X
+Signal by weights:	BUY 2X
+	Weights:	[tensor(-55.3083), tensor(-168.3855), tensor(-182.2177), tensor(-970.5010), tensor(-1364.9556)]
+	Diff 1st and 2nd:	  37.6924
+	Diff 1st and last:	 436.5491

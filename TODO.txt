@@ -1,4 +1,1 @@
-1.) Make datasets normalized up to the day being tested
-	i.e., if coin hit ATH on 02/01 and then and even higher ATH on 02/02, 
-	both should actually be one and 02/01 shouldn't be compared to the future date
-2.) Deal with division by zero for polkadot
+1.) Train better models

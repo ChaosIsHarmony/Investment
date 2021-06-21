@@ -30,6 +30,7 @@ def process_new_data():
 		data.to_csv(f"datasets/clean/{coin}_historical_data_clean.csv", index=False)
 
 
+
 def get_fg_indicator(fg_index):
 	if fg_index < 0.2:
 		return "Extreme Fear"
@@ -74,7 +75,7 @@ def generate_signals():
 		best_model_signal = 10
 
 		models = {}
-		for i in range(4):
+		for i in range(len(best)):
 			if "Laptop_0" in best[i]:
 				models[best[i]] = nn.CryptoSoothsayer_Laptop_0(nn.N_FEATURES, nn.N_SIGNALS)
 			elif "Laptop_1" in best[i]:
@@ -92,10 +93,13 @@ def generate_signals():
 
 
 		for filepath in models.keys():
+			# load model
 			model = models[filepath]
 			model.load_state_dict(torch.load(filepath))
 			model.to(torch.device("cpu"))
+			# set to prediction mode
 			model.eval()
+			# make the data pytorch compatible
 			feature_tensor = torch.tensor([data], dtype=torch.float32)
 
 			with torch.no_grad():
@@ -108,13 +112,7 @@ def generate_signals():
 				n_weights[i] += float(output[0][i])
 				n_votes[int(torch.argmax(output, dim=1))] += 1
 
-		# find intersection of answers
-		'''
-		If a majority suggest to BUY 2X, then BUY 2X.
-		If a majority suggest to either BUY 2X or BUY X, then BUY X.
-		Above likewise applies to SELL, and HODL signals.
-		If split (e.g., SELL Y, BUY X, and HODL), then HODL.
-		'''
+		# tabulate answers according to different metrics
 		n_votes = torch.tensor(n_votes, dtype=torch.float32)
 		n_weights = torch.tensor(n_weights, dtype=torch.float32)
 		signal_v = DECISIONS[torch.argmax(n_votes)]
@@ -130,8 +128,8 @@ def generate_signals():
 		report.append(f"Signal by votes:\t{signal_v}")
 		report.append(f"Signal by weights:\t{signal_w}")
 		report.append(f"\tWeights:\t{list(n_weights)}")
-		report.append(f"\tDiff 1st and 2nd:\t{n_weights[torch.argmax(n_weights)] - second_best_w:>9.4f}")
-		report.append(f"\tDiff 1st and last:\t{n_weights[torch.argmax(n_weights)] - n_weights[torch.argmin(n_weights)]:>9.4f}")
+		report.append(f"\tDiff 1st and 2nd:\t{(n_weights[torch.argmax(n_weights)] - second_best_w) / len(best):>9.4f}")
+		report.append(f"\tDiff 1st and last:\t{(n_weights[torch.argmax(n_weights)] - n_weights[torch.argmin(n_weights)]) / len(best):>9.4f}")
 
 
 	return report
@@ -148,7 +146,10 @@ def generate_report(report):
 fetch_data = input("Fetch most recent daily data? [y/n; only if you haven't already fetched today] ")
 
 if (fetch_data.lower())[0] == 'y':
-	fetch_new_data(1)
+	days_back = -1
+	while days_back < 0:
+		days_back = int(input("How many days worth of data? [e.g., 5 if you haven't calculated a signal for 5 days] "))
+	fetch_new_data(days_back)
 	process_new_data()
 
 report = generate_signals()
