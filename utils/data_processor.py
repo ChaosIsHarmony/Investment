@@ -12,8 +12,8 @@ WHEN testing need this version instead
 
 DEVICE = torch.device("cpu")
 nn.MODEL.to(DEVICE)
-MODEL_FILEPATH = f"models/{nn.MODEL.get_class_name()}.pt"
-MODEL_CHECKPOINT_FILEPATH = f"models/checkpoint_{nn.MODEL.get_class_name()}.pt"
+MODEL_FILEPATH = f"models/{nn.MODEL.get_class_name()}_88s.pt"
+MODEL_CHECKPOINT_FILEPATH = f"models/checkpoint_{nn.MODEL.get_class_name()}_88s.pt"
 BATCH_SIZE = 256 
 EPOCHS = 3 
 COIN = "bitcoin"
@@ -76,7 +76,6 @@ def get_datasets():
 	data = pd.read_csv(f"datasets/complete/{COIN}_historical_data_complete.csv")
 	data = data.drop(columns=["date"])
 	data["signal"] = data["signal"].astype("int64")
-	data = data.sample(frac=1).reset_index(drop=True)
 
 	# Split into training, validation, testing
 	# 70-15-15 split
@@ -169,6 +168,7 @@ def take_one_step(feature, target, train_loss):
 
 
 def validate_model(valid_data, train_loss, min_valid_loss):
+	valid_data = shuffle_data(valid_data)
 	nn.MODEL.eval()
 	valid_loss = 0.0
 	for feature, target in valid_data:
@@ -302,7 +302,7 @@ def run():
 	# ------------ MODEL TRAINING -----------
 	#
 	start_time = time.time()
-	train_and_save(train_data, valid_data, start_time)
+#	train_and_save(train_data, valid_data, start_time)
 
 	#
 	# ------------ MODEL TESTING -----------
@@ -322,7 +322,7 @@ def run():
 	#
 	# ---------- GENERATE REPORT -----------
 	#
-	generate_report()
+#	generate_report()
 	
 
 

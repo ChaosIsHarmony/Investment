@@ -276,7 +276,7 @@ class CryptoSoothsayer_Laptop_2(nn.Module):
 
 
 
-MODEL = CryptoSoothsayer_Laptop_0(N_FEATURES, N_SIGNALS)
+MODEL = CryptoSoothsayer_PC_1(N_FEATURES, N_SIGNALS)
 CRITERION = nn.CrossEntropyLoss()
 OPTIMIZER = optim.Adam(MODEL.parameters(), lr=LEARNING_RATE)
 lambda1 = lambda epoch: LEARNING_RATE_DECAY 

@@ -1,8 +1,6 @@
 '''
 RUN WITH: $ python3 -m unittest tests.unit_tests
 '''
-import src 
-from src import investstrat as strat
 import utils
 from utils import data_preprocessor as dpp
 from utils import data_processor as dp
@@ -65,6 +63,36 @@ def test_handle_missing_data():
 	data = pd.DataFrame(data, columns=["date", 1, 2, 3])
 	data = dpp.handle_missing_data(data, start_date, end_date)
 	assert data.iloc[3, 1] == 2.0 and data.iloc[3, 2] == 2.0 and data.iloc[3, 3] == 2.0, "Ending zero test case failed."
+
+
+
+def test_normalize_data_non_prescient():
+	data = [['2020-10-01', 1, 1, 1], 
+			['2020-10-02', 1, 1, 1],
+			['2020-10-03', 4, 4, 4],
+			['2020-10-04', 2, 2, 2]]
+	data = pd.DataFrame(data, columns=["date", 1, 2, 3])
+	data = dpp.normalize_data_non_prescient(data)
+	assert data.iloc[0,1] == 1 and data.iloc[1,1] == 1 and data.iloc[2,1] == 1 and data.iloc[3,1] == 1/3, "Normalize data (non-prescient) test failed."
+
+	# with zeros
+	data = [['2020-10-01', 0, 0, 0], 
+			['2020-10-02', 1, 1, 1],
+			['2020-10-03', 4, 4, 4],
+			['2020-10-04', 2, 2, 2]]
+	data = pd.DataFrame(data, columns=["date", 1, 2, 3])
+	data = dpp.normalize_data_non_prescient(data)
+	assert data.iloc[0,1] == 1 and data.iloc[1,1] == 1 and data.iloc[2,1] == 1 and data.iloc[3,1] == 1/2, "Normalize data (non-prescient) w/ zeros test failed."
+
+	# with only zeros
+	data = [['2020-10-01', 0, 0, 0], 
+			['2020-10-02', 0, 0, 0],
+			['2020-10-03', 0, 0, 0],
+			['2020-10-04', 0, 0, 0]]
+	data = pd.DataFrame(data, columns=["date", 1, 2, 3])
+	data = dpp.normalize_data_non_prescient(data)
+	print(data)
+	assert data.iloc[0,1] == 1 and data.iloc[1,1] == 0 and data.iloc[2,1] == 0 and data.iloc[3,1] == 0, "Normalize data (non-prescient) w/ only zeros test failed."
 
 
 
@@ -201,6 +229,8 @@ def run_data_preprocessor_tests():
 	print("test_handle_missing_data() tests all passed")
 	test_normalize_data()
 	print("test_normalize_data() tests all passed")
+	test_normalize_data_non_prescient()
+	print("test_normalize_data_non_prescient() tests all passed")
 	test_calculate_price_SMAs()
 	print("test_calculate_price_SMAs() tests all passed")
 	test_calculate_fear_greed_SMAs()
