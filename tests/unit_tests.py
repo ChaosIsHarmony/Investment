@@ -4,6 +4,7 @@ RUN WITH: $ python3 -m unittest tests.unit_tests
 import utils
 from utils import data_preprocessor as dpp
 from utils import data_processor as dp
+from utils import neural_nets as nn
 
 import copy
 import pandas as pd
@@ -67,32 +68,41 @@ def test_handle_missing_data():
 
 
 def test_normalize_data_non_prescient():
+	# check fear greed are out of 100
 	data = [['2020-10-01', 1, 1, 1], 
 			['2020-10-02', 1, 1, 1],
 			['2020-10-03', 4, 4, 4],
 			['2020-10-04', 2, 2, 2]]
-	data = pd.DataFrame(data, columns=["date", 1, 2, 3])
+	data = pd.DataFrame(data, columns=["date", "fear_greed", 2, 3])
 	data = dpp.normalize_data_non_prescient(data)
-	assert data.iloc[0,1] == 1 and data.iloc[1,1] == 1 and data.iloc[2,1] == 1 and data.iloc[3,1] == 1/3, "Normalize data (non-prescient) test failed."
+	assert data.iloc[0,1] == 1/100 and data.iloc[1,1] == 1/100 and data.iloc[2,1] == 4/100 and data.iloc[3,1] == 2/100, "Normalize data (non-prescient) fear_greed index test failed."
+
+	# standard
+	data = [['2020-10-01', 1, 1, 1], 
+			['2020-10-02', 1, 1, 1],
+			['2020-10-03', 4, 4, 4],
+			['2020-10-04', 2, 2, 2]]
+	data = pd.DataFrame(data, columns=["date", "fear_greed", 2, 3])
+	data = dpp.normalize_data_non_prescient(data)
+	assert data.iloc[0,2] == 1 and data.iloc[1,2] == 1 and data.iloc[2,2] == 1 and data.iloc[3,2] == 1/3, "Normalize data (non-prescient) standard test failed."
 
 	# with zeros
 	data = [['2020-10-01', 0, 0, 0], 
 			['2020-10-02', 1, 1, 1],
 			['2020-10-03', 4, 4, 4],
 			['2020-10-04', 2, 2, 2]]
-	data = pd.DataFrame(data, columns=["date", 1, 2, 3])
+	data = pd.DataFrame(data, columns=["date", "fear_greed", 2, 3])
 	data = dpp.normalize_data_non_prescient(data)
-	assert data.iloc[0,1] == 1 and data.iloc[1,1] == 1 and data.iloc[2,1] == 1 and data.iloc[3,1] == 1/2, "Normalize data (non-prescient) w/ zeros test failed."
+	assert data.iloc[0,2] == 1 and data.iloc[1,2] == 1 and data.iloc[2,2] == 1 and data.iloc[3,2] == 1/2, "Normalize data (non-prescient) w/ zeros test failed."
 
 	# with only zeros
 	data = [['2020-10-01', 0, 0, 0], 
 			['2020-10-02', 0, 0, 0],
 			['2020-10-03', 0, 0, 0],
 			['2020-10-04', 0, 0, 0]]
-	data = pd.DataFrame(data, columns=["date", 1, 2, 3])
+	data = pd.DataFrame(data, columns=["date", "fear_greed", 2, 3])
 	data = dpp.normalize_data_non_prescient(data)
-	print(data)
-	assert data.iloc[0,1] == 1 and data.iloc[1,1] == 0 and data.iloc[2,1] == 0 and data.iloc[3,1] == 0, "Normalize data (non-prescient) w/ only zeros test failed."
+	assert data.iloc[0,2] == 1 and data.iloc[1,2] == 0 and data.iloc[2,2] == 0 and data.iloc[3,2] == 0, "Normalize data (non-prescient) w/ only zeros test failed."
 
 
 
@@ -204,9 +214,51 @@ def test_generate_dataset():
 
 
 
+def create_fake_csv(coin):
+	data = []
+	for i in range(100):
+		dt_list = []
+		for j in range(nn.N_FEATURES):
+			dt_list.append(i)
+		data.append(dt_list)
+
+	col_labels = ["date"]
+	for i in range(nn.N_FEATURES-2):
+		col_labels.append(i)
+	col_labels.append("signal")
+	
+	data = pd.DataFrame(data, columns=col_labels)
+	data.to_csv(f"datasets/complete/{coin}_historical_data_complete.csv")
+	
+	return data
+
+
 
 def test_get_datasets():
-	assert False
+	coin = "fakecoin"
+	data = create_fake_csv(coin)
+	train_data, valid_data, test_data = dp.get_datasets(coin)
+
+	# test with standard 16x augmentation
+	# len(data)*0.7*16 = the data augmentation portion
+	# + (len(data)*0.7) = the original datapoints before augmentation
+	assert len(train_data) == (len(data)*0.7*16) + (len(data)*0.7), "Failed train_data size test in get_datasets test."
+	assert len(valid_data) == len(data)*0.15, "Failed valid_data size test in get_datasets test."
+	assert len(test_data) == len(data)*0.15, "Failed test_data size test in get_datasets test."
+	assert 68.9 < train_data[int(len(data)*0.7*16)+69][0][0] < 69.1, "Failed train_data value test in get_datasets test."
+	assert valid_data[int(len(data)*0.15)-1][0][0] == 84, "Failed valid_data value test in get_datasets test."
+	assert test_data[int(len(data)*0.15)-1][0][0] == 99, "Failed test_data value test in get_datasets test."
+
+	# test with 0 augmentation
+	data = create_fake_csv(coin)
+	train_data, valid_data, test_data = dp.get_datasets(coin, 0)
+
+	assert len(train_data) == len(data)*0.7, "Failed train_data size test in get_datasets test."
+	assert len(valid_data) == len(data)*0.15, "Failed valid_data size test in get_datasets test."
+	assert len(test_data) == len(data)*0.15, "Failed test_data size test in get_datasets test."
+	assert train_data[int(len(data)*0.7)-1][0][0] == 69, "Failed train_data value test in get_datasets test."
+	assert valid_data[int(len(data)*0.15)-1][0][0] == 84, "Failed valid_data value test in get_datasets test."
+	assert test_data[int(len(data)*0.15)-1][0][0] == 99, "Failed test_data value test in get_datasets test."
 
 
 

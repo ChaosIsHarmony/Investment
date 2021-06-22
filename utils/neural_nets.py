@@ -17,15 +17,14 @@ LEARNING_RATE_DECAY = 0.9999875
 class CryptoSoothsayer_Pi_0(nn.Module):
 	def __init__(self, input_size, n_signals):
 		super(CryptoSoothsayer_Pi_0, self).__init__()
-		self.layer_1 = nn.Linear(input_size, 32)
-		self.layer_2 = nn.Linear(32, 64)
-		self.layer_3 = nn.Linear(64, 128)
-		self.layer_4 = nn.Linear(128, 256)
-		self.layer_5 = nn.Linear(256, 128)
-		self.layer_6 = nn.Linear(128, 512)
-		self.layer_7 = nn.Linear(512, 128)
-		self.layer_8 = nn.Linear(128, 32)
-		self.layer_output = nn.Linear(32, n_signals)
+		self.layer_1 = nn.Linear(input_size, 243)
+		self.layer_2 = nn.Linear(243, 729)
+		self.layer_3 = nn.Linear(729, 243)
+		self.layer_4 = nn.Linear(243, 81)
+		self.layer_5 = nn.Linear(81, 243)
+		self.layer_6 = nn.Linear(243, 81)
+		self.layer_7 = nn.Linear(81, 27)
+		self.layer_output = nn.Linear(27, n_signals)
 		self.dropout = nn.Dropout(DROPOUT)
 
 
@@ -37,7 +36,6 @@ class CryptoSoothsayer_Pi_0(nn.Module):
 		out = self.dropout(F.relu(self.layer_5(out)))
 		out = self.dropout(F.relu(self.layer_6(out)))
 		out = self.dropout(F.relu(self.layer_7(out)))
-		out = self.dropout(F.relu(self.layer_8(out)))
 		out = self.layer_output(out)
 		return out
 
@@ -276,7 +274,7 @@ class CryptoSoothsayer_Laptop_2(nn.Module):
 
 
 
-MODEL = CryptoSoothsayer_PC_1(N_FEATURES, N_SIGNALS)
+MODEL = CryptoSoothsayer_Laptop_2(N_FEATURES, N_SIGNALS)
 CRITERION = nn.CrossEntropyLoss()
 OPTIMIZER = optim.Adam(MODEL.parameters(), lr=LEARNING_RATE)
 lambda1 = lambda epoch: LEARNING_RATE_DECAY 
