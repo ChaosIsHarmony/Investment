@@ -68,7 +68,7 @@ def normalize_data_non_prescient(data):
 		data_cp.iloc[-1, column] = (data.iloc[-1, column] - col_min) / (col_max - col_min)
 
 	# fear and greed index is out of 100
-	data_cp["fear_greed"] = (data["fear_greed"] - data["fear_greed"].min()) / (data["fear_greed"].max() - data["fear_greed"].min())
+	data_cp["fear_greed"] = data["fear_greed"] / 100
 
 	return data_cp
 
@@ -193,12 +193,13 @@ def process_data(data, start_date, end_date):
 
 
 def run():
-	coins = ["algorand", "bitcoin", "cardano", "chainlink", "cosmos", "ethereum", "matic-network", "theta-token"]  
+	coins = ["the-graph"]
+	#coins = ["algorand", "bitcoin", "cardano", "chainlink", "cosmos", "ethereum", "matic-network", "theta-token"]  
 	# The following two coins have shorter histories and require a different start date {polkadot = 2020-08-23; solana = 2020-04-11}
 	#coins = ["polkadot"]
 	#coins = ["solana"]
 
-	start_date = "2019-10-20"
+	start_date = "2020-12-17"#"2019-10-20"
 	end_date = "2021-06-11"
 
 	for coin in coins:

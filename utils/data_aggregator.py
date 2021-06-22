@@ -13,7 +13,7 @@ import time
 import pandas as pd
 import numpy as np
 
-coin_id = ["algorand", "bitcoin", "cardano", "chainlink", "cosmos", "ethereum", "matic-network", "polkadot", "solana", "theta-token"]
+coin_id = ["algorand", "bitcoin", "cardano", "chainlink", "cosmos", "ethereum", "matic-network", "polkadot", "solana", "the-graph", "theta-token"]
 
 
 
@@ -162,7 +162,7 @@ def get_time():
 
 
 
-def merge_datasets(coin, list_of_datasets):
+def merge_datasets(coin, list_of_datasets, all_data=False):
 	'''
 	Merges two or more datasets
 	
@@ -171,7 +171,12 @@ def merge_datasets(coin, list_of_datasets):
 	merged_data = pd.concat(list_of_datasets)
 	merged_data["date"] = pd.to_datetime(merged_data["date"], dayfirst=True, infer_datetime_format=True)
 	merged_data = merged_data.sort_values(by=["date"], ascending=False)
-	merged_data = merged_data.drop_duplicates(subset=["date", "price", "market_cap", "volume"])
+	# if merging all datasets into mega training dataset, more than date must be unique
+	if all_data:
+		subset_cols = ["date", "price", "market_cap", "vol"]
+	else:
+		subset_cols = ["date"]
+	merged_data = merged_data.drop_duplicates(subset=subset_cols)
 	merged_data = merged_data.reset_index()
 	merged_data = merged_data.drop(columns=["index"])
 
@@ -187,11 +192,11 @@ def merge_new_dataset_with_old(coin, by_range=True):
 	data_to_merge = [pd.read_csv(f"datasets/raw/{coin}_historical_data_raw.csv")]
 
 	if by_range:
-		data_to_merge.append(pd.read_csv(f"datasets/raw/{coin}_historical_data_raw_by_range.csv"))
-		os.remove(f"datasets/raw/{coin}_historical_data_raw_by_range.csv")
+		data_to_merge.append(pd.read_csv(f"datasets/raw/{coin}_historical_data_by_range.csv"))
+		os.remove(f"datasets/raw/{coin}_historical_data_by_range.csv")
 	else:
-		data_to_merge.append(pd.read_csv(f"datasets/raw/{coin}_historical_data_raw_by_date.csv"))
-		os.remove(f"datasets/raw/{coin}_historical_data_raw_by_range.csv")
+		data_to_merge.append(pd.read_csv(f"datasets/raw/{coin}_historical_data_by_date.csv"))
+		os.remove(f"datasets/raw/{coin}_historical_data_by_date.csv")
 
 	merge_datasets(coin, data_to_merge)
 
@@ -204,7 +209,11 @@ def fetch_missing_data_by_dates(coin, dates):
 	historical_data = []
 
 	for date in dates:
-		data = get_historic_data(coin, date)
+		try:
+			data = get_historic_data(coin, date)
+		except:
+			print(f"Error on {date}")
+			continue
 
 		historical_data.append(extract_basic_data(data, date))
 
@@ -228,7 +237,12 @@ def fetch_missing_data_by_range(coin, n_days, start_delta):
 
 	for i in range(n_days):
 		next_date = get_correct_date_format(today - timedelta(i))
-		data = get_historic_data(coin, next_date)
+		try:
+			data = get_historic_data(coin, next_date)
+		except:
+			print(f"Error on {next_date}")
+			continue
+
 		daily_data = extract_basic_data(data, next_date)
 		daily_data["fear_greed"] = fear_greed[fear_greed_ind]["value"]
 		fear_greed_ind += 1
@@ -240,7 +254,7 @@ def fetch_missing_data_by_range(coin, n_days, start_delta):
 
 	# save as CSV
 	coin_data = pd.DataFrame(historical_data)
-	coin_data.to_csv(f"datasets/raw/{coin}_historical_data_raw_by_range.csv", index=False)
+	coin_data.to_csv(f"datasets/raw/{coin}_historical_data_by_range.csv", index=False)
 		
 	print(f"{coin} data successfully pulled and stored.")
 
@@ -255,11 +269,11 @@ def run(how_far_back):
 	api_call_cycle_start = get_time() 
 	fear_greed = get_fear_greed_by_range(how_far_back)
 	
-	for coin in ["bitcoin"]: #coin_id:
+	for coin in ["the-graph"]: #coin_id:
 		date_delta = -1 
-		error_counter = 0
 		fear_greed_ind = 0
 		has_next = True
+		missing_dates = []
 
 		# Extract basic data
 		historical_data = []
@@ -280,33 +294,38 @@ def run(how_far_back):
 			date_delta += 1
 			next_date = get_correct_date_format(today - timedelta(date_delta))
 			try:
-				error_counter = 0
 				data = get_historic_data(coin, next_date)
+				if date_delta >= how_far_back  or "error" in data.keys():
+					has_next = False
+					continue
 			except Exception as e:
 				print(f"Error: {e}")
 				print(f"Coin: {coin}")
 				print(f"Date that failed: {next_date}")
 				print(f"Days from today: {date_delta}")
-				error_counter += 1
-				if error_counter > 15:
-					has_next = False
+				missing_dates.append(next_date)
 				continue
 
-			if date_delta >= how_far_back  or "error" in data.keys():
-				has_next = False
-				continue
-
+			
 			daily_data = extract_basic_data(data, next_date)
 			daily_data["fear_greed"] = fear_greed[fear_greed_ind]["value"]
 			fear_greed_ind += 1
 
 			historical_data.append(daily_data)
 		
+		print("BROKE")
+
 		# save as CSV
 		coin_data = pd.DataFrame(historical_data)
 		coin_data.to_csv(f"datasets/raw/{coin}_historical_data_raw.csv", index=False)
+		
+		# if missing dates
+		if len(missing_dates) > 0:
+			fetch_missing_data_by_dates(coin, missing_dates)
+			merge_new_dataset_with_old(coin, by_range=False)
+
 		print(f"{coin} data successfully pulled and stored.")
 
 
 
-#run(4)
+#run(180)

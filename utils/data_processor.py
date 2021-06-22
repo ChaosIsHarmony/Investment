@@ -15,7 +15,7 @@ nn.MODEL.to(DEVICE)
 MODEL_FILEPATH = f"models/{nn.MODEL.get_class_name()}.pt"
 MODEL_CHECKPOINT_FILEPATH = f"models/checkpoint_{nn.MODEL.get_class_name()}.pt"
 BATCH_SIZE = 256 
-EPOCHS = 5 
+EPOCHS = 1 
 COIN = "bitcoin"
 REPORTS = [f"Model: {nn.MODEL.get_class_name()}", f"Learning rate: {nn.LEARNING_RATE}", f"Learning rate decay: {nn.LEARNING_RATE_DECAY}", f"Chance of dropout: {nn.DROPOUT}", f"Batch size: {BATCH_SIZE}", f"Epochs: {EPOCHS}", f"Coin: {COIN}"]
 
@@ -71,9 +71,9 @@ def generate_dataset(data, limit, offset, data_aug_per_sample=0):
 	return dataset
 
 
-def get_datasets():
+def get_datasets(coin, data_aug_factor=16):
 	# Load data
-	data = pd.read_csv(f"datasets/complete/{COIN}_historical_data_complete.csv")
+	data = pd.read_csv(f"datasets/complete/{coin}_historical_data_complete.csv")
 	data = data.drop(columns=["date"])
 	data["signal"] = data["signal"].astype("int64")
 
@@ -84,13 +84,13 @@ def get_datasets():
 	valid_end = train_end + int(round(n_datapoints*0.15))
 
 
-	train_data = generate_dataset(data, train_end, 0, 32)
+	train_data = generate_dataset(data, train_end, 0, data_aug_factor)
 	REPORTS.append(f"Length Training Data: {len(train_data)}")
 
-	valid_data = generate_dataset(data, train_end, 0, 4)
+	valid_data = generate_dataset(data, valid_end, train_end)
 	REPORTS.append(f"Length Validation Data: {len(valid_data)}")
 
-	test_data = generate_dataset(data, n_datapoints, valid_end, 0)
+	test_data = generate_dataset(data, n_datapoints, valid_end)
 	REPORTS.append(f"Length Testing Data: {len(test_data)}") 
 
 	return train_data, valid_data, test_data
@@ -294,7 +294,7 @@ def run():
 	# 
 	# ------------ DATA GENERATION ----------
 	#
-	train_data, valid_data, test_data = get_datasets()
+	train_data, valid_data, test_data = get_datasets(COIN)
 
 	#
 	# ------------ MODEL TRAINING -----------
