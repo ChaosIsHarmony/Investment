@@ -13,7 +13,7 @@ import time
 import pandas as pd
 import numpy as np
 
-coin_id = ["algorand", "bitcoin", "cardano", "chainlink", "cosmos", "ethereum", "matic-network", "polkadot", "solana", "the-graph", "theta-token"]
+coin_id = ["algorand", "bitcoin", "cardano", "chainlink", "decentraland", "cosmos", "ethereum", "matic-network", "polkadot", "solana", "the-graph", "theta-token"]
 
 
 

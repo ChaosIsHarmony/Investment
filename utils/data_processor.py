@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import torch
 import time
@@ -15,7 +16,7 @@ nn.MODEL.to(DEVICE)
 MODEL_FILEPATH = f"models/{nn.MODEL.get_class_name()}.pt"
 MODEL_CHECKPOINT_FILEPATH = f"models/checkpoint_{nn.MODEL.get_class_name()}.pt"
 BATCH_SIZE = 256 
-EPOCHS = 3 
+EPOCHS = 1 
 COIN = "bitcoin"
 REPORTS = [f"Model: {nn.MODEL.get_class_name()}", f"Learning rate: {nn.LEARNING_RATE}", f"Learning rate decay: {nn.LEARNING_RATE_DECAY}", f"Chance of dropout: {nn.DROPOUT}", f"Batch size: {BATCH_SIZE}", f"Epochs: {EPOCHS}", f"Coin: {COIN}"]
 
@@ -269,6 +270,7 @@ def evaluate_model(model, test_data):
 	REPORTS.append(report)
 	print(report)
 
+	return [correct/len(test_data), (mostly_correct+correct)/len(test_data), nasty_fail/len(test_data), catastrophic_fail/len(test_data)]
 
 #
 # ---------- REPORTING FUNCTIONS ----------
@@ -324,4 +326,91 @@ def run():
 	
 
 
-run()
+def validate_model_param_tuning(valid_data, min_valid_loss, model_architecture, model_counter):
+	# set to evaluate mode to turn off components like dropout
+	nn.MODEL.eval()
+	valid_loss = 0.0
+	for feature, target in valid_data:
+		# make data pytorch compatible
+		feature_tensor, target_tensor = convert_to_tensor(feature, target)
+		# model makes prediction
+		with torch.no_grad():
+			model_output = nn.MODEL(feature_tensor)
+			loss = nn.CRITERION(model_output, target_tensor)
+			valid_loss += loss.item()
+
+	if valid_loss/len(valid_data) < min_valid_loss:
+		min_valid_loss = valid_loss/len(valid_data)
+		save_model_state(f"models/CS_{model_architecture}_{model_counter}_mod.pt", nn.MODEL)
+
+	return min_valid_loss
+
+
+
+
+def parameter_tuner():
+	train_data, valid_data, test_data = get_datasets(COIN)
+	best = [0, 0, 1, 1]
+	model_counter = 0
+
+	for eta in np.arange(0.001, 0.005, 0.00025):
+		nn.LEARNING_RATE = eta
+		for decay in np.arange(0.9999, 0.999999, 0.00001):	
+			nn.LEARNING_RATE_DECAY = decay
+			for dropout in np.arange(0.05, 0.6, 0.05):
+				report = "" 
+				nn.DROPOUT = dropout
+				
+				model_architecture = "Laptop_0"
+				nn.MODEL = nn.CryptoSoothsayer_Laptop_0(nn.N_FEATURES, nn.N_SIGNALS) 
+				start_time = time.time()
+				# Train
+				min_valid_loss = np.inf 
+				train_data = shuffle_data(train_data)
+
+				for epoch in range(EPOCHS):
+					steps = 0
+					train_loss = 0.0
+
+					for feature, target in train_data:
+						steps += 1
+						# train model on feature
+						train_loss = take_one_step(feature, target, train_loss)
+						# if end of batch or end of dataset, validate model
+						if steps % BATCH_SIZE == 0 or steps == len(train_data)-1:
+							min_valid_loss = validate_model_param_tuning(valid_data, min_valid_loss, model_architecture, model_counter)
+
+					print(f"Time Elapsed: {time.time() - start_time} | Training Loss: {train_loss/steps} | Min Validation Loss: {min_valid_loss}")
+
+				# Save
+				save_checkpoint(f"models/CS_{model_architecture}_{model_counter}_chk.pt", nn.MODEL)
+
+
+				model_checkpoint = load_checkpoint(f"models/CS_{model_architecture}_{model_counter}_chk.pt")
+				model = load_model(nn.MODEL, f"models/CS_{model_architecture}_{model_counter}_mod.pt")
+			
+				chk_pt_acc = evaluate_model(model_checkpoint, test_data)
+				mod_acc = evaluate_model(model, test_data)
+
+				if chk_pt_acc[1] >= best[1] and chk_pt_acc[3] <= best[3]:
+					report += f"CHECKPOINT FOR MODEL: {model_counter}\nPARAMETERS:\n\tLaptop_0\n\teta: {eta} | decay: {decay} | dropout: {dropout}\nDECISIONS:\n\tPerfect Decision: {chk_pt_acc[0]}\n\tAcceptable Decision: {chk_pt_acc[1]}\n\tSignal Should Have Been Hodl: {chk_pt_acc[2]}\n\tSignal and Answer Exact Opposite: {chk_pt_acc[3]}\n"
+					save_model_state(f"models/CS_{model_architecture}_{model_counter}_0.pt", nn.MODEL)
+
+				if mod_acc[1] >= best[1] and mod_acc[3] <= best[3]:
+					report += f"MODEL: {model_counter}\nPARAMETERS:\n\tLaptop_0\n\teta: {eta} | decay: {decay} | dropout: {dropout}\nDECISIONS:\n\tPerfect Decision: {mod_acc[0]}\n\tAcceptable Decision: {mod_acc[1]}\n\tSignal Should Have Been Hodl: {mod_acc[2]}\n\tSignal and Answer Exact Opposite: {mod_acc[3]}"
+					save_model_state(f"models/CS_{model_architecture}_{model_counter}_1.pt", nn.MODEL)
+				
+				# erase chkpt and model
+				os.remove(f"models/CS_{model_architecture}_{model_counter}_chk.pt")
+				os.remove(f"models/CS_{model_architecture}_{model_counter}_mod.pt")
+				
+				if len(report) > 0:
+					with open(f"reports/Parameter_Tuning_Report_{str(date.today())}.txt", "w") as f:
+					# starting from index 1 to avoid first triple space divider
+						f.write(report + "\n\n")
+
+					print("Report written")
+
+
+parameter_tuner()
+#run()

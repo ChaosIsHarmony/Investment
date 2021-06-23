@@ -1,0 +1,40 @@
+Model: CryptoSoothsayer_Pi_0
+Learning rate: 0.002
+Learning rate decay: 0.999995
+Chance of dropout: 0.2
+Batch size: 256
+Epochs: 3
+Coin: bitcoin
+Length Training Data: 22569
+Length Validation Data: 129
+Length Testing Data: 129
+Training Loss: 1.6144 | Validation Loss: 1.6150 | eta: 0.001997
+Training Loss: 1.5496 | Validation Loss: 1.5918 | eta: 0.001990
+Training Loss: 1.5071 | Validation Loss: 1.5149 | eta: 0.001987
+Training Loss: 1.4335 | Validation Loss: 1.4676 | eta: 0.001980
+Training Loss: 1.3780 | Validation Loss: 1.4566 | eta: 0.001975
+Training Loss: 1.1790 | Validation Loss: 1.4148 | eta: 0.001937
+Training Loss: 1.1584 | Validation Loss: 1.3977 | eta: 0.001930
+Time elapsed by epoch 1: 13.316666666666666 mins.
+Time elapsed by epoch 2: 28.45 mins.
+Time elapsed by epoch 3: 42.916666666666664 mins.
+EVALUATE FULLY TRAINED MODEL
+
+	POSITIVE:
+		[++] Perfect accuracy:     0.2016
+		[+] Model good enough accuracy:     0.7984
+	NEGATIVE:
+		[-] Told to hodl but should have sold/bought rate:     0.0000
+		[--] Should have hodled but told to sell/buy rate:     0.2016
+		[---] Told to do the opposite of correct move rate:     0.0000
+		
+EVALUATE VALIDATION-BASED MODEL
+
+	POSITIVE:
+		[++] Perfect accuracy:     0.0620
+		[+] Model good enough accuracy:     0.3643
+	NEGATIVE:
+		[-] Told to hodl but should have sold/bought rate:     0.2016
+		[--] Should have hodled but told to sell/buy rate:     0.1473
+		[---] Told to do the opposite of correct move rate:     0.2868
+		

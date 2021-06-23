@@ -7,7 +7,29 @@ from datetime import date, timedelta
 
 
 DECISIONS = ["BUY 2X", "BUY X", "HODL", "SELL Y", "SELL 2Y"]
-
+PRICE = 0
+MARKET_CAP = 1
+VOLUME = 2
+FEAR_GREED = 5
+PRICE_5_SMA = 6
+PRICE_10_SMA = PRICE_5_SMA+1
+PRICE_25_SMA = PRICE_5_SMA+2
+PRICE_50_SMA = PRICE_5_SMA+3
+PRICE_75_SMA = PRICE_5_SMA+4
+PRICE_100_SMA = PRICE_5_SMA+5
+PRICE_150_SMA = PRICE_5_SMA+6
+PRICE_200_SMA = PRICE_5_SMA+7
+PRICE_250_SMA = PRICE_5_SMA+8
+PRICE_300_SMA = PRICE_5_SMA+9
+PRICE_350_SMA = PRICE_5_SMA+10
+FG_3_SMA = 17
+FG_5_SMA = FG_3_SMA+1
+FG_7_SMA = FG_3_SMA+2
+FG_9_SMA = FG_3_SMA+3
+FG_11_SMA = FG_3_SMA+4
+FG_13_SMA = FG_3_SMA+5
+FG_15_SMA = FG_3_SMA+6
+FG_30_SMA = FG_3_SMA+7
 
 def fetch_new_data(n_days):
 	for coin in dt_agg.coin_id:
@@ -50,71 +72,75 @@ def populate_stat_report(coin, data, report):
 					f"Report for {coin.upper()}:", 
 					"Basic Stats", 
 					"[1.0 is the highest; 0.0 is the lowest]", 
-					f"price:\t\t{data[0]:.6f}", 
-					f"market_cap:\t{data[1]:.6f}", 
-					f"volume:\t\t{data[2]:.6f}", 
-					f"fear/greed\t{data[6]:.6f} [{get_fg_indicator(data[6])}]"]
+					f"price:\t\t{data[PRICE]:.6f}", 
+					f"market_cap:\t{data[MARKET_CAP]:.6f}", 
+					f"volume:\t\t{data[VOLUME]:.6f}", 
+					f"fear/greed\t{data[FEAR_GREED]:.6f} [{get_fg_indicator(data[FEAR_GREED])}]"]
 	
 	price_ratios = ["\nPrice Ratios", 
 					"[>0 means greater risk/overvalued; <0 means less risk/undervalued]", 
-					f"5-day/10-day:\t{data[7]/data[8]:>9.6f}", 
-					f"10-day/25-day:\t{data[8]/data[9]:>9.6f}", 
-					f"25-day/50-day:\t{data[9]/data[10]:>9.6f}"]
+					f"5-day/10-day:\t{data[PRICE_5_SMA]/data[PRICE_10_SMA]:>9.6f}", 
+					f"10-day/25-day:\t{data[PRICE_10_SMA]/data[PRICE_25_SMA]:>9.6f}", 
+					f"25-day/50-day:\t{data[PRICE_25_SMA]/data[PRICE_50_SMA]:>9.6f}"]
 
-	if data[14] > 0:
+	if data[PRICE_200_SMA] > 0:
 		price_ratios.append("x-day/200-day")
-		price_ratios.append(f"\t5-day/200-day:\t\t{data[7]/data[14]:>9.6f}")
-		price_ratios.append(f"\t10-day/200-day:\t\t{data[8]/data[14]:>9.6f}")
-		price_ratios.append(f"\t25-day/200-day:\t\t{data[9]/data[14]:>9.6f}")
-		price_ratios.append(f"\t50-day/200-day:\t\t{data[10]/data[14]:>9.6f}")
-		price_ratios.append(f"\t75-day/200-day:\t\t{data[11]/data[14]:>9.6f}")
-		price_ratios.append(f"\t100-day/200-day:\t{data[12]/data[14]:>9.6f}")
-	if data[15] > 0:
+		price_ratios.append(f"\t5-day/200-day:\t\t{data[PRICE_5_SMA]/data[PRICE_200_SMA]:>9.6f}")
+		price_ratios.append(f"\t10-day/200-day:\t\t{data[PRICE_10_SMA]/data[PRICE_200_SMA]:>9.6f}")
+		price_ratios.append(f"\t25-day/200-day:\t\t{data[PRICE_25_SMA]/data[PRICE_200_SMA]:>9.6f}")
+		price_ratios.append(f"\t50-day/200-day:\t\t{data[PRICE_50_SMA]/data[PRICE_200_SMA]:>9.6f}")
+		price_ratios.append(f"\t75-day/200-day:\t\t{data[PRICE_75_SMA]/data[PRICE_200_SMA]:>9.6f}")
+		price_ratios.append(f"\t100-day/200-day:\t{data[PRICE_100_SMA]/data[PRICE_200_SMA]:>9.6f}")
+		price_ratios.append(f"\t150-day/200-day:\t{data[PRICE_150_SMA]/data[PRICE_200_SMA]:>9.6f}")
+	if data[PRICE_250_SMA] > 0:
 		price_ratios.append("x-day/250-day")
-		price_ratios.append(f"\t5-day/250-day:\t\t{data[7]/data[15]:>9.6f}")
-		price_ratios.append(f"\t10-day/250-day:\t\t{data[8]/data[15]:>9.6f}")
-		price_ratios.append(f"\t25-day/250-day:\t\t{data[9]/data[15]:>9.6f}")
-		price_ratios.append(f"\t50-day/250-day:\t\t{data[10]/data[15]:>9.6f}")
-		price_ratios.append(f"\t75-day/250-day:\t\t{data[11]/data[15]:>9.6f}")
-		price_ratios.append(f"\t100-day/250-day:\t{data[12]/data[15]:>9.6f}")
-	if data[16] > 0:
+		price_ratios.append(f"\t5-day/250-day:\t\t{data[PRICE_5_SMA]/data[PRICE_250_SMA]:>9.6f}")
+		price_ratios.append(f"\t10-day/250-day:\t\t{data[PRICE_10_SMA]/data[PRICE_250_SMA]:>9.6f}")
+		price_ratios.append(f"\t25-day/250-day:\t\t{data[PRICE_25_SMA]/data[PRICE_250_SMA]:>9.6f}")
+		price_ratios.append(f"\t50-day/250-day:\t\t{data[PRICE_50_SMA]/data[PRICE_250_SMA]:>9.6f}")
+		price_ratios.append(f"\t75-day/250-day:\t\t{data[PRICE_75_SMA]/data[PRICE_250_SMA]:>9.6f}")
+		price_ratios.append(f"\t100-day/250-day:\t{data[PRICE_100_SMA]/data[PRICE_250_SMA]:>9.6f}")
+		price_ratios.append(f"\t150-day/250-day:\t{data[PRICE_150_SMA]/data[PRICE_250_SMA]:>9.6f}")
+	if data[PRICE_300_SMA] > 0:
 		price_ratios.append("x-day/300-day")
-		price_ratios.append(f"\t5-day/300-day:\t\t{data[7]/data[16]:>9.6f}")
-		price_ratios.append(f"\t10-day/300-day:\t\t{data[8]/data[16]:>9.6f}")
-		price_ratios.append(f"\t25-day/300-day:\t\t{data[9]/data[16]:>9.6f}")
-		price_ratios.append(f"\t50-day/300-day:\t\t{data[10]/data[16]:>9.6f}")
-		price_ratios.append(f"\t75-day/300-day:\t\t{data[11]/data[16]:>9.6f}")
-		price_ratios.append(f"\t100-day/300-day:\t{data[12]/data[16]:>9.6f}")
-	if data[17] > 0:
+		price_ratios.append(f"\t5-day/300-day:\t\t{data[PRICE_5_SMA]/data[PRICE_300_SMA]:>9.6f}")
+		price_ratios.append(f"\t10-day/300-day:\t\t{data[PRICE_10_SMA]/data[PRICE_300_SMA]:>9.6f}")
+		price_ratios.append(f"\t25-day/300-day:\t\t{data[PRICE_25_SMA]/data[PRICE_300_SMA]:>9.6f}")
+		price_ratios.append(f"\t50-day/300-day:\t\t{data[PRICE_50_SMA]/data[PRICE_300_SMA]:>9.6f}")
+		price_ratios.append(f"\t75-day/300-day:\t\t{data[PRICE_75_SMA]/data[PRICE_300_SMA]:>9.6f}")
+		price_ratios.append(f"\t100-day/300-day:\t{data[PRICE_100_SMA]/data[PRICE_300_SMA]:>9.6f}")
+		price_ratios.append(f"\t150-day/300-day:\t{data[PRICE_150_SMA]/data[PRICE_300_SMA]:>9.6f}")
+	if data[PRICE_350_SMA] > 0:
 		price_ratios.append("x-day/350-day")
-		price_ratios.append(f"\t5-day/350-day:\t\t{data[7]/data[17]:>9.6f}")
-		price_ratios.append(f"\t10-day/350-day:\t\t{data[8]/data[17]:>9.6f}")
-		price_ratios.append(f"\t25-day/350-day:\t\t{data[9]/data[17]:>9.6f}")
-		price_ratios.append(f"\t50-day/350-day:\t\t{data[10]/data[17]:>9.6f}")
-		price_ratios.append(f"\t75-day/350-day:\t\t{data[11]/data[17]:>9.6f}")
-		price_ratios.append(f"\t100-day/350-day:\t{data[12]/data[17]:>9.6f}")
+		price_ratios.append(f"\t5-day/350-day:\t\t{data[PRICE_5_SMA]/data[PRICE_350_SMA]:>9.6f}")
+		price_ratios.append(f"\t10-day/350-day:\t\t{data[PRICE_10_SMA]/data[PRICE_350_SMA]:>9.6f}")
+		price_ratios.append(f"\t25-day/350-day:\t\t{data[PRICE_25_SMA]/data[PRICE_350_SMA]:>9.6f}")
+		price_ratios.append(f"\t50-day/350-day:\t\t{data[PRICE_50_SMA]/data[PRICE_350_SMA]:>9.6f}")
+		price_ratios.append(f"\t75-day/350-day:\t\t{data[PRICE_75_SMA]/data[PRICE_350_SMA]:>9.6f}")
+		price_ratios.append(f"\t100-day/350-day:\t{data[PRICE_100_SMA]/data[PRICE_350_SMA]:>9.6f}")
+		price_ratios.append(f"\t150-day/350-day:\t{data[PRICE_150_SMA]/data[PRICE_350_SMA]:>9.6f}")
 	else:
 		price_ratios.append("WARNING: DATA MISSING FROM SMAs; MODEL MAY BE UNRELIABLE")
 
 	price_deltas = ["\nPrice Deltas", 
 					"[<0 shows a decrease; >0 shows an increase]", 
-					f"5-day -> Present:\t\t{data[0]-data[7]:>9.6f}", 
-					f"10-day -> 5-day:\t\t{data[7]-data[8]:>9.6f}", 
-					f"25-day -> 10-day:\t\t{data[8]-data[9]:>9.6f}", 
-					f"50-day -> 25-day:\t\t{data[9]-data[10]:>9.6f}", 
-					f"75-day -> 50-day:\t\t{data[10]-data[11]:>9.6f}", 
-					f"100-day -> 75-day:\t\t{data[11]-data[12]:>9.6f}"]
+					f"5-day -> Present:\t\t{data[PRICE]-data[PRICE_5_SMA]:>9.6f}", 
+					f"10-day -> 5-day:\t\t{data[PRICE_5_SMA]-data[PRICE_10_SMA]:>9.6f}", 
+					f"25-day -> 10-day:\t\t{data[PRICE_10_SMA]-data[PRICE_25_SMA]:>9.6f}", 
+					f"50-day -> 25-day:\t\t{data[PRICE_25_SMA]-data[PRICE_50_SMA]:>9.6f}", 
+					f"75-day -> 50-day:\t\t{data[PRICE_50_SMA]-data[PRICE_75_SMA]:>9.6f}", 
+					f"100-day -> 75-day:\t\t{data[PRICE_75_SMA]-data[PRICE_100_SMA]:>9.6f}"]
 	
 	fear_greed_deltas = ["\nFear/Greed Deltas", 
 						"[>0 is greedier; <0 is more fearful]", 
-						f"3-day -> Present:\t{data[6]-data[18]:>9.6f}", 
-						f"5-day -> 3-day:\t\t{data[18]-data[19]:>9.6f}", 
-						f"7-day -> 5-day\t\t{data[19]-data[20]:>9.6f}", 
-						f"9-day -> 7-day:\t\t{data[20]-data[21]:>9.6f}", 
-						f"11-day -> 9-day:\t{data[21]-data[22]:>9.6f}", 
-						f"13-day -> 11-day:\t{data[22]-data[23]:>9.6f}", 
-						f"15-day -> 13-day:\t{data[23]-data[24]:>9.6f}", 
-						f"30-day -> 15-day:\t{data[24]-data[25]:>9.6f}"]
+						f"3-day -> Present:\t{data[FEAR_GREED]-data[FG_3_SMA]:>9.6f}", 
+						f"5-day -> 3-day:\t\t{data[FG_3_SMA]-data[FG_5_SMA]:>9.6f}", 
+						f"7-day -> 5-day\t\t{data[FG_5_SMA]-data[FG_7_SMA]:>9.6f}", 
+						f"9-day -> 7-day:\t\t{data[FG_7_SMA]-data[FG_9_SMA]:>9.6f}", 
+						f"11-day -> 9-day:\t{data[FG_9_SMA]-data[FG_11_SMA]:>9.6f}", 
+						f"13-day -> 11-day:\t{data[FG_11_SMA]-data[FG_13_SMA]:>9.6f}", 
+						f"15-day -> 13-day:\t{data[FG_13_SMA]-data[FG_15_SMA]:>9.6f}", 
+						f"30-day -> 15-day:\t{data[FG_15_SMA]-data[FG_30_SMA]:>9.6f}"]
 
 	for item in basic_stats:
 		report.append(item)

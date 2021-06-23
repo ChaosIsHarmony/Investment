@@ -1,1 +1,0 @@
-1.) Figure out why fear/greed index differs by coin when it should be the same

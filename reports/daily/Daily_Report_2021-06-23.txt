@@ -1,0 +1,882 @@
+Report for ALGORAND:
+Basic Stats
+[1.0 is the highest; 0.0 is the lowest]
+price:		0.385814
+market_cap:	0.000519
+volume:		0.001672
+fear/greed	0.140000 [Extreme Fear]
+
+Price Ratios
+[>0 means greater risk/overvalued; <0 means less risk/undervalued]
+5-day/10-day:	 0.888159
+10-day/25-day:	 0.923492
+25-day/50-day:	 0.854861
+x-day/200-day
+	5-day/200-day:		 0.555346
+	10-day/200-day:		 0.625278
+	25-day/200-day:		 0.677080
+	50-day/200-day:		 0.792035
+	75-day/200-day:		 0.905572
+	100-day/200-day:	 0.938976
+	150-day/200-day:	 1.000000
+x-day/250-day
+	5-day/250-day:		 0.555346
+	10-day/250-day:		 0.625278
+	25-day/250-day:		 0.677080
+	50-day/250-day:		 0.792035
+	75-day/250-day:		 0.905572
+	100-day/250-day:	 0.938976
+	150-day/250-day:	 1.000000
+x-day/300-day
+	5-day/300-day:		 0.555346
+	10-day/300-day:		 0.625278
+	25-day/300-day:		 0.677080
+	50-day/300-day:		 0.792035
+	75-day/300-day:		 0.905572
+	100-day/300-day:	 0.938976
+	150-day/300-day:	 1.000000
+x-day/350-day
+	5-day/350-day:		 0.555346
+	10-day/350-day:		 0.625278
+	25-day/350-day:		 0.677080
+	50-day/350-day:		 0.792035
+	75-day/350-day:		 0.905572
+	100-day/350-day:	 0.938976
+	150-day/350-day:	 1.000000
+
+Price Deltas
+[<0 shows a decrease; >0 shows an increase]
+5-day -> Present:		-0.169532
+10-day -> 5-day:		-0.069932
+25-day -> 10-day:		-0.051802
+50-day -> 25-day:		-0.114955
+75-day -> 50-day:		-0.113537
+100-day -> 75-day:		-0.033404
+
+Fear/Greed Deltas
+[>0 is greedier; <0 is more fearful]
+3-day -> Present:	-0.016667
+5-day -> 3-day:		-0.025333
+7-day -> 5-day		-0.020857
+9-day -> 7-day:		-0.033810
+11-day -> 9-day:	-0.003333
+13-day -> 11-day:	-0.000769
+15-day -> 13-day:	 0.008769
+30-day -> 15-day:	 0.015667
+
+Action Signals
+Signal by best nn:	SELL Y
+Signal by votes:	SELL Y
+Signal by weights:	SELL Y
+	Weights:	[tensor(-20.2097), tensor(-1.9219), tensor(-2.8286), tensor(-0.4047), tensor(-2.4038)]
+	Diff 1st and 2nd:	   0.5057
+	Diff 1st and last:	   6.6017
+
+
+
+
+Report for BITCOIN:
+Basic Stats
+[1.0 is the highest; 0.0 is the lowest]
+price:		0.474497
+market_cap:	0.000452
+volume:		0.000314
+fear/greed	0.140000 [Extreme Fear]
+
+Price Ratios
+[>0 means greater risk/overvalued; <0 means less risk/undervalued]
+5-day/10-day:	 0.914047
+10-day/25-day:	 0.979414
+25-day/50-day:	 0.847557
+x-day/200-day
+	5-day/200-day:		 0.541710
+	10-day/200-day:		 0.592650
+	25-day/200-day:		 0.605107
+	50-day/200-day:		 0.713942
+	75-day/200-day:		 0.826263
+	100-day/200-day:	 0.907366
+	150-day/200-day:	 0.998878
+x-day/250-day
+	5-day/250-day:		 0.541710
+	10-day/250-day:		 0.592650
+	25-day/250-day:		 0.605107
+	50-day/250-day:		 0.713942
+	75-day/250-day:		 0.826263
+	100-day/250-day:	 0.907366
+	150-day/250-day:	 0.998878
+x-day/300-day
+	5-day/300-day:		 0.541710
+	10-day/300-day:		 0.592650
+	25-day/300-day:		 0.605107
+	50-day/300-day:		 0.713942
+	75-day/300-day:		 0.826263
+	100-day/300-day:	 0.907366
+	150-day/300-day:	 0.998878
+x-day/350-day
+	5-day/350-day:		 0.541710
+	10-day/350-day:		 0.592650
+	25-day/350-day:		 0.605107
+	50-day/350-day:		 0.713942
+	75-day/350-day:		 0.826263
+	100-day/350-day:	 0.907366
+	150-day/350-day:	 0.998878
+
+Price Deltas
+[<0 shows a decrease; >0 shows an increase]
+5-day -> Present:		-0.067213
+10-day -> 5-day:		-0.050940
+25-day -> 10-day:		-0.012457
+50-day -> 25-day:		-0.108836
+75-day -> 50-day:		-0.112321
+100-day -> 75-day:		-0.081103
+
+Fear/Greed Deltas
+[>0 is greedier; <0 is more fearful]
+3-day -> Present:	-0.016667
+5-day -> 3-day:		-0.025333
+7-day -> 5-day		-0.020857
+9-day -> 7-day:		-0.033810
+11-day -> 9-day:	-0.003333
+13-day -> 11-day:	-0.000769
+15-day -> 13-day:	 0.008769
+30-day -> 15-day:	 0.015667
+
+Action Signals
+Signal by best nn:	SELL Y
+Signal by votes:	SELL Y
+Signal by weights:	SELL Y
+	Weights:	[tensor(-19.9443), tensor(-1.8697), tensor(-2.8423), tensor(-0.7580), tensor(-2.9959)]
+	Diff 1st and 2nd:	   0.3706
+	Diff 1st and last:	   6.3954
+
+
+
+
+Report for CARDANO:
+Basic Stats
+[1.0 is the highest; 0.0 is the lowest]
+price:		0.497042
+market_cap:	0.000556
+volume:		0.000450
+fear/greed	0.140000 [Extreme Fear]
+
+Price Ratios
+[>0 means greater risk/overvalued; <0 means less risk/undervalued]
+5-day/10-day:	 0.845236
+10-day/25-day:	 0.831255
+25-day/50-day:	 0.890254
+x-day/200-day
+	5-day/200-day:		 0.622812
+	10-day/200-day:		 0.736850
+	25-day/200-day:		 0.886430
+	50-day/200-day:		 0.995705
+	75-day/200-day:		 0.999016
+	100-day/200-day:	 1.000000
+	150-day/200-day:	 1.000000
+x-day/250-day
+	5-day/250-day:		 0.622812
+	10-day/250-day:		 0.736850
+	25-day/250-day:		 0.886430
+	50-day/250-day:		 0.995705
+	75-day/250-day:		 0.999016
+	100-day/250-day:	 1.000000
+	150-day/250-day:	 1.000000
+x-day/300-day
+	5-day/300-day:		 0.622812
+	10-day/300-day:		 0.736850
+	25-day/300-day:		 0.886430
+	50-day/300-day:		 0.995705
+	75-day/300-day:		 0.999016
+	100-day/300-day:	 1.000000
+	150-day/300-day:	 1.000000
+x-day/350-day
+	5-day/350-day:		 0.622812
+	10-day/350-day:		 0.736850
+	25-day/350-day:		 0.886430
+	50-day/350-day:		 0.995705
+	75-day/350-day:		 0.999016
+	100-day/350-day:	 1.000000
+	150-day/350-day:	 1.000000
+
+Price Deltas
+[<0 shows a decrease; >0 shows an increase]
+5-day -> Present:		-0.125770
+10-day -> 5-day:		-0.114038
+25-day -> 10-day:		-0.149580
+50-day -> 25-day:		-0.109275
+75-day -> 50-day:		-0.003311
+100-day -> 75-day:		-0.000984
+
+Fear/Greed Deltas
+[>0 is greedier; <0 is more fearful]
+3-day -> Present:	-0.016667
+5-day -> 3-day:		-0.025333
+7-day -> 5-day		-0.020857
+9-day -> 7-day:		-0.033810
+11-day -> 9-day:	-0.003333
+13-day -> 11-day:	-0.000769
+15-day -> 13-day:	 0.008769
+30-day -> 15-day:	 0.015667
+
+Action Signals
+Signal by best nn:	SELL 2Y
+Signal by votes:	SELL 2Y
+Signal by weights:	SELL 2Y
+	Weights:	[tensor(-24.6906), tensor(-3.7791), tensor(-2.7839), tensor(-0.6641), tensor(0.2606)]
+	Diff 1st and 2nd:	   0.3082
+	Diff 1st and last:	   8.3171
+
+
+
+
+Report for CHAINLINK:
+Basic Stats
+[1.0 is the highest; 0.0 is the lowest]
+price:		0.299542
+market_cap:	0.000317
+volume:		0.001428
+fear/greed	0.140000 [Extreme Fear]
+
+Price Ratios
+[>0 means greater risk/overvalued; <0 means less risk/undervalued]
+5-day/10-day:	 0.869993
+10-day/25-day:	 0.779195
+25-day/50-day:	 0.718762
+x-day/200-day
+	5-day/200-day:		 0.396934
+	10-day/200-day:		 0.456250
+	25-day/200-day:		 0.585540
+	50-day/200-day:		 0.814652
+	75-day/200-day:		 0.941595
+	100-day/200-day:	 0.954756
+	150-day/200-day:	 0.997367
+x-day/250-day
+	5-day/250-day:		 0.396934
+	10-day/250-day:		 0.456250
+	25-day/250-day:		 0.585540
+	50-day/250-day:		 0.814652
+	75-day/250-day:		 0.941595
+	100-day/250-day:	 0.954756
+	150-day/250-day:	 0.997367
+x-day/300-day
+	5-day/300-day:		 0.396934
+	10-day/300-day:		 0.456250
+	25-day/300-day:		 0.585540
+	50-day/300-day:		 0.814652
+	75-day/300-day:		 0.941595
+	100-day/300-day:	 0.954756
+	150-day/300-day:	 0.997367
+x-day/350-day
+	5-day/350-day:		 0.396934
+	10-day/350-day:		 0.456250
+	25-day/350-day:		 0.585540
+	50-day/350-day:		 0.814652
+	75-day/350-day:		 0.941595
+	100-day/350-day:	 0.954756
+	150-day/350-day:	 0.997367
+
+Price Deltas
+[<0 shows a decrease; >0 shows an increase]
+5-day -> Present:		-0.097393
+10-day -> 5-day:		-0.059316
+25-day -> 10-day:		-0.129290
+50-day -> 25-day:		-0.229111
+75-day -> 50-day:		-0.126944
+100-day -> 75-day:		-0.013161
+
+Fear/Greed Deltas
+[>0 is greedier; <0 is more fearful]
+3-day -> Present:	-0.016667
+5-day -> 3-day:		-0.025333
+7-day -> 5-day		-0.020857
+9-day -> 7-day:		-0.033810
+11-day -> 9-day:	-0.003333
+13-day -> 11-day:	-0.000769
+15-day -> 13-day:	 0.008769
+30-day -> 15-day:	 0.015667
+
+Action Signals
+Signal by best nn:	SELL Y
+Signal by votes:	BUY X
+Signal by weights:	BUY X
+	Weights:	[tensor(-18.2683), tensor(-1.7406), tensor(-2.7241), tensor(-2.0556), tensor(-4.4993)]
+	Diff 1st and 2nd:	   0.1050
+	Diff 1st and last:	   5.5092
+
+
+
+
+Report for DECENTRALAND:
+Basic Stats
+[1.0 is the highest; 0.0 is the lowest]
+price:		0.274134
+market_cap:	0.000273
+volume:		0.027532
+fear/greed	0.140000 [Extreme Fear]
+
+Price Ratios
+[>0 means greater risk/overvalued; <0 means less risk/undervalued]
+5-day/10-day:	 0.875222
+10-day/25-day:	 0.839439
+25-day/50-day:	 0.704811
+x-day/200-day
+	5-day/200-day:		 0.381401
+	10-day/200-day:		 0.435777
+	25-day/200-day:		 0.519128
+	50-day/200-day:		 0.736549
+	75-day/200-day:		 0.914505
+	100-day/200-day:	 0.989053
+	150-day/200-day:	 1.000000
+x-day/250-day
+	5-day/250-day:		 0.381401
+	10-day/250-day:		 0.435777
+	25-day/250-day:		 0.519128
+	50-day/250-day:		 0.736549
+	75-day/250-day:		 0.914505
+	100-day/250-day:	 0.989053
+	150-day/250-day:	 1.000000
+x-day/300-day
+	5-day/300-day:		 0.381401
+	10-day/300-day:		 0.435777
+	25-day/300-day:		 0.519128
+	50-day/300-day:		 0.736549
+	75-day/300-day:		 0.914505
+	100-day/300-day:	 0.989053
+	150-day/300-day:	 1.000000
+x-day/350-day
+	5-day/350-day:		 0.381401
+	10-day/350-day:		 0.435777
+	25-day/350-day:		 0.519128
+	50-day/350-day:		 0.736549
+	75-day/350-day:		 0.914505
+	100-day/350-day:	 0.989053
+	150-day/350-day:	 1.000000
+
+Price Deltas
+[<0 shows a decrease; >0 shows an increase]
+5-day -> Present:		-0.107267
+10-day -> 5-day:		-0.054376
+25-day -> 10-day:		-0.083352
+50-day -> 25-day:		-0.217421
+75-day -> 50-day:		-0.177955
+100-day -> 75-day:		-0.074548
+
+Fear/Greed Deltas
+[>0 is greedier; <0 is more fearful]
+3-day -> Present:	-0.016667
+5-day -> 3-day:		-0.025333
+7-day -> 5-day		-0.020857
+9-day -> 7-day:		-0.033810
+11-day -> 9-day:	-0.003333
+13-day -> 11-day:	-0.000769
+15-day -> 13-day:	 0.008769
+30-day -> 15-day:	 0.015667
+
+Action Signals
+Signal by best nn:	SELL Y
+Signal by votes:	SELL Y
+Signal by weights:	BUY X
+	Weights:	[tensor(-16.3002), tensor(-1.4719), tensor(-2.7557), tensor(-2.2278), tensor(-5.2995)]
+	Diff 1st and 2nd:	   0.2520
+	Diff 1st and last:	   4.9428
+
+
+
+
+Report for COSMOS:
+Basic Stats
+[1.0 is the highest; 0.0 is the lowest]
+price:		0.262992
+market_cap:	0.000312
+volume:		0.001416
+fear/greed	0.140000 [Extreme Fear]
+
+Price Ratios
+[>0 means greater risk/overvalued; <0 means less risk/undervalued]
+5-day/10-day:	 0.862361
+10-day/25-day:	 0.844572
+25-day/50-day:	 0.744169
+x-day/200-day
+	5-day/200-day:		 0.396740
+	10-day/200-day:		 0.460063
+	25-day/200-day:		 0.544730
+	50-day/200-day:		 0.731997
+	75-day/200-day:		 0.851918
+	100-day/200-day:	 0.892996
+	150-day/200-day:	 1.000000
+x-day/250-day
+	5-day/250-day:		 0.396740
+	10-day/250-day:		 0.460063
+	25-day/250-day:		 0.544730
+	50-day/250-day:		 0.731997
+	75-day/250-day:		 0.851918
+	100-day/250-day:	 0.892996
+	150-day/250-day:	 1.000000
+x-day/300-day
+	5-day/300-day:		 0.396740
+	10-day/300-day:		 0.460063
+	25-day/300-day:		 0.544730
+	50-day/300-day:		 0.731997
+	75-day/300-day:		 0.851918
+	100-day/300-day:	 0.892996
+	150-day/300-day:	 1.000000
+x-day/350-day
+	5-day/350-day:		 0.396740
+	10-day/350-day:		 0.460063
+	25-day/350-day:		 0.544730
+	50-day/350-day:		 0.731997
+	75-day/350-day:		 0.851918
+	100-day/350-day:	 0.892996
+	150-day/350-day:	 1.000000
+
+Price Deltas
+[<0 shows a decrease; >0 shows an increase]
+5-day -> Present:		-0.133749
+10-day -> 5-day:		-0.063323
+25-day -> 10-day:		-0.084666
+50-day -> 25-day:		-0.187267
+75-day -> 50-day:		-0.119921
+100-day -> 75-day:		-0.041078
+
+Fear/Greed Deltas
+[>0 is greedier; <0 is more fearful]
+3-day -> Present:	-0.016667
+5-day -> 3-day:		-0.025333
+7-day -> 5-day		-0.020857
+9-day -> 7-day:		-0.033810
+11-day -> 9-day:	-0.003333
+13-day -> 11-day:	-0.000769
+15-day -> 13-day:	 0.008769
+30-day -> 15-day:	 0.015667
+
+Action Signals
+Signal by best nn:	SELL Y
+Signal by votes:	SELL Y
+Signal by weights:	BUY X
+	Weights:	[tensor(-12.8665), tensor(-1.0062), tensor(-2.7217), tensor(-2.4444), tensor(-6.3268)]
+	Diff 1st and 2nd:	   0.4794
+	Diff 1st and last:	   3.9534
+
+
+
+
+Report for ETHEREUM:
+Basic Stats
+[1.0 is the highest; 0.0 is the lowest]
+price:		0.433337
+market_cap:	0.000438
+volume:		0.000298
+fear/greed	0.140000 [Extreme Fear]
+
+Price Ratios
+[>0 means greater risk/overvalued; <0 means less risk/undervalued]
+5-day/10-day:	 0.885163
+10-day/25-day:	 0.809961
+25-day/50-day:	 0.755721
+x-day/200-day
+	5-day/200-day:		 0.522971
+	10-day/200-day:		 0.590819
+	25-day/200-day:		 0.729442
+	50-day/200-day:		 0.965227
+	75-day/200-day:		 0.998260
+	100-day/200-day:	 0.999829
+	150-day/200-day:	 1.000000
+x-day/250-day
+	5-day/250-day:		 0.522971
+	10-day/250-day:		 0.590819
+	25-day/250-day:		 0.729442
+	50-day/250-day:		 0.965227
+	75-day/250-day:		 0.998260
+	100-day/250-day:	 0.999829
+	150-day/250-day:	 1.000000
+x-day/300-day
+	5-day/300-day:		 0.522971
+	10-day/300-day:		 0.590819
+	25-day/300-day:		 0.729442
+	50-day/300-day:		 0.965227
+	75-day/300-day:		 0.998260
+	100-day/300-day:	 0.999829
+	150-day/300-day:	 1.000000
+x-day/350-day
+	5-day/350-day:		 0.522971
+	10-day/350-day:		 0.590819
+	25-day/350-day:		 0.729442
+	50-day/350-day:		 0.965227
+	75-day/350-day:		 0.998260
+	100-day/350-day:	 0.999829
+	150-day/350-day:	 1.000000
+
+Price Deltas
+[<0 shows a decrease; >0 shows an increase]
+5-day -> Present:		-0.089634
+10-day -> 5-day:		-0.067848
+25-day -> 10-day:		-0.138623
+50-day -> 25-day:		-0.235785
+75-day -> 50-day:		-0.033033
+100-day -> 75-day:		-0.001569
+
+Fear/Greed Deltas
+[>0 is greedier; <0 is more fearful]
+3-day -> Present:	-0.016667
+5-day -> 3-day:		-0.025333
+7-day -> 5-day		-0.020857
+9-day -> 7-day:		-0.033810
+11-day -> 9-day:	-0.003333
+13-day -> 11-day:	-0.000769
+15-day -> 13-day:	 0.008769
+30-day -> 15-day:	 0.015667
+
+Action Signals
+Signal by best nn:	SELL Y
+Signal by votes:	SELL Y
+Signal by weights:	SELL Y
+	Weights:	[tensor(-22.5480), tensor(-2.6857), tensor(-2.6898), tensor(-0.2794), tensor(-0.7858)]
+	Diff 1st and 2nd:	   0.1688
+	Diff 1st and last:	   7.4229
+
+
+
+
+Report for MATIC-NETWORK:
+Basic Stats
+[1.0 is the highest; 0.0 is the lowest]
+price:		0.435454
+market_cap:	0.000631
+volume:		0.000470
+fear/greed	0.140000 [Extreme Fear]
+
+Price Ratios
+[>0 means greater risk/overvalued; <0 means less risk/undervalued]
+5-day/10-day:	 0.878750
+10-day/25-day:	 0.843642
+25-day/50-day:	 0.878880
+x-day/200-day
+	5-day/200-day:		 0.651558
+	10-day/200-day:		 0.741460
+	25-day/200-day:		 0.878880
+	50-day/200-day:		 1.000000
+	75-day/200-day:		 1.000000
+	100-day/200-day:	 1.000000
+	150-day/200-day:	 1.000000
+x-day/250-day
+	5-day/250-day:		 0.651558
+	10-day/250-day:		 0.741460
+	25-day/250-day:		 0.878880
+	50-day/250-day:		 1.000000
+	75-day/250-day:		 1.000000
+	100-day/250-day:	 1.000000
+	150-day/250-day:	 1.000000
+x-day/300-day
+	5-day/300-day:		 0.651558
+	10-day/300-day:		 0.741460
+	25-day/300-day:		 0.878880
+	50-day/300-day:		 1.000000
+	75-day/300-day:		 1.000000
+	100-day/300-day:	 1.000000
+	150-day/300-day:	 1.000000
+x-day/350-day
+	5-day/350-day:		 0.651558
+	10-day/350-day:		 0.741460
+	25-day/350-day:		 0.878880
+	50-day/350-day:		 1.000000
+	75-day/350-day:		 1.000000
+	100-day/350-day:	 1.000000
+	150-day/350-day:	 1.000000
+
+Price Deltas
+[<0 shows a decrease; >0 shows an increase]
+5-day -> Present:		-0.216104
+10-day -> 5-day:		-0.089902
+25-day -> 10-day:		-0.137420
+50-day -> 25-day:		-0.121120
+75-day -> 50-day:		 0.000000
+100-day -> 75-day:		 0.000000
+
+Fear/Greed Deltas
+[>0 is greedier; <0 is more fearful]
+3-day -> Present:	-0.016667
+5-day -> 3-day:		-0.025333
+7-day -> 5-day		-0.020857
+9-day -> 7-day:		-0.033810
+11-day -> 9-day:	-0.003333
+13-day -> 11-day:	-0.000769
+15-day -> 13-day:	 0.008769
+30-day -> 15-day:	 0.015667
+
+Action Signals
+Signal by best nn:	SELL 2Y
+Signal by votes:	SELL 2Y
+Signal by weights:	SELL 2Y
+	Weights:	[tensor(-23.8176), tensor(-3.3209), tensor(-2.6972), tensor(-0.4430), tensor(-0.0192)]
+	Diff 1st and 2nd:	   0.1413
+	Diff 1st and last:	   7.9328
+
+
+
+
+Report for POLKADOT:
+Basic Stats
+[1.0 is the highest; 0.0 is the lowest]
+price:		0.247727
+market_cap:	0.000238
+volume:		0.000530
+fear/greed	0.140000 [Extreme Fear]
+
+Price Ratios
+[>0 means greater risk/overvalued; <0 means less risk/undervalued]
+5-day/10-day:	 0.864833
+10-day/25-day:	 0.892978
+25-day/50-day:	 0.768576
+x-day/200-day
+	5-day/200-day:		 0.420959
+	10-day/200-day:		 0.486752
+	25-day/200-day:		 0.545088
+	50-day/200-day:		 0.709219
+	75-day/200-day:		 0.817004
+	100-day/200-day:	 0.895160
+	150-day/200-day:	 0.998859
+x-day/250-day
+	5-day/250-day:		 0.420959
+	10-day/250-day:		 0.486752
+	25-day/250-day:		 0.545088
+	50-day/250-day:		 0.709219
+	75-day/250-day:		 0.817004
+	100-day/250-day:	 0.895160
+	150-day/250-day:	 0.998859
+x-day/300-day
+	5-day/300-day:		 0.420959
+	10-day/300-day:		 0.486752
+	25-day/300-day:		 0.545088
+	50-day/300-day:		 0.709219
+	75-day/300-day:		 0.817004
+	100-day/300-day:	 0.895160
+	150-day/300-day:	 0.998859
+WARNING: DATA MISSING FROM SMAs; MODEL MAY BE UNRELIABLE
+
+Price Deltas
+[<0 shows a decrease; >0 shows an increase]
+5-day -> Present:		-0.173232
+10-day -> 5-day:		-0.065793
+25-day -> 10-day:		-0.058336
+50-day -> 25-day:		-0.164131
+75-day -> 50-day:		-0.107786
+100-day -> 75-day:		-0.078156
+
+Fear/Greed Deltas
+[>0 is greedier; <0 is more fearful]
+3-day -> Present:	-0.016667
+5-day -> 3-day:		-0.025333
+7-day -> 5-day		-0.020857
+9-day -> 7-day:		-0.033810
+11-day -> 9-day:	-0.003333
+13-day -> 11-day:	-0.000769
+15-day -> 13-day:	 0.008769
+30-day -> 15-day:	 0.015667
+
+Action Signals
+Signal by best nn:	SELL 2Y
+Signal by votes:	SELL 2Y
+Signal by weights:	SELL 2Y
+	Weights:	[tensor(-22.0884), tensor(-3.0658), tensor(-2.3088), tensor(-0.6407), tensor(0.6188)]
+	Diff 1st and 2nd:	   0.4198
+	Diff 1st and last:	   7.5691
+
+
+
+
+Report for SOLANA:
+Basic Stats
+[1.0 is the highest; 0.0 is the lowest]
+price:		0.470814
+market_cap:	0.000597
+volume:		0.000844
+fear/greed	0.140000 [Extreme Fear]
+
+Price Ratios
+[>0 means greater risk/overvalued; <0 means less risk/undervalued]
+5-day/10-day:	 0.861832
+10-day/25-day:	 0.978954
+25-day/50-day:	 0.841591
+x-day/200-day
+	5-day/200-day:		 0.675195
+	10-day/200-day:		 0.783441
+	25-day/200-day:		 0.800284
+	50-day/200-day:		 0.950918
+	75-day/200-day:		 0.999593
+	100-day/200-day:	 1.000000
+	150-day/200-day:	 1.000000
+x-day/250-day
+	5-day/250-day:		 0.675195
+	10-day/250-day:		 0.783441
+	25-day/250-day:		 0.800284
+	50-day/250-day:		 0.950918
+	75-day/250-day:		 0.999593
+	100-day/250-day:	 1.000000
+	150-day/250-day:	 1.000000
+x-day/300-day
+	5-day/300-day:		 0.675195
+	10-day/300-day:		 0.783441
+	25-day/300-day:		 0.800284
+	50-day/300-day:		 0.950918
+	75-day/300-day:		 0.999593
+	100-day/300-day:	 1.000000
+	150-day/300-day:	 1.000000
+x-day/350-day
+	5-day/350-day:		 0.675195
+	10-day/350-day:		 0.783441
+	25-day/350-day:		 0.800284
+	50-day/350-day:		 0.950918
+	75-day/350-day:		 0.999593
+	100-day/350-day:	 1.000000
+	150-day/350-day:	 1.000000
+
+Price Deltas
+[<0 shows a decrease; >0 shows an increase]
+5-day -> Present:		-0.204381
+10-day -> 5-day:		-0.108246
+25-day -> 10-day:		-0.016842
+50-day -> 25-day:		-0.150634
+75-day -> 50-day:		-0.048675
+100-day -> 75-day:		-0.000407
+
+Fear/Greed Deltas
+[>0 is greedier; <0 is more fearful]
+3-day -> Present:	-0.016667
+5-day -> 3-day:		-0.025333
+7-day -> 5-day		-0.020857
+9-day -> 7-day:		-0.033810
+11-day -> 9-day:	-0.003333
+13-day -> 11-day:	-0.000769
+15-day -> 13-day:	 0.008769
+30-day -> 15-day:	 0.015667
+
+Action Signals
+Signal by best nn:	SELL 2Y
+Signal by votes:	SELL 2Y
+Signal by weights:	SELL 2Y
+	Weights:	[tensor(-23.8120), tensor(-3.3085), tensor(-2.6769), tensor(-0.4462), tensor(0.0088)]
+	Diff 1st and 2nd:	   0.1517
+	Diff 1st and last:	   7.9403
+
+
+
+
+Report for THE-GRAPH:
+Basic Stats
+[1.0 is the highest; 0.0 is the lowest]
+price:		0.103201
+market_cap:	0.001131
+volume:		0.000059
+fear/greed	0.140000 [Extreme Fear]
+
+Price Ratios
+[>0 means greater risk/overvalued; <0 means less risk/undervalued]
+5-day/10-day:	 0.899040
+10-day/25-day:	 0.817921
+25-day/50-day:	 0.697247
+WARNING: DATA MISSING FROM SMAs; MODEL MAY BE UNRELIABLE
+
+Price Deltas
+[<0 shows a decrease; >0 shows an increase]
+5-day -> Present:		-0.150170
+10-day -> 5-day:		-0.028453
+25-day -> 10-day:		-0.062737
+50-day -> 25-day:		-0.149612
+75-day -> 50-day:		-0.149673
+100-day -> 75-day:		-0.115768
+
+Fear/Greed Deltas
+[>0 is greedier; <0 is more fearful]
+3-day -> Present:	-0.016667
+5-day -> 3-day:		-0.025333
+7-day -> 5-day		-0.020857
+9-day -> 7-day:		-0.033810
+11-day -> 9-day:	-0.003333
+13-day -> 11-day:	-0.000769
+15-day -> 13-day:	 0.008769
+30-day -> 15-day:	 0.015667
+
+Action Signals
+Signal by best nn:	SELL 2Y
+Signal by votes:	SELL 2Y
+Signal by weights:	SELL 2Y
+	Weights:	[tensor(-94.4073), tensor(-25.1191), tensor(-10.5927), tensor(-13.0017), tensor(0.0720)]
+	Diff 1st and 2nd:	   3.5549
+	Diff 1st and last:	  31.4931
+
+
+
+
+Report for THETA-TOKEN:
+Basic Stats
+[1.0 is the highest; 0.0 is the lowest]
+price:		0.443513
+market_cap:	0.000453
+volume:		0.259787
+fear/greed	0.140000 [Extreme Fear]
+
+Price Ratios
+[>0 means greater risk/overvalued; <0 means less risk/undervalued]
+5-day/10-day:	 0.920418
+10-day/25-day:	 0.997968
+25-day/50-day:	 0.895065
+x-day/200-day
+	5-day/200-day:		 0.600947
+	10-day/200-day:		 0.652907
+	25-day/200-day:		 0.654237
+	50-day/200-day:		 0.730938
+	75-day/200-day:		 0.906521
+	100-day/200-day:	 0.998551
+	150-day/200-day:	 1.000000
+x-day/250-day
+	5-day/250-day:		 0.600947
+	10-day/250-day:		 0.652907
+	25-day/250-day:		 0.654237
+	50-day/250-day:		 0.730938
+	75-day/250-day:		 0.906521
+	100-day/250-day:	 0.998551
+	150-day/250-day:	 1.000000
+x-day/300-day
+	5-day/300-day:		 0.600947
+	10-day/300-day:		 0.652907
+	25-day/300-day:		 0.654237
+	50-day/300-day:		 0.730938
+	75-day/300-day:		 0.906521
+	100-day/300-day:	 0.998551
+	150-day/300-day:	 1.000000
+x-day/350-day
+	5-day/350-day:		 0.600947
+	10-day/350-day:		 0.652907
+	25-day/350-day:		 0.654237
+	50-day/350-day:		 0.730938
+	75-day/350-day:		 0.906521
+	100-day/350-day:	 0.998551
+	150-day/350-day:	 1.000000
+
+Price Deltas
+[<0 shows a decrease; >0 shows an increase]
+5-day -> Present:		-0.157435
+10-day -> 5-day:		-0.051960
+25-day -> 10-day:		-0.001330
+50-day -> 25-day:		-0.076701
+75-day -> 50-day:		-0.175583
+100-day -> 75-day:		-0.092030
+
+Fear/Greed Deltas
+[>0 is greedier; <0 is more fearful]
+3-day -> Present:	-0.016667
+5-day -> 3-day:		-0.025333
+7-day -> 5-day		-0.020857
+9-day -> 7-day:		-0.033810
+11-day -> 9-day:	-0.003333
+13-day -> 11-day:	-0.000769
+15-day -> 13-day:	 0.008769
+30-day -> 15-day:	 0.015667
+
+Action Signals
+Signal by best nn:	SELL Y
+Signal by votes:	SELL Y
+Signal by weights:	SELL Y
+	Weights:	[tensor(-21.9193), tensor(-2.2945), tensor(-2.8531), tensor(-0.1826), tensor(-1.7818)]
+	Diff 1st and 2nd:	   0.5331
+	Diff 1st and last:	   7.2456
