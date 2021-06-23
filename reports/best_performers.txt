@@ -1,3 +1,0 @@
-models/CryptoSoothsayer_Pi_0_80.pt
-models/CryptoSoothsayer_Laptop_0_78.pt
-models/CryptoSoothsayer_Laptop_0_77.pt
