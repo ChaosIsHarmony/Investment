@@ -78,6 +78,7 @@ def get_community_score(data):
 
 def get_dev_score(data):
 	'''
+	NOTE: NO LONGER IN USE BECAUSE NOT ALL COINS HAVE THIS INFO
 	Calculates a score related to codebase health based on the recent activity seen by the devs
 	'''
 	score = 0
@@ -140,11 +141,6 @@ def extract_basic_data(data, date):
 	else:
 		data_dict["community_score"] = 0
 
-	if "developer_data" in data.keys():
-		data_dict["dev_score"] = get_dev_score(data["developer_data"])
-	else:
-		data_dict["dev_score"] = 0
-
 	if "public_interest_stats" in data:
 		data_dict["public_interest_score"] = get_public_interest_score(data["public_interest_stats"])
 	else:
@@ -200,26 +196,33 @@ def merge_new_dataset_with_old(coin, by_range=True):
 
 	merge_datasets(coin, data_to_merge)
 
-
+#merge_new_dataset_with_old("the-graph")
 
 def fetch_missing_data_by_dates(coin, dates):
 	'''
 	WARNING: Cannot automatically fetch Fear/Greed index
 	'''
 	historical_data = []
+	missing_dates = []
 
 	for date in dates:
 		try:
 			data = get_historic_data(coin, date)
 		except:
 			print(f"Error on {date}")
+			missing_dates.append(date)
 			continue
 
 		historical_data.append(extract_basic_data(data, date))
 
 		# To help regulate the speed with which calls are being made
 		# to assuage 434 return codes
-		time.sleep(0.5)
+		time.sleep(1)
+	
+	if len(missing_dates) > 0:
+		ans = input("Try again? [y/n] ")
+		if (ans.lower())[0] == 'y':
+			fetch_missing_data_by_dates(coin, missing_dates)
 
 	# save as CSV
 	coin_data = pd.DataFrame(historical_data)
@@ -232,6 +235,7 @@ def fetch_missing_data_by_dates(coin, dates):
 def fetch_missing_data_by_range(coin, n_days, start_delta):
 	today = date.today() - timedelta(start_delta)
 	historical_data = []
+	missing_dates = []
 	fear_greed = get_fear_greed_by_range(n_days)
 	fear_greed_ind = 0
 
@@ -241,6 +245,7 @@ def fetch_missing_data_by_range(coin, n_days, start_delta):
 			data = get_historic_data(coin, next_date)
 		except:
 			print(f"Error on {next_date}")
+			missing_dates.append(next_date)
 			continue
 
 		daily_data = extract_basic_data(data, next_date)
@@ -250,7 +255,13 @@ def fetch_missing_data_by_range(coin, n_days, start_delta):
 
 		# To help regulate the speed with which calls are being made
 		# to assuage 434 return codes
-		time.sleep(0.5)
+		time.sleep(1)
+
+	# if there's still missing data
+	if len(missing_dates) > 0:
+		ans = input("Try again? [y/n] ")
+		if (ans.lower())[0] == 'y':
+			fetch_missing_data_by_dates(coin, missing_dates)
 
 	# save as CSV
 	coin_data = pd.DataFrame(historical_data)
@@ -269,7 +280,7 @@ def run(how_far_back):
 	api_call_cycle_start = get_time() 
 	fear_greed = get_fear_greed_by_range(how_far_back)
 	
-	for coin in ["the-graph"]: #coin_id:
+	for coin in ["decentraland"]: #coin_id:
 		date_delta = -1 
 		fear_greed_ind = 0
 		has_next = True
@@ -292,12 +303,13 @@ def run(how_far_back):
 
 			# Request data
 			date_delta += 1
-			next_date = get_correct_date_format(today - timedelta(date_delta))
-			try:
-				data = get_historic_data(coin, next_date)
-				if date_delta >= how_far_back  or "error" in data.keys():
+			if date_delta >= how_far_back  or "error" in data.keys():
 					has_next = False
 					continue
+			next_date = get_correct_date_format(today - timedelta(date_delta))
+			
+			try:
+				data = get_historic_data(coin, next_date)
 			except Exception as e:
 				print(f"Error: {e}")
 				print(f"Coin: {coin}")
@@ -328,4 +340,4 @@ def run(how_far_back):
 
 
 
-#run(180)
+#run(600)

@@ -127,6 +127,28 @@ def populate_stat_report(coin, data, report):
 
 
 
+def get_models(best):
+	models = {}
+	for i in range(len(best)):
+		if "Laptop_0" in best[i]:
+			models[best[i]] = nn.CryptoSoothsayer_Laptop_0(nn.N_FEATURES, nn.N_SIGNALS)
+		elif "Laptop_1" in best[i]:
+			models[best[i]] = nn.CryptoSoothsayer_Laptop_1(nn.N_FEATURES, nn.N_SIGNALS)
+		elif "Laptop_2" in best[i]:
+			models[best[i]] = nn.CryptoSoothsayer_Laptop_2(nn.N_FEATURES, nn.N_SIGNALS)
+		elif "Pi_0" in best[i]:
+			models[best[i]] = nn.CryptoSoothsayer_Pi_0(nn.N_FEATURES, nn.N_SIGNALS)
+		elif "Pi_1" in best[i]:
+			models[best[i]] = nn.CryptoSoothsayer_Pi_1(nn.N_FEATURES, nn.N_SIGNALS)
+		elif "PC_0" in best[i]:
+			models[best[i]] = nn.CryptoSoothsayer_PC_0(nn.N_FEATURES, nn.N_SIGNALS)
+		elif "PC_1" in best[i]:
+			models[best[i]] = nn.CryptoSoothsayer_PC_1(nn.N_FEATURES, nn.N_SIGNALS)
+
+	return models
+
+
+
 def generate_signals():
 	report = []
 
@@ -144,23 +166,8 @@ def generate_signals():
 		n_weights = [0, 0, 0, 0, 0]
 		best_model_signal = 6 # set out of bounds to begin with 
 
-		models = {}
-		for i in range(len(best)):
-			if "Laptop_0" in best[i]:
-				models[best[i]] = nn.CryptoSoothsayer_Laptop_0(nn.N_FEATURES, nn.N_SIGNALS)
-			elif "Laptop_1" in best[i]:
-				models[best[i]] = nn.CryptoSoothsayer_Laptop_1(nn.N_FEATURES, nn.N_SIGNALS)
-			elif "Laptop_2" in best[i]:
-				models[best[i]] = nn.CryptoSoothsayer_Laptop_2(nn.N_FEATURES, nn.N_SIGNALS)
-			elif "Pi_0" in best[i]:
-				models[best[i]] = nn.CryptoSoothsayer_Pi_0(nn.N_FEATURES, nn.N_SIGNALS)
-			elif "Pi_1" in best[i]:
-				models[best[i]] = nn.CryptoSoothsayer_Pi_1(nn.N_FEATURES, nn.N_SIGNALS)
-			elif "PC_0" in best[i]:
-				models[best[i]] = nn.CryptoSoothsayer_PC_0(nn.N_FEATURES, nn.N_SIGNALS)
-			elif "PC_1" in best[i]:
-				models[best[i]] = nn.CryptoSoothsayer_PC_1(nn.N_FEATURES, nn.N_SIGNALS)
-
+		# get the best performing models
+		models = get_models(best)
 
 		for filepath in models.keys():
 			# load model

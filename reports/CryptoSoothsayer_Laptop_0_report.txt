@@ -1,44 +1,38 @@
 Model: CryptoSoothsayer_Laptop_0
-Learning rate: 0.0015
-Learning rate decay: 0.99999
-Chance of dropout: 0.15
+Learning rate: 0.002
+Learning rate decay: 0.999995
+Chance of dropout: 0.45
 Batch size: 256
-Epochs: 2
+Epochs: 4
 Coin: bitcoin
 Length Training Data: 22569
 Length Validation Data: 129
 Length Testing Data: 129
-Training Loss: 1.6081 | Validation Loss: 1.6440 | eta: 0.001496
-Training Loss: 1.6135 | Validation Loss: 1.6198 | eta: 0.001489
-Training Loss: 1.6194 | Validation Loss: 1.6126 | eta: 0.001485
-Training Loss: 1.6137 | Validation Loss: 1.5944 | eta: 0.001470
-Training Loss: 1.6271 | Validation Loss: 1.5715 | eta: 0.001462
-Training Loss: 1.6196 | Validation Loss: 1.5566 | eta: 0.001455
-Training Loss: 1.6013 | Validation Loss: 1.5516 | eta: 0.001451
-Training Loss: 1.5849 | Validation Loss: 1.5084 | eta: 0.001447
-Training Loss: 1.4587 | Validation Loss: 1.4329 | eta: 0.001421
-Training Loss: 1.2892 | Validation Loss: 1.4186 | eta: 0.001354
-Training Loss: 1.2551 | Validation Loss: 1.4033 | eta: 0.001333
-Training Loss: 1.2373 | Validation Loss: 1.3455 | eta: 0.001316
-Time elapsed by epoch 1: 10.933333333333334 mins.
-Time elapsed by epoch 2: 20.416666666666668 mins.
+Training Loss: 1.6416 | Validation Loss: 1.5993 | eta: 0.001997
+Training Loss: 1.6267 | Validation Loss: 1.5917 | eta: 0.001995
+Training Loss: 1.6275 | Validation Loss: 1.4848 | eta: 0.001977
+Training Loss: 1.6237 | Validation Loss: 1.4828 | eta: 0.001962
+Time elapsed by epoch 1: 4.266666666666667 mins.
+Time elapsed by epoch 2: 8.483333333333333 mins.
+Time elapsed by epoch 3: 14.816666666666666 mins.
+Time elapsed by epoch 4: 24.566666666666666 mins.
 EVALUATE FULLY TRAINED MODEL
 
 	POSITIVE:
-		[++] Perfect accuracy:     0.0233
-		[+] Model good enough accuracy:     0.2171
+		[++] Perfect accuracy:     0.0000
+		[+] Model good enough accuracy:     0.2016
 	NEGATIVE:
-		[-] Told to hodl but should have sold/bought rate:     0.0775
+		[-] Told to hodl but should have sold/bought rate:     0.0000
 		[--] Should have hodled but told to sell/buy rate:     0.2016
-		[---] Told to do the opposite of correct move rate:     0.5039
+		[---] Told to do the opposite of correct move rate:     0.5969
 		
 EVALUATE VALIDATION-BASED MODEL
 
 	POSITIVE:
-		[++] Perfect accuracy:     0.0620
-		[+] Model good enough accuracy:     0.4186
+		[++] Perfect accuracy:     0.0000
+		[+] Model good enough accuracy:     0.2016
 	NEGATIVE:
-		[-] Told to hodl but should have sold/bought rate:     0.2016
-		[--] Should have hodled but told to sell/buy rate:     0.1473
-		[---] Told to do the opposite of correct move rate:     0.2326
+		[-] Told to hodl but should have sold/bought rate:     0.0000
+		[--] Should have hodled but told to sell/buy rate:     0.2016
+		[---] Told to do the opposite of correct move rate:     0.5969
 		

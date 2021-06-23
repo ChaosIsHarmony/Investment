@@ -4,7 +4,7 @@ Basic Stats
 price:		0.397750
 market_cap:	0.000542
 volume:		0.001360
-fear/greed	0.022989 [Extreme Fear]
+fear/greed	0.100000 [Extreme Fear]
 
 Price Ratios
 [>0 means greater risk/overvalued; <0 means less risk/undervalued]
@@ -51,22 +51,22 @@ Price Deltas
 
 Fear/Greed Deltas
 [>0 is greedier; <0 is more fearful]
-3-day -> Present:	-0.167152
-5-day -> 3-day:		-0.026880
-7-day -> 5-day		-0.027660
-9-day -> 7-day:		-0.024915
-11-day -> 9-day:	-0.000569
-13-day -> 11-day:	 0.005921
-15-day -> 13-day:	 0.015677
-30-day -> 15-day:	 0.015799
+3-day -> Present:	-0.080000
+5-day -> 3-day:		-0.024000
+7-day -> 5-day		-0.026000
+9-day -> 7-day:		-0.022222
+11-day -> 9-day:	-0.000505
+13-day -> 11-day:	 0.006573
+15-day -> 13-day:	 0.014821
+30-day -> 15-day:	 0.016333
 
 Action Signals
 Signal by best nn:	BUY 2X
-Signal by votes:	HODL
-Signal by weights:	HODL
-	Weights:	[tensor(-23.7975), tensor(-61.9035), tensor(-21.0570), tensor(-108.7447), tensor(-159.0831)]
-	Diff 1st and 2nd:	   0.9135
-	Diff 1st and last:	  46.0087
+Signal by votes:	BUY 2X
+Signal by weights:	BUY 2X
+	Weights:	[tensor(-21.9639), tensor(-62.7343), tensor(-56.4340), tensor(-291.9624), tensor(-416.6271)]
+	Diff 1st and 2nd:	   8.6175
+	Diff 1st and last:	  98.6658
 
 
 
@@ -77,7 +77,7 @@ Basic Stats
 price:		0.461136
 market_cap:	0.000444
 volume:		0.000282
-fear/greed	0.055556 [Extreme Fear]
+fear/greed	0.100000 [Extreme Fear]
 
 Price Ratios
 [>0 means greater risk/overvalued; <0 means less risk/undervalued]
@@ -124,22 +124,22 @@ Price Deltas
 
 Fear/Greed Deltas
 [>0 is greedier; <0 is more fearful]
-3-day -> Present:	-0.134585
-5-day -> 3-day:		-0.026880
-7-day -> 5-day		-0.027660
-9-day -> 7-day:		-0.024915
-11-day -> 9-day:	-0.000569
-13-day -> 11-day:	 0.005921
-15-day -> 13-day:	 0.015677
-30-day -> 15-day:	 0.015799
+3-day -> Present:	-0.080000
+5-day -> 3-day:		-0.024000
+7-day -> 5-day		-0.026000
+9-day -> 7-day:		-0.022222
+11-day -> 9-day:	-0.000505
+13-day -> 11-day:	 0.006573
+15-day -> 13-day:	 0.014821
+30-day -> 15-day:	 0.016333
 
 Action Signals
 Signal by best nn:	BUY 2X
 Signal by votes:	BUY 2X
 Signal by weights:	BUY 2X
-	Weights:	[tensor(-27.4938), tensor(-84.8234), tensor(-73.2966), tensor(-410.1214), tensor(-570.1447)]
-	Diff 1st and 2nd:	  15.2676
-	Diff 1st and last:	 180.8837
+	Weights:	[tensor(-47.9005), tensor(-173.3367), tensor(-175.1874), tensor(-950.6646), tensor(-1324.1573)]
+	Diff 1st and 2nd:	  31.3590
+	Diff 1st and last:	 319.0642
 
 
 
@@ -150,7 +150,7 @@ Basic Stats
 price:		0.511849
 market_cap:	0.000584
 volume:		0.000319
-fear/greed	0.022989 [Extreme Fear]
+fear/greed	0.100000 [Extreme Fear]
 
 Price Ratios
 [>0 means greater risk/overvalued; <0 means less risk/undervalued]
@@ -197,22 +197,22 @@ Price Deltas
 
 Fear/Greed Deltas
 [>0 is greedier; <0 is more fearful]
-3-day -> Present:	-0.167152
-5-day -> 3-day:		-0.026880
-7-day -> 5-day		-0.027660
-9-day -> 7-day:		-0.024915
-11-day -> 9-day:	-0.000569
-13-day -> 11-day:	 0.005921
-15-day -> 13-day:	 0.015677
-30-day -> 15-day:	 0.015799
+3-day -> Present:	-0.080000
+5-day -> 3-day:		-0.024000
+7-day -> 5-day		-0.026000
+9-day -> 7-day:		-0.022222
+11-day -> 9-day:	-0.000505
+13-day -> 11-day:	 0.006573
+15-day -> 13-day:	 0.014821
+30-day -> 15-day:	 0.016333
 
 Action Signals
-Signal by best nn:	HODL
-Signal by votes:	BUY X
+Signal by best nn:	BUY 2X
+Signal by votes:	SELL Y
 Signal by weights:	SELL Y
-	Weights:	[tensor(-101.3189), tensor(-165.0210), tensor(-31.9311), tensor(-23.5213), tensor(-117.0156)]
-	Diff 1st and 2nd:	   2.8032
-	Diff 1st and last:	  47.1665
+	Weights:	[tensor(-56.4949), tensor(-138.1920), tensor(-29.3638), tensor(-26.0962), tensor(-73.0094)]
+	Diff 1st and 2nd:	   0.8169
+	Diff 1st and last:	  28.0240
 
 
 
@@ -223,7 +223,7 @@ Basic Stats
 price:		0.314607
 market_cap:	0.000337
 volume:		0.001282
-fear/greed	0.022989 [Extreme Fear]
+fear/greed	0.100000 [Extreme Fear]
 
 Price Ratios
 [>0 means greater risk/overvalued; <0 means less risk/undervalued]
@@ -270,22 +270,22 @@ Price Deltas
 
 Fear/Greed Deltas
 [>0 is greedier; <0 is more fearful]
-3-day -> Present:	-0.167152
-5-day -> 3-day:		-0.026880
-7-day -> 5-day		-0.027660
-9-day -> 7-day:		-0.024915
-11-day -> 9-day:	-0.000569
-13-day -> 11-day:	 0.005921
-15-day -> 13-day:	 0.015677
-30-day -> 15-day:	 0.015799
+3-day -> Present:	-0.080000
+5-day -> 3-day:		-0.024000
+7-day -> 5-day		-0.026000
+9-day -> 7-day:		-0.022222
+11-day -> 9-day:	-0.000505
+13-day -> 11-day:	 0.006573
+15-day -> 13-day:	 0.014821
+30-day -> 15-day:	 0.016333
 
 Action Signals
-Signal by best nn:	HODL
-Signal by votes:	HODL
+Signal by best nn:	BUY 2X
+Signal by votes:	BUY X
 Signal by weights:	HODL
-	Weights:	[tensor(-105.5411), tensor(-105.7839), tensor(-32.7472), tensor(-199.3909), tensor(-249.7148)]
-	Diff 1st and 2nd:	  24.2646
-	Diff 1st and last:	  72.3225
+	Weights:	[tensor(-34.0120), tensor(-42.7795), tensor(-15.0281), tensor(-73.3538), tensor(-92.7250)]
+	Diff 1st and 2nd:	   4.7460
+	Diff 1st and last:	  19.4242
 
 
 
@@ -296,7 +296,7 @@ Basic Stats
 price:		0.290498
 market_cap:	0.000351
 volume:		0.001242
-fear/greed	0.022989 [Extreme Fear]
+fear/greed	0.100000 [Extreme Fear]
 
 Price Ratios
 [>0 means greater risk/overvalued; <0 means less risk/undervalued]
@@ -343,22 +343,22 @@ Price Deltas
 
 Fear/Greed Deltas
 [>0 is greedier; <0 is more fearful]
-3-day -> Present:	-0.167152
-5-day -> 3-day:		-0.026880
-7-day -> 5-day		-0.027660
-9-day -> 7-day:		-0.024915
-11-day -> 9-day:	-0.000569
-13-day -> 11-day:	 0.005921
-15-day -> 13-day:	 0.015677
-30-day -> 15-day:	 0.015799
+3-day -> Present:	-0.080000
+5-day -> 3-day:		-0.024000
+7-day -> 5-day		-0.026000
+9-day -> 7-day:		-0.022222
+11-day -> 9-day:	-0.000505
+13-day -> 11-day:	 0.006573
+15-day -> 13-day:	 0.014821
+30-day -> 15-day:	 0.016333
 
 Action Signals
 Signal by best nn:	BUY 2X
 Signal by votes:	BUY 2X
 Signal by weights:	BUY 2X
-	Weights:	[tensor(-90.1799), tensor(-452.2945), tensor(-451.3235), tensor(-2376.6907), tensor(-3354.2861)]
-	Diff 1st and 2nd:	 120.3812
-	Diff 1st and last:	1088.0354
+	Weights:	[tensor(-93.8625), tensor(-568.4512), tensor(-576.5830), tensor(-3557.7197), tensor(-6333.0410)]
+	Diff 1st and 2nd:	 118.6472
+	Diff 1st and last:	1559.7947
 
 
 
@@ -369,7 +369,7 @@ Basic Stats
 price:		0.438761
 market_cap:	0.000451
 volume:		0.000304
-fear/greed	0.022989 [Extreme Fear]
+fear/greed	0.100000 [Extreme Fear]
 
 Price Ratios
 [>0 means greater risk/overvalued; <0 means less risk/undervalued]
@@ -416,22 +416,22 @@ Price Deltas
 
 Fear/Greed Deltas
 [>0 is greedier; <0 is more fearful]
-3-day -> Present:	-0.167152
-5-day -> 3-day:		-0.026880
-7-day -> 5-day		-0.027660
-9-day -> 7-day:		-0.024915
-11-day -> 9-day:	-0.000569
-13-day -> 11-day:	 0.005921
-15-day -> 13-day:	 0.015677
-30-day -> 15-day:	 0.015799
+3-day -> Present:	-0.080000
+5-day -> 3-day:		-0.024000
+7-day -> 5-day		-0.026000
+9-day -> 7-day:		-0.022222
+11-day -> 9-day:	-0.000505
+13-day -> 11-day:	 0.006573
+15-day -> 13-day:	 0.014821
+30-day -> 15-day:	 0.016333
 
 Action Signals
 Signal by best nn:	BUY 2X
 Signal by votes:	BUY 2X
 Signal by weights:	BUY 2X
-	Weights:	[tensor(-10.9642), tensor(-31.5122), tensor(-15.2200), tensor(-61.3514), tensor(-96.9482)]
-	Diff 1st and 2nd:	   1.4186
-	Diff 1st and last:	  28.6613
+	Weights:	[tensor(-26.1954), tensor(-64.5494), tensor(-60.6395), tensor(-312.3049), tensor(-440.9862)]
+	Diff 1st and 2nd:	   8.6110
+	Diff 1st and last:	 103.6977
 
 
 
@@ -442,7 +442,7 @@ Basic Stats
 price:		0.446669
 market_cap:	0.000671
 volume:		0.000279
-fear/greed	0.022989 [Extreme Fear]
+fear/greed	0.100000 [Extreme Fear]
 
 Price Ratios
 [>0 means greater risk/overvalued; <0 means less risk/undervalued]
@@ -489,22 +489,22 @@ Price Deltas
 
 Fear/Greed Deltas
 [>0 is greedier; <0 is more fearful]
-3-day -> Present:	-0.167152
-5-day -> 3-day:		-0.026880
-7-day -> 5-day		-0.027660
-9-day -> 7-day:		-0.024915
-11-day -> 9-day:	-0.000569
-13-day -> 11-day:	 0.005921
-15-day -> 13-day:	 0.015677
-30-day -> 15-day:	 0.015799
+3-day -> Present:	-0.080000
+5-day -> 3-day:		-0.024000
+7-day -> 5-day		-0.026000
+9-day -> 7-day:		-0.022222
+11-day -> 9-day:	-0.000505
+13-day -> 11-day:	 0.006573
+15-day -> 13-day:	 0.014821
+30-day -> 15-day:	 0.016333
 
 Action Signals
 Signal by best nn:	BUY 2X
-Signal by votes:	BUY 2X
+Signal by votes:	SELL Y
 Signal by weights:	HODL
-	Weights:	[tensor(-93.0180), tensor(-151.7242), tensor(-29.8889), tensor(-31.8243), tensor(-129.6428)]
-	Diff 1st and 2nd:	   0.6451
-	Diff 1st and last:	  40.6118
+	Weights:	[tensor(-47.1832), tensor(-107.8347), tensor(-25.9176), tensor(-35.1353), tensor(-79.7877)]
+	Diff 1st and 2nd:	   2.3044
+	Diff 1st and last:	  20.4793
 
 
 
@@ -515,7 +515,7 @@ Basic Stats
 price:		0.274049
 market_cap:	0.000266
 volume:		0.000380
-fear/greed	0.000000 [Extreme Fear]
+fear/greed	0.100000 [Extreme Fear]
 
 Price Ratios
 [>0 means greater risk/overvalued; <0 means less risk/undervalued]
@@ -556,22 +556,22 @@ Price Deltas
 
 Fear/Greed Deltas
 [>0 is greedier; <0 is more fearful]
-3-day -> Present:	-0.190141
-5-day -> 3-day:		-0.026880
-7-day -> 5-day		-0.027660
-9-day -> 7-day:		-0.024915
-11-day -> 9-day:	-0.000569
-13-day -> 11-day:	 0.005921
-15-day -> 13-day:	 0.015677
-30-day -> 15-day:	 0.015799
+3-day -> Present:	-0.080000
+5-day -> 3-day:		-0.024000
+7-day -> 5-day		-0.026000
+9-day -> 7-day:		-0.022222
+11-day -> 9-day:	-0.000505
+13-day -> 11-day:	 0.006573
+15-day -> 13-day:	 0.014821
+30-day -> 15-day:	 0.016333
 
 Action Signals
 Signal by best nn:	BUY 2X
 Signal by votes:	BUY 2X
 Signal by weights:	BUY 2X
-	Weights:	[tensor(-29.7082), tensor(-86.1313), tensor(-64.6471), tensor(-357.1308), tensor(-497.8770)]
-	Diff 1st and 2nd:	  11.6463
-	Diff 1st and last:	 156.0563
+	Weights:	[tensor(-22.9384), tensor(-93.5996), tensor(-79.9146), tensor(-461.9497), tensor(-755.6163)]
+	Diff 1st and 2nd:	  14.2441
+	Diff 1st and last:	 183.1695
 
 
 
@@ -582,7 +582,7 @@ Basic Stats
 price:		0.467707
 market_cap:	0.000620
 volume:		0.000514
-fear/greed	0.000000 [Extreme Fear]
+fear/greed	0.100000 [Extreme Fear]
 
 Price Ratios
 [>0 means greater risk/overvalued; <0 means less risk/undervalued]
@@ -629,22 +629,22 @@ Price Deltas
 
 Fear/Greed Deltas
 [>0 is greedier; <0 is more fearful]
-3-day -> Present:	-0.190141
-5-day -> 3-day:		-0.026880
-7-day -> 5-day		-0.027660
-9-day -> 7-day:		-0.024915
-11-day -> 9-day:	-0.000569
-13-day -> 11-day:	 0.005921
-15-day -> 13-day:	 0.015677
-30-day -> 15-day:	 0.015799
+3-day -> Present:	-0.080000
+5-day -> 3-day:		-0.024000
+7-day -> 5-day		-0.026000
+9-day -> 7-day:		-0.022222
+11-day -> 9-day:	-0.000505
+13-day -> 11-day:	 0.006573
+15-day -> 13-day:	 0.014821
+30-day -> 15-day:	 0.016333
 
 Action Signals
 Signal by best nn:	BUY 2X
 Signal by votes:	BUY 2X
 Signal by weights:	BUY 2X
-	Weights:	[tensor(-42.5323), tensor(-126.2793), tensor(-135.1556), tensor(-703.5916), tensor(-1014.2487)]
-	Diff 1st and 2nd:	  27.9157
-	Diff 1st and last:	 323.9055
+	Weights:	[tensor(-68.8599), tensor(-213.4967), tensor(-229.2720), tensor(-1202.4598), tensor(-1702.7051)]
+	Diff 1st and 2nd:	  36.1592
+	Diff 1st and last:	 408.4613
 
 
 
@@ -655,7 +655,7 @@ Basic Stats
 price:		0.112449
 market_cap:	0.001207
 volume:		0.000042
-fear/greed	0.000000 [Extreme Fear]
+fear/greed	0.100000 [Extreme Fear]
 
 Price Ratios
 [>0 means greater risk/overvalued; <0 means less risk/undervalued]
@@ -675,22 +675,22 @@ Price Deltas
 
 Fear/Greed Deltas
 [>0 is greedier; <0 is more fearful]
-3-day -> Present:	-0.190813
-5-day -> 3-day:		-0.026209
-7-day -> 5-day		-0.027660
-9-day -> 7-day:		-0.024915
-11-day -> 9-day:	-0.000569
-13-day -> 11-day:	 0.005921
-15-day -> 13-day:	 0.015677
-30-day -> 15-day:	-0.002503
+3-day -> Present:	-0.080000
+5-day -> 3-day:		-0.024000
+7-day -> 5-day		-0.026000
+9-day -> 7-day:		-0.022222
+11-day -> 9-day:	-0.000505
+13-day -> 11-day:	 0.006573
+15-day -> 13-day:	 0.014821
+30-day -> 15-day:	 0.016333
 
 Action Signals
 Signal by best nn:	SELL 2Y
 Signal by votes:	SELL 2Y
 Signal by weights:	SELL 2Y
-	Weights:	[tensor(-8360.3691), tensor(-4724.0361), tensor(-954.5667), tensor(-2967.2317), tensor(-531.2680)]
-	Diff 1st and 2nd:	 141.0996
-	Diff 1st and last:	2609.7004
+	Weights:	[tensor(-9601.7070), tensor(-5417.2603), tensor(-1115.8982), tensor(-3414.0835), tensor(-618.5645)]
+	Diff 1st and 2nd:	 124.3334
+	Diff 1st and last:	2245.7856
 
 
 
@@ -701,7 +701,7 @@ Basic Stats
 price:		0.461242
 market_cap:	0.000495
 volume:		0.166403
-fear/greed	0.022989 [Extreme Fear]
+fear/greed	0.100000 [Extreme Fear]
 
 Price Ratios
 [>0 means greater risk/overvalued; <0 means less risk/undervalued]
@@ -748,19 +748,19 @@ Price Deltas
 
 Fear/Greed Deltas
 [>0 is greedier; <0 is more fearful]
-3-day -> Present:	-0.167152
-5-day -> 3-day:		-0.026880
-7-day -> 5-day		-0.027660
-9-day -> 7-day:		-0.024915
-11-day -> 9-day:	-0.000569
-13-day -> 11-day:	 0.005921
-15-day -> 13-day:	 0.015677
-30-day -> 15-day:	 0.015799
+3-day -> Present:	-0.080000
+5-day -> 3-day:		-0.024000
+7-day -> 5-day		-0.026000
+9-day -> 7-day:		-0.022222
+11-day -> 9-day:	-0.000505
+13-day -> 11-day:	 0.006573
+15-day -> 13-day:	 0.014821
+30-day -> 15-day:	 0.016333
 
 Action Signals
 Signal by best nn:	BUY 2X
 Signal by votes:	BUY 2X
 Signal by weights:	BUY 2X
-	Weights:	[tensor(-19.1111), tensor(-69.3811), tensor(-68.1935), tensor(-351.0447), tensor(-511.2955)]
-	Diff 1st and 2nd:	  16.3608
-	Diff 1st and last:	 164.0615
+	Weights:	[tensor(-47.9951), tensor(-150.8849), tensor(-156.9002), tensor(-834.6519), tensor(-1175.9286)]
+	Diff 1st and 2nd:	  25.7225
+	Diff 1st and last:	 281.9834
