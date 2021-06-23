@@ -353,9 +353,9 @@ def parameter_tuner():
 	best = [0, 0, 1, 1]
 	model_counter = 0
 
-	for eta in np.arange(0.001, 0.005, 0.00025):
+	for eta in np.arange(0.001, 0.005, 0.0005):
 		nn.LEARNING_RATE = eta
-		for decay in np.arange(0.9999, 0.999999, 0.00001):	
+		for decay in np.arange(0.9999, 0.99999, 0.00001):	
 			nn.LEARNING_RATE_DECAY = decay
 			for dropout in np.arange(0.05, 0.6, 0.05):
 				report = "" 
@@ -380,7 +380,7 @@ def parameter_tuner():
 						if steps % BATCH_SIZE == 0 or steps == len(train_data)-1:
 							min_valid_loss = validate_model_param_tuning(valid_data, min_valid_loss, model_architecture, model_counter)
 
-					print(f"Time Elapsed: {time.time() - start_time} | Training Loss: {train_loss/steps} | Min Validation Loss: {min_valid_loss}")
+					print(f"Time Elapsed: {(time.time() - start_time) / 60} mins. | Training Loss: {train_loss/steps} | Min Validation Loss: {min_valid_loss}")
 
 				# Save
 				save_checkpoint(f"models/CS_{model_architecture}_{model_counter}_chk.pt", nn.MODEL)
@@ -392,11 +392,11 @@ def parameter_tuner():
 				chk_pt_acc = evaluate_model(model_checkpoint, test_data)
 				mod_acc = evaluate_model(model, test_data)
 
-				if chk_pt_acc[1] >= best[1] and chk_pt_acc[3] <= best[3]:
+				if chk_pt_acc[1] >= best[1] or chk_pt_acc[3] <= best[3]:
 					report += f"CHECKPOINT FOR MODEL: {model_counter}\nPARAMETERS:\n\tLaptop_0\n\teta: {eta} | decay: {decay} | dropout: {dropout}\nDECISIONS:\n\tPerfect Decision: {chk_pt_acc[0]}\n\tAcceptable Decision: {chk_pt_acc[1]}\n\tSignal Should Have Been Hodl: {chk_pt_acc[2]}\n\tSignal and Answer Exact Opposite: {chk_pt_acc[3]}\n"
 					save_model_state(f"models/CS_{model_architecture}_{model_counter}_0.pt", nn.MODEL)
 
-				if mod_acc[1] >= best[1] and mod_acc[3] <= best[3]:
+				if mod_acc[1] >= best[1] or mod_acc[3] <= best[3]:
 					report += f"MODEL: {model_counter}\nPARAMETERS:\n\tLaptop_0\n\teta: {eta} | decay: {decay} | dropout: {dropout}\nDECISIONS:\n\tPerfect Decision: {mod_acc[0]}\n\tAcceptable Decision: {mod_acc[1]}\n\tSignal Should Have Been Hodl: {mod_acc[2]}\n\tSignal and Answer Exact Opposite: {mod_acc[3]}"
 					save_model_state(f"models/CS_{model_architecture}_{model_counter}_1.pt", nn.MODEL)
 				
@@ -405,12 +405,13 @@ def parameter_tuner():
 				os.remove(f"models/CS_{model_architecture}_{model_counter}_mod.pt")
 				
 				if len(report) > 0:
-					with open(f"reports/Parameter_Tuning_Report_{str(date.today())}.txt", "w") as f:
+					with open(f"reports/Parameter_Tuning_Report.txt", "a") as f:
 					# starting from index 1 to avoid first triple space divider
 						f.write(report + "\n\n")
 
 					print("Report written")
 
+				model_counter += 1
 
 parameter_tuner()
 #run()
