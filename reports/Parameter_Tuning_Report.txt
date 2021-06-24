@@ -1,0 +1,753 @@
+#
+# -------------- TRAINED -------------- 
+#
+
+CHECKPOINT FOR MODEL: 1
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.9999 | dropout: 0.1
+DECISIONS:
+	Perfect Decision: 0.46511627906976744
+	Acceptable Decision: 0.5968992248062015
+	Signal Should Have Been Hodl: 0.20155038759689922
+	Signal and Answer Exact Opposite: 0.20155038759689922
+MODEL: 1
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.9999 | dropout: 0.1
+DECISIONS:
+	Perfect Decision: 0.46511627906976744
+	Acceptable Decision: 0.5968992248062015
+	Signal Should Have Been Hodl: 0.20155038759689922
+	Signal and Answer Exact Opposite: 0.20155038759689922
+
+
+
+#
+# -------------- YET TO TRAIN -------------- 
+#
+
+CHECKPOINT FOR MODEL: 3
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.9999 | dropout: 0.2
+DECISIONS:
+	Perfect Decision: 0.46511627906976744
+	Acceptable Decision: 0.5968992248062015
+	Signal Should Have Been Hodl: 0.20155038759689922
+	Signal and Answer Exact Opposite: 0.20155038759689922
+MODEL: 3
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.9999 | dropout: 0.2
+DECISIONS:
+	Perfect Decision: 0.46511627906976744
+	Acceptable Decision: 0.5968992248062015
+	Signal Should Have Been Hodl: 0.20155038759689922
+	Signal and Answer Exact Opposite: 0.20155038759689922
+
+CHECKPOINT FOR MODEL: 12
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99991 | dropout: 0.1
+DECISIONS:
+	Perfect Decision: 0.20155038759689922
+	Acceptable Decision: 0.20155038759689922
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+MODEL: 12
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99991 | dropout: 0.1
+DECISIONS:
+	Perfect Decision: 0.20155038759689922
+	Acceptable Decision: 0.20155038759689922
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+CHECKPOINT FOR MODEL: 15
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99991 | dropout: 0.25
+DECISIONS:
+	Perfect Decision: 0.20155038759689922
+	Acceptable Decision: 0.20155038759689922
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+MODEL: 15
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99991 | dropout: 0.25
+DECISIONS:
+	Perfect Decision: 0.20155038759689922
+	Acceptable Decision: 0.20155038759689922
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+CHECKPOINT FOR MODEL: 17
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99991 | dropout: 0.35000000000000003
+DECISIONS:
+	Perfect Decision: 0.20155038759689922
+	Acceptable Decision: 0.20155038759689922
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+MODEL: 17
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99991 | dropout: 0.35000000000000003
+DECISIONS:
+	Perfect Decision: 0.20155038759689922
+	Acceptable Decision: 0.20155038759689922
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+CHECKPOINT FOR MODEL: 18
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99991 | dropout: 0.4
+DECISIONS:
+	Perfect Decision: 0.20155038759689922
+	Acceptable Decision: 0.20155038759689922
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+MODEL: 18
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99991 | dropout: 0.4
+DECISIONS:
+	Perfect Decision: 0.20155038759689922
+	Acceptable Decision: 0.20155038759689922
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+CHECKPOINT FOR MODEL: 20
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99991 | dropout: 0.5
+DECISIONS:
+	Perfect Decision: 0.20155038759689922
+	Acceptable Decision: 0.20155038759689922
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+MODEL: 20
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99991 | dropout: 0.5
+DECISIONS:
+	Perfect Decision: 0.20155038759689922
+	Acceptable Decision: 0.20155038759689922
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+CHECKPOINT FOR MODEL: 22
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.9999199999999999 | dropout: 0.05
+DECISIONS:
+	Perfect Decision: 0.46511627906976744
+	Acceptable Decision: 0.5968992248062015
+	Signal Should Have Been Hodl: 0.20155038759689922
+	Signal and Answer Exact Opposite: 0.20155038759689922
+MODEL: 22
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.9999199999999999 | dropout: 0.05
+DECISIONS:
+	Perfect Decision: 0.46511627906976744
+	Acceptable Decision: 0.5968992248062015
+	Signal Should Have Been Hodl: 0.20155038759689922
+	Signal and Answer Exact Opposite: 0.20155038759689922
+
+CHECKPOINT FOR MODEL: 23
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.9999199999999999 | dropout: 0.1
+DECISIONS:
+	Perfect Decision: 0.46511627906976744
+	Acceptable Decision: 0.5968992248062015
+	Signal Should Have Been Hodl: 0.20155038759689922
+	Signal and Answer Exact Opposite: 0.20155038759689922
+MODEL: 23
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.9999199999999999 | dropout: 0.1
+DECISIONS:
+	Perfect Decision: 0.46511627906976744
+	Acceptable Decision: 0.5968992248062015
+	Signal Should Have Been Hodl: 0.20155038759689922
+	Signal and Answer Exact Opposite: 0.20155038759689922
+
+CHECKPOINT FOR MODEL: 26
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.9999199999999999 | dropout: 0.25
+DECISIONS:
+	Perfect Decision: 0.20155038759689922
+	Acceptable Decision: 0.20155038759689922
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+MODEL: 26
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.9999199999999999 | dropout: 0.25
+DECISIONS:
+	Perfect Decision: 0.20155038759689922
+	Acceptable Decision: 0.20155038759689922
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+CHECKPOINT FOR MODEL: 28
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.9999199999999999 | dropout: 0.35000000000000003
+DECISIONS:
+	Perfect Decision: 0.46511627906976744
+	Acceptable Decision: 0.5968992248062015
+	Signal Should Have Been Hodl: 0.20155038759689922
+	Signal and Answer Exact Opposite: 0.20155038759689922
+MODEL: 28
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.9999199999999999 | dropout: 0.35000000000000003
+DECISIONS:
+	Perfect Decision: 0.46511627906976744
+	Acceptable Decision: 0.5968992248062015
+	Signal Should Have Been Hodl: 0.20155038759689922
+	Signal and Answer Exact Opposite: 0.20155038759689922
+
+CHECKPOINT FOR MODEL: 31
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.9999199999999999 | dropout: 0.5
+DECISIONS:
+	Perfect Decision: 0.46511627906976744
+	Acceptable Decision: 0.5968992248062015
+	Signal Should Have Been Hodl: 0.20155038759689922
+	Signal and Answer Exact Opposite: 0.20155038759689922
+MODEL: 31
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.9999199999999999 | dropout: 0.5
+DECISIONS:
+	Perfect Decision: 0.46511627906976744
+	Acceptable Decision: 0.5968992248062015
+	Signal Should Have Been Hodl: 0.20155038759689922
+	Signal and Answer Exact Opposite: 0.20155038759689922
+
+CHECKPOINT FOR MODEL: 32
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.9999199999999999 | dropout: 0.55
+DECISIONS:
+	Perfect Decision: 0.20155038759689922
+	Acceptable Decision: 0.20155038759689922
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+MODEL: 32
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.9999199999999999 | dropout: 0.55
+DECISIONS:
+	Perfect Decision: 0.20155038759689922
+	Acceptable Decision: 0.20155038759689922
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+CHECKPOINT FOR MODEL: 35
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.9999299999999999 | dropout: 0.15000000000000002
+DECISIONS:
+	Perfect Decision: 0.20155038759689922
+	Acceptable Decision: 0.20155038759689922
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+MODEL: 35
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.9999299999999999 | dropout: 0.15000000000000002
+DECISIONS:
+	Perfect Decision: 0.20155038759689922
+	Acceptable Decision: 0.20155038759689922
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+CHECKPOINT FOR MODEL: 42
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.9999299999999999 | dropout: 0.5
+DECISIONS:
+	Perfect Decision: 0.20155038759689922
+	Acceptable Decision: 0.20155038759689922
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+MODEL: 42
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.9999299999999999 | dropout: 0.5
+DECISIONS:
+	Perfect Decision: 0.20155038759689922
+	Acceptable Decision: 0.20155038759689922
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+CHECKPOINT FOR MODEL: 46
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99994 | dropout: 0.15000000000000002
+DECISIONS:
+	Perfect Decision: 0.46511627906976744
+	Acceptable Decision: 0.5968992248062015
+	Signal Should Have Been Hodl: 0.20155038759689922
+	Signal and Answer Exact Opposite: 0.20155038759689922
+MODEL: 46
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99994 | dropout: 0.15000000000000002
+DECISIONS:
+	Perfect Decision: 0.46511627906976744
+	Acceptable Decision: 0.5968992248062015
+	Signal Should Have Been Hodl: 0.20155038759689922
+	Signal and Answer Exact Opposite: 0.20155038759689922
+
+CHECKPOINT FOR MODEL: 47
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99994 | dropout: 0.2
+DECISIONS:
+	Perfect Decision: 0.20155038759689922
+	Acceptable Decision: 0.20155038759689922
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+MODEL: 47
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99994 | dropout: 0.2
+DECISIONS:
+	Perfect Decision: 0.20155038759689922
+	Acceptable Decision: 0.20155038759689922
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+CHECKPOINT FOR MODEL: 50
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99994 | dropout: 0.35000000000000003
+DECISIONS:
+	Perfect Decision: 0.20155038759689922
+	Acceptable Decision: 0.20155038759689922
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+MODEL: 50
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99994 | dropout: 0.35000000000000003
+DECISIONS:
+	Perfect Decision: 0.20155038759689922
+	Acceptable Decision: 0.20155038759689922
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+CHECKPOINT FOR MODEL: 52
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99994 | dropout: 0.45
+DECISIONS:
+	Perfect Decision: 0.46511627906976744
+	Acceptable Decision: 0.5968992248062015
+	Signal Should Have Been Hodl: 0.20155038759689922
+	Signal and Answer Exact Opposite: 0.20155038759689922
+MODEL: 52
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99994 | dropout: 0.45
+DECISIONS:
+	Perfect Decision: 0.46511627906976744
+	Acceptable Decision: 0.5968992248062015
+	Signal Should Have Been Hodl: 0.20155038759689922
+	Signal and Answer Exact Opposite: 0.20155038759689922
+
+CHECKPOINT FOR MODEL: 56
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99995 | dropout: 0.1
+DECISIONS:
+	Perfect Decision: 0.20155038759689922
+	Acceptable Decision: 0.20155038759689922
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+MODEL: 56
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99995 | dropout: 0.1
+DECISIONS:
+	Perfect Decision: 0.20155038759689922
+	Acceptable Decision: 0.20155038759689922
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+CHECKPOINT FOR MODEL: 59
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99995 | dropout: 0.25
+DECISIONS:
+	Perfect Decision: 0.20155038759689922
+	Acceptable Decision: 0.20155038759689922
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+MODEL: 59
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99995 | dropout: 0.25
+DECISIONS:
+	Perfect Decision: 0.20155038759689922
+	Acceptable Decision: 0.20155038759689922
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+CHECKPOINT FOR MODEL: 60
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99995 | dropout: 0.3
+DECISIONS:
+	Perfect Decision: 0.20155038759689922
+	Acceptable Decision: 0.20155038759689922
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+MODEL: 60
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99995 | dropout: 0.3
+DECISIONS:
+	Perfect Decision: 0.20155038759689922
+	Acceptable Decision: 0.20155038759689922
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+CHECKPOINT FOR MODEL: 65
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99995 | dropout: 0.55
+DECISIONS:
+	Perfect Decision: 0.20155038759689922
+	Acceptable Decision: 0.20155038759689922
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+MODEL: 65
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99995 | dropout: 0.55
+DECISIONS:
+	Perfect Decision: 0.20155038759689922
+	Acceptable Decision: 0.20155038759689922
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+CHECKPOINT FOR MODEL: 66
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99996 | dropout: 0.05
+DECISIONS:
+	Perfect Decision: 0.46511627906976744
+	Acceptable Decision: 0.5968992248062015
+	Signal Should Have Been Hodl: 0.20155038759689922
+	Signal and Answer Exact Opposite: 0.20155038759689922
+MODEL: 66
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99996 | dropout: 0.05
+DECISIONS:
+	Perfect Decision: 0.46511627906976744
+	Acceptable Decision: 0.5968992248062015
+	Signal Should Have Been Hodl: 0.20155038759689922
+	Signal and Answer Exact Opposite: 0.20155038759689922
+
+CHECKPOINT FOR MODEL: 68
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99996 | dropout: 0.15000000000000002
+DECISIONS:
+	Perfect Decision: 0.46511627906976744
+	Acceptable Decision: 0.5968992248062015
+	Signal Should Have Been Hodl: 0.20155038759689922
+	Signal and Answer Exact Opposite: 0.20155038759689922
+MODEL: 68
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99996 | dropout: 0.15000000000000002
+DECISIONS:
+	Perfect Decision: 0.46511627906976744
+	Acceptable Decision: 0.5968992248062015
+	Signal Should Have Been Hodl: 0.20155038759689922
+	Signal and Answer Exact Opposite: 0.20155038759689922
+
+CHECKPOINT FOR MODEL: 69
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99996 | dropout: 0.2
+DECISIONS:
+	Perfect Decision: 0.46511627906976744
+	Acceptable Decision: 0.5968992248062015
+	Signal Should Have Been Hodl: 0.20155038759689922
+	Signal and Answer Exact Opposite: 0.20155038759689922
+MODEL: 69
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99996 | dropout: 0.2
+DECISIONS:
+	Perfect Decision: 0.46511627906976744
+	Acceptable Decision: 0.5968992248062015
+	Signal Should Have Been Hodl: 0.20155038759689922
+	Signal and Answer Exact Opposite: 0.20155038759689922
+
+CHECKPOINT FOR MODEL: 70
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99996 | dropout: 0.25
+DECISIONS:
+	Perfect Decision: 0.20155038759689922
+	Acceptable Decision: 0.20155038759689922
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+MODEL: 70
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99996 | dropout: 0.25
+DECISIONS:
+	Perfect Decision: 0.20155038759689922
+	Acceptable Decision: 0.20155038759689922
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+CHECKPOINT FOR MODEL: 71
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99996 | dropout: 0.3
+DECISIONS:
+	Perfect Decision: 0.46511627906976744
+	Acceptable Decision: 0.5968992248062015
+	Signal Should Have Been Hodl: 0.20155038759689922
+	Signal and Answer Exact Opposite: 0.20155038759689922
+MODEL: 71
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99996 | dropout: 0.3
+DECISIONS:
+	Perfect Decision: 0.46511627906976744
+	Acceptable Decision: 0.5968992248062015
+	Signal Should Have Been Hodl: 0.20155038759689922
+	Signal and Answer Exact Opposite: 0.20155038759689922
+
+CHECKPOINT FOR MODEL: 75
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99996 | dropout: 0.5
+DECISIONS:
+	Perfect Decision: 0.20155038759689922
+	Acceptable Decision: 0.20155038759689922
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+MODEL: 75
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99996 | dropout: 0.5
+DECISIONS:
+	Perfect Decision: 0.20155038759689922
+	Acceptable Decision: 0.20155038759689922
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+CHECKPOINT FOR MODEL: 79
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99997 | dropout: 0.15000000000000002
+DECISIONS:
+	Perfect Decision: 0.46511627906976744
+	Acceptable Decision: 0.5968992248062015
+	Signal Should Have Been Hodl: 0.20155038759689922
+	Signal and Answer Exact Opposite: 0.20155038759689922
+MODEL: 79
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99997 | dropout: 0.15000000000000002
+DECISIONS:
+	Perfect Decision: 0.46511627906976744
+	Acceptable Decision: 0.5968992248062015
+	Signal Should Have Been Hodl: 0.20155038759689922
+	Signal and Answer Exact Opposite: 0.20155038759689922
+
+CHECKPOINT FOR MODEL: 80
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99997 | dropout: 0.2
+DECISIONS:
+	Perfect Decision: 0.20155038759689922
+	Acceptable Decision: 0.20155038759689922
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+MODEL: 80
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99997 | dropout: 0.2
+DECISIONS:
+	Perfect Decision: 0.20155038759689922
+	Acceptable Decision: 0.20155038759689922
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+CHECKPOINT FOR MODEL: 82
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99997 | dropout: 0.3
+DECISIONS:
+	Perfect Decision: 0.20155038759689922
+	Acceptable Decision: 0.20155038759689922
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+MODEL: 82
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99997 | dropout: 0.3
+DECISIONS:
+	Perfect Decision: 0.20155038759689922
+	Acceptable Decision: 0.20155038759689922
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+CHECKPOINT FOR MODEL: 94
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99998 | dropout: 0.35000000000000003
+DECISIONS:
+	Perfect Decision: 0.20155038759689922
+	Acceptable Decision: 0.20155038759689922
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+MODEL: 94
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99998 | dropout: 0.35000000000000003
+DECISIONS:
+	Perfect Decision: 0.20155038759689922
+	Acceptable Decision: 0.20155038759689922
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+CHECKPOINT FOR MODEL: 95
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99998 | dropout: 0.4
+DECISIONS:
+	Perfect Decision: 0.46511627906976744
+	Acceptable Decision: 0.5968992248062015
+	Signal Should Have Been Hodl: 0.20155038759689922
+	Signal and Answer Exact Opposite: 0.20155038759689922
+MODEL: 95
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99998 | dropout: 0.4
+DECISIONS:
+	Perfect Decision: 0.46511627906976744
+	Acceptable Decision: 0.5968992248062015
+	Signal Should Have Been Hodl: 0.20155038759689922
+	Signal and Answer Exact Opposite: 0.20155038759689922
+
+CHECKPOINT FOR MODEL: 96
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99998 | dropout: 0.45
+DECISIONS:
+	Perfect Decision: 0.46511627906976744
+	Acceptable Decision: 0.5968992248062015
+	Signal Should Have Been Hodl: 0.20155038759689922
+	Signal and Answer Exact Opposite: 0.20155038759689922
+MODEL: 96
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.99998 | dropout: 0.45
+DECISIONS:
+	Perfect Decision: 0.46511627906976744
+	Acceptable Decision: 0.5968992248062015
+	Signal Should Have Been Hodl: 0.20155038759689922
+	Signal and Answer Exact Opposite: 0.20155038759689922
+
+CHECKPOINT FOR MODEL: 100
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.9999899999999999 | dropout: 0.1
+DECISIONS:
+	Perfect Decision: 0.46511627906976744
+	Acceptable Decision: 0.5968992248062015
+	Signal Should Have Been Hodl: 0.20155038759689922
+	Signal and Answer Exact Opposite: 0.20155038759689922
+MODEL: 100
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.9999899999999999 | dropout: 0.1
+DECISIONS:
+	Perfect Decision: 0.46511627906976744
+	Acceptable Decision: 0.5968992248062015
+	Signal Should Have Been Hodl: 0.20155038759689922
+	Signal and Answer Exact Opposite: 0.20155038759689922
+
+CHECKPOINT FOR MODEL: 101
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.9999899999999999 | dropout: 0.15000000000000002
+DECISIONS:
+	Perfect Decision: 0.46511627906976744
+	Acceptable Decision: 0.5968992248062015
+	Signal Should Have Been Hodl: 0.20155038759689922
+	Signal and Answer Exact Opposite: 0.20155038759689922
+MODEL: 101
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.9999899999999999 | dropout: 0.15000000000000002
+DECISIONS:
+	Perfect Decision: 0.46511627906976744
+	Acceptable Decision: 0.5968992248062015
+	Signal Should Have Been Hodl: 0.20155038759689922
+	Signal and Answer Exact Opposite: 0.20155038759689922
+
+CHECKPOINT FOR MODEL: 107
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.9999899999999999 | dropout: 0.45
+DECISIONS:
+	Perfect Decision: 0.46511627906976744
+	Acceptable Decision: 0.5968992248062015
+	Signal Should Have Been Hodl: 0.20155038759689922
+	Signal and Answer Exact Opposite: 0.20155038759689922
+MODEL: 107
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.9999899999999999 | dropout: 0.45
+DECISIONS:
+	Perfect Decision: 0.46511627906976744
+	Acceptable Decision: 0.5968992248062015
+	Signal Should Have Been Hodl: 0.20155038759689922
+	Signal and Answer Exact Opposite: 0.20155038759689922
+
+	Signal and Answer Exact Opposite: 0.5968992248062015
+
+CHECKPOINT FOR MODEL: 109
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.9999899999999999 | dropout: 0.55
+DECISIONS:
+	Perfect Decision: 0.46511627906976744
+	Acceptable Decision: 0.5968992248062015
+	Signal Should Have Been Hodl: 0.20155038759689922
+	Signal and Answer Exact Opposite: 0.20155038759689922
+MODEL: 109
+PARAMETERS:
+	Laptop_0
+	eta: 0.001 | decay: 0.9999899999999999 | dropout: 0.55
+DECISIONS:
+	Perfect Decision: 0.46511627906976744
+	Acceptable Decision: 0.5968992248062015
+	Signal Should Have Been Hodl: 0.20155038759689922
+	Signal and Answer Exact Opposite: 0.20155038759689922
+
