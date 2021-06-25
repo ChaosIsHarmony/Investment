@@ -13,7 +13,7 @@ import time
 import pandas as pd
 import numpy as np
 
-coin_id = ["algorand", "bitcoin", "cardano", "chainlink", "decentraland", "cosmos", "ethereum", "matic-network", "polkadot", "solana", "the-graph", "theta-token"]
+coin_id = ["aave", "algorand", "bitcoin", "cardano", "chainlink", "cosmos", "decentraland", "ethereum", "matic-network", "polkadot", "solana", "the-graph", "theta-token"]
 
 
 
@@ -196,7 +196,7 @@ def merge_new_dataset_with_old(coin, by_range=True):
 
 	merge_datasets(coin, data_to_merge)
 
-#merge_new_dataset_with_old("the-graph")
+#merge_new_dataset_with_old("aave")
 
 def fetch_missing_data_by_dates(coin, dates):
 	'''
@@ -270,6 +270,7 @@ def fetch_missing_data_by_range(coin, n_days, start_delta):
 	print(f"{coin} data successfully pulled and stored.")
 
 
+#fetch_missing_data_by_range("aave", 120, 109)
 
 def run(how_far_back):
 	'''
@@ -280,7 +281,7 @@ def run(how_far_back):
 	api_call_cycle_start = get_time() 
 	fear_greed = get_fear_greed_by_range(how_far_back)
 	
-	for coin in ["decentraland"]: #coin_id:
+	for coin in ["aave"]: #coin_id:
 		date_delta = -1 
 		fear_greed_ind = 0
 		has_next = True
@@ -303,7 +304,7 @@ def run(how_far_back):
 
 			# Request data
 			date_delta += 1
-			if date_delta >= how_far_back  or "error" in data.keys():
+			if date_delta >= how_far_back:
 					has_next = False
 					continue
 			next_date = get_correct_date_format(today - timedelta(date_delta))

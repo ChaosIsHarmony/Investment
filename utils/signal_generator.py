@@ -68,7 +68,7 @@ def get_fg_indicator(fg_index):
 
 
 def populate_stat_report(coin, data, report):
-	basic_stats = ["\n\n\n", 
+	basic_stats = ["\n\n\n________________________________________", 
 					f"Report for {coin.upper()}:", 
 					"Basic Stats", 
 					"[1.0 is the highest; 0.0 is the lowest]", 

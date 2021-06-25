@@ -17,7 +17,7 @@ nn.MODEL.to(DEVICE)
 MODEL_FILEPATH = f"models/{nn.MODEL.get_class_name()}.pt"
 MODEL_CHECKPOINT_FILEPATH = f"models/checkpoint_{nn.MODEL.get_class_name()}.pt"
 BATCH_SIZE = 256 
-EPOCHS = 5 
+EPOCHS = 1 
 COIN = "bitcoin"
 REPORTS = [f"Model: {nn.MODEL.get_class_name()}", f"Learning rate: {nn.LEARNING_RATE}", f"Learning rate decay: {nn.LEARNING_RATE_DECAY}", f"Chance of dropout: {nn.DROPOUT}", f"Batch size: {BATCH_SIZE}", f"Epochs: {EPOCHS}", f"Coin: {COIN}"]
 
@@ -188,7 +188,6 @@ def validate_model(valid_data, train_loss, min_valid_loss):
 		save_model_state(MODEL_FILEPATH, nn.MODEL)
 		report = f"Training Loss: {train_loss:.4f} | Validation Loss: {min_valid_loss:.4f} | eta: {nn.OPTIMIZER.state_dict()['param_groups'][0]['lr']:.6f}"
 		REPORTS.append(report)
-		print(report)
 
 	return min_valid_loss
 
@@ -210,6 +209,9 @@ def train(train_data, valid_data, start_time):
 			# if end of batch or end of dataset, validate model
 			if steps % BATCH_SIZE == 0 or steps == len(train_data)-1:
 				min_valid_loss = validate_model(valid_data, train_loss/steps, min_valid_loss)
+				now = datetime.now()
+				current_time = now.strftime("%H:%M:%S")
+				print(f"System Time: {current_time} | Time Elapsed: {(time.time() - start_time) / 60:.1f} mins. | Training Loss: {train_loss/steps:.4f} | Min Validation Loss: {min_valid_loss:.4f}")
 
 		report = f"Time elapsed by epoch {epoch+1}: {round((time.time() - start_time)) / 60} mins."
 		REPORTS.append(report)
@@ -319,14 +321,15 @@ def validate_model_param_tuning(valid_data, min_valid_loss, model_architecture, 
 
 def parameter_tuner():
 	train_data, valid_data, test_data = get_datasets(COIN)
-	best = [0.4, 0.5, 0, 0]
-	model_counter = 110 
+	best = [0.25, 0.25, 0, 0]
+	model_counter = 0
 
-	for eta in np.arange(0.001, 0.005, 0.0005):
+	for eta in np.arange(0.0015, 0.005, 0.0005):
 		nn.LEARNING_RATE = eta
-		for decay in np.arange(0.99997, 0.99999, 0.00001):	
+		for decay in np.arange(0.9999, 0.99999, 0.00001):	
 			nn.LEARNING_RATE_DECAY = decay
 			for dropout in np.arange(0.05, 0.6, 0.05):
+				print("Start of new Experiment\n__________________________")
 				report = "" 
 				nn.DROPOUT = dropout
 				
@@ -335,6 +338,7 @@ def parameter_tuner():
 				start_time = time.time()
 				# Train
 				min_valid_loss = np.inf 
+				last_train_loss = np.inf
 				train_data = shuffle_data(train_data)
 
 				for epoch in range(EPOCHS):
@@ -349,16 +353,22 @@ def parameter_tuner():
 						if steps % BATCH_SIZE == 0 or steps == len(train_data)-1:
 							min_valid_loss = validate_model_param_tuning(valid_data, min_valid_loss, model_architecture, model_counter)
 
-					now = datetime.now()
-					current_time = now.strftime("%H:%M:%S")
-					print(f"System Time: {current_time} | Time Elapsed: {(time.time() - start_time) / 60:.1f} mins. | Training Loss: {train_loss/steps:.4f} | Min Validation Loss: {min_valid_loss:.4f}")
+							now = datetime.now()
+							current_time = now.strftime("%H:%M:%S")
+							print(f"System Time: {current_time} | Time Elapsed: {(time.time() - start_time) / 60:.1f} mins. | Training Loss: {train_loss/steps:.4f} | Min Validation Loss: {min_valid_loss:.4f}")
+							# breaks if training loss increase exceeds threshhold (i.e., the model stops learning)
+							if ((train_loss/steps) - last_train_loss) > 0.001:
+								break
+							elif steps % (BATCH_SIZE*5) == 0:
+								last_train_loss = train_loss/steps
+
 
 				model = load_model(nn.MODEL, f"models/CS_{model_architecture}_{model_counter}_mod.pt")
 			
 				mod_acc = evaluate_model(model, test_data)
 
 				if mod_acc[1] >= best[1] or mod_acc[3] <= best[3]:
-					report += f"MODEL: {model_counter}\nPARAMETERS:\n\tLaptop_0\n\teta: {eta} | decay: {decay} | dropout: {dropout}\nDECISIONS:\n\tPerfect Decision: {mod_acc[0]}\n\tAcceptable Decision: {mod_acc[1]}\n\tSignal Should Have Been Hodl: {mod_acc[2]}\n\tSignal and Answer Exact Opposite: {mod_acc[3]}"
+					report += f"MODEL: {model_counter}\nPARAMETERS:\n\tLaptop_0\n\teta: {nn.LEARNING_RATE} | decay: {nn.LEARNING_RATE_DECAY} | dropout: {nn.DROPOUT}\nDECISIONS:\n\tPerfect Decision: {mod_acc[0]}\n\tAcceptable Decision: {mod_acc[1]}\n\tSignal Should Have Been Hodl: {mod_acc[2]}\n\tSignal and Answer Exact Opposite: {mod_acc[3]}"
 					save_model_state(f"models/CS_{model_architecture}_{model_counter}_1.pt", nn.MODEL)
 				
 				# erase chkpt and model
@@ -373,7 +383,7 @@ def parameter_tuner():
 
 				model_counter += 1
 
-#parameter_tuner()
+parameter_tuner()
 
 
 
@@ -390,8 +400,11 @@ def continue_training():
 	# ------------ MODEL TRAINING -----------
 	#
 	model_architecture = "Laptop_0"
-	model_number = 1
+	model_number = 95 
 	nn.MODEL = load_model(nn.CryptoSoothsayer_Laptop_0(nn.N_FEATURES, nn.N_SIGNALS), f"models/CS_{model_architecture}_{model_number}_1.pt")
+	nn.DROPOUT = 0.4
+	nn.LEARNING_RATE = 0.001
+	nn.LEARNING_RATE_DECAY = 0.99998
 	start_time = time.time()
 	train_and_save(train_data, valid_data, start_time)
 
@@ -417,4 +430,4 @@ def continue_training():
 	
 
 
-continue_training()
+#continue_training()
