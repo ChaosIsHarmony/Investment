@@ -338,7 +338,8 @@ def parameter_tuner():
 				start_time = time.time()
 				# Train
 				min_valid_loss = np.inf 
-				last_train_loss = np.inf
+				last_train_loss = [np.inf]
+				train_loss_comp_ind = 0
 				train_data = shuffle_data(train_data)
 
 				for epoch in range(EPOCHS):
@@ -357,10 +358,17 @@ def parameter_tuner():
 							current_time = now.strftime("%H:%M:%S")
 							print(f"System Time: {current_time} | Time Elapsed: {(time.time() - start_time) / 60:.1f} mins. | Training Loss: {train_loss/steps:.4f} | Min Validation Loss: {min_valid_loss:.4f}")
 							# breaks if training loss increase exceeds threshhold (i.e., the model stops learning)
-							if ((train_loss/steps) - last_train_loss) > 0.001:
+							last_train_loss.append(train_loss/steps)
+							train_loss_comp_ind += 1
+							if train_loss_comp_ind >= 5 and ((train_loss/steps) - last_train_loss[train_loss_comp_ind-5]) > 0.001:
+								print(f"5-Batch Diff: {(train_loss/steps) - last_train_loss[train_loss_comp_ind-5]}")
 								break
-							elif steps % (BATCH_SIZE*5) == 0:
-								last_train_loss = train_loss/steps
+							if train_loss_comp_ind >= 10 and ((train_loss/steps) - last_train_loss[train_loss_comp_ind-10]) > 0:
+								print(f"10-Batch Diff: {(train_loss/steps) - last_train_loss[train_loss_comp_ind-10]}")
+								break
+							if train_loss_comp_ind >= 15 and ((train_loss/steps) - last_train_loss[train_loss_comp_ind-15]) > -0.1:
+								print(f"15-Batch Diff: {(train_loss/steps) - last_train_loss[train_loss_comp_ind-15]}")
+								break
 
 
 				model = load_model(nn.MODEL, f"models/CS_{model_architecture}_{model_counter}_mod.pt")
