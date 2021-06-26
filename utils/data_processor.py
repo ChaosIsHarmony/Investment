@@ -435,6 +435,7 @@ def continue_training():
 	nn.DROPOUT = 0.05
 	nn.LEARNING_RATE = 0.09
 	nn.LEARNING_RATE_DECAY = 0.99994
+	nn.set_model_props()
 	start_time = time.time()
 	train_and_save(train_data, valid_data, start_time)
 
