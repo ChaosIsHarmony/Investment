@@ -229,9 +229,103 @@ class CryptoSoothsayer_Laptop_1(nn.Module):
 
 
 
+class CryptoSoothsayer_Laptop_2(nn.Module):
+	def __init__(self, input_size, n_signals):
+		super(CryptoSoothsayer_Laptop_2, self).__init__()
+		self.layer_1 = nn.Linear(input_size, 16384)
+		self.layer_2 = nn.Linear(16384, 64)
+		self.layer_output = nn.Linear(64, n_signals)
+		self.dropout = nn.Dropout(DROPOUT)
 
-MODEL = CryptoSoothsayer_Laptop_0(N_FEATURES, N_SIGNALS)
-CRITERION = nn.CrossEntropyLoss()
-OPTIMIZER = optim.Adam(MODEL.parameters(), lr=LEARNING_RATE)
-lambda1 = lambda epoch: LEARNING_RATE_DECAY 
-SCHEDULER =  lr_scheduler.MultiplicativeLR(OPTIMIZER, lambda1)
+
+	def forward(self, inputs):
+		out = self.dropout(F.relu(self.layer_1(inputs)))
+		out = self.dropout(F.relu(self.layer_2(out)))
+		out = self.layer_output(out)
+		return out
+
+	
+	def get_class_name(self):
+		return "CryptoSoothsayer_Laptop_2"
+
+
+
+class CryptoSoothsayer_Laptop_3(nn.Module):
+	def __init__(self, input_size, n_signals):
+		super(CryptoSoothsayer_Laptop_3, self).__init__()
+		self.layer_1 = nn.Linear(input_size, 16384)
+		self.layer_2 = nn.Linear(16384, 4096)
+		self.layer_3 = nn.Linear(4096, 1024)
+		self.layer_4 = nn.Linear(1024, 256)
+		self.layer_5 = nn.Linear(256, 32)
+		self.layer_output = nn.Linear(32, n_signals)
+		self.dropout = nn.Dropout(DROPOUT)
+
+
+	def forward(self, inputs):
+		out = self.dropout(F.relu(self.layer_1(inputs)))
+		out = self.dropout(F.relu(self.layer_2(out)))
+		out = self.dropout(F.relu(self.layer_3(out)))
+		out = self.dropout(F.relu(self.layer_4(out)))
+		out = self.dropout(F.relu(self.layer_5(out)))
+		out = self.layer_output(out)
+		return out
+
+	
+	def get_class_name(self):
+		return "CryptoSoothsayer_Laptop_3"
+
+
+
+class CryptoSoothsayer_Laptop_4(nn.Module):
+	def __init__(self, input_size, n_signals):
+		super(CryptoSoothsayer_Laptop_4, self).__init__()
+		self.layer_1 = nn.Linear(input_size, 4096)
+		self.layer_2 = nn.Linear(4096, 16384)
+		self.layer_3 = nn.Linear(16384, 256)
+		self.layer_output = nn.Linear(256, n_signals)
+		self.dropout = nn.Dropout(DROPOUT)
+
+
+	def forward(self, inputs):
+		out = self.dropout(F.relu(self.layer_1(inputs)))
+		out = self.dropout(F.relu(self.layer_2(out)))
+		out = self.dropout(F.relu(self.layer_3(out)))
+		out = self.layer_output(out)
+		return out
+
+	
+	def get_class_name(self):
+		return "CryptoSoothsayer_Laptop_4"
+
+
+
+class EmptyModel(nn.Module):
+	def __init__(self, input_size, n_signals):
+		super(EmptyModel, self).__init__()
+
+	def forward(self, inputs):
+		return None
+
+	def get_class_name(self):
+		return "THIS SHOULD NOT BE SEEN"
+
+
+
+def set_model_props():
+	global DEVICE, MODEL, CRITERION, OPTIMIZER, SCHEDULER
+
+	DEVICE = torch.device("cpu")
+	MODEL.to(DEVICE)
+	CRITERION = nn.CrossEntropyLoss()
+	OPTIMIZER = optim.Adam(MODEL.parameters(), lr=LEARNING_RATE)
+	lambda1 = lambda epoch: LEARNING_RATE_DECAY 
+	SCHEDULER =  lr_scheduler.MultiplicativeLR(OPTIMIZER, lambda1)
+
+
+
+MODEL = EmptyModel(N_FEATURES, N_SIGNALS) 
+DEVICE = None
+CRITERION = None
+OPTIMIZER = None
+SCHEDULER = None

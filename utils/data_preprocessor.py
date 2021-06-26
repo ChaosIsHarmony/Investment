@@ -7,11 +7,14 @@ def handle_missing_data(data, start_date, end_date):
 	Fills all NaN values with 0.
 	Takes average of prior day and next day to calculate missing value or previous or next day if data point is at the beginning or end of the dataset, respectively.
 	'''	
+	# check for missing dates
 	data["date"] = pd.to_datetime(data["date"])
 	missing_dates = pd.date_range(start = start_date, end = end_date ).difference(data["date"])
 	assert len(missing_dates) == 0, f"The dataset is missing dates: {missing_dates}. Use utils/data_aggregator.py to collect the missing dates before proceeding."
 
 	data = data.fillna(0)
+
+	numeric_data = data.iloc[:, 1:]
 
 	for i, row in data.iterrows():
 		for column in data.columns[1:]:
@@ -36,7 +39,7 @@ def handle_missing_data(data, start_date, end_date):
 
 
 
-def normalize_data_non_prescient(data):
+def normalize_data(data):
 	'''
 	Normalizes data using min-max normalization but only up until the given point in history, e.g., datapoint for 2021/02/28 does not have any knowledge of data from 01/03/2021 and onwards.
 	'''
@@ -69,25 +72,13 @@ def normalize_data_non_prescient(data):
 
 	# fear and greed index is out of 100
 	for column in data.columns:
-		if "fear_greed" in column:
+		if "fear_greed" in str(column):
 			data_cp[column] = data[column] / 100
 
-	return data_cp
-
-
-
-def normalize_data(data):
-	'''
-	Normalizes data using min-max normalization, as Z-score normalization would be more suited to data with outliers.
-	Starts from second column to avoid normalizes the date column.
-	'''
-	for column in data.columns[1:]:
-		data[column] = (data[column]-data[column].min()) / (data[column].max() - data[column].min())
-
 	# in case there were division by zero errors leading to NaN
-	data = data.fillna(0)
+	data_cp = data_cp.fillna(0)
 
-	return data
+	return data_cp
 
 
 
@@ -186,7 +177,7 @@ def process_data(data, start_date, end_date):
 	data = calculate_SMAs(data)
 	print("SMA calculation complete.")
 	# Normalize, must happen after SMA calculation or will skew results
-	data = normalize_data_non_prescient(data)
+	data = normalize_data(data)
 	print("Data normalization complete.")
 	print()
 
@@ -195,7 +186,7 @@ def process_data(data, start_date, end_date):
 
 
 def run():
-	coins = ["algorand", "bitcoin", "cardano", "chainlink", "cosmos", "decentraland", "ethereum", "matic-network", "the-graph", "theta-token"]  
+	coins = ["aave", "algorand", "bitcoin", "cardano", "chainlink", "cosmos", "decentraland", "ethereum", "matic-network", "the-graph", "theta-token"]  
 	# The following two coins have shorter histories and require a different start date {polkadot = 2020-08-23; solana = 2020-04-11}
 	#coins = ["polkadot"]
 	#coins = ["solana"]

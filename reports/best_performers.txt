@@ -1,3 +1,5 @@
-models/CS_Laptop_0_1_dummy.pt
-models/CS_Laptop_0_12_dummy.pt
-models/CS_Laptop_0_22_dummy.pt
+models/CS_Laptop_2_15_dummy.pt
+models/CS_Laptop_2_5_dummy.pt
+models/CS_Laptop_2_55_dummy.pt
+models/CS_Laptop_2_68_dummy.pt
+models/CS_Laptop_2_11_dummy.pt

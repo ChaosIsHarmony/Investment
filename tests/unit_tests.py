@@ -6,8 +6,10 @@ from utils import data_preprocessor as dpp
 from utils import data_processor as dp
 from utils import neural_nets as nn
 
+import os
 import copy
 import pandas as pd
+import numpy as np
 
 #
 # ---------- DATA AGGREGATOR TESTS ----------
@@ -19,6 +21,7 @@ import pandas as pd
 def test_handle_missing_data():
 	start_date = "2020-10-01"
 	end_date = "2020-10-04"
+	
 	# missing dates
 	data = [['2020-10-01', 1, 1, 1], 
 			#comment out the following line to make test fail
@@ -28,6 +31,10 @@ def test_handle_missing_data():
 	data = pd.DataFrame(data, columns=["date", 1, 2, 3])
 	data = dpp.handle_missing_data(data, start_date, end_date)
 
+	# date type
+	assert type(data.iloc[0, 0]) == pd._libs.tslibs.timestamps.Timestamp and type(data.iloc[1, 0]) == pd._libs.tslibs.timestamps.Timestamp and type(data.iloc[2, 0]) == pd._libs.tslibs.timestamps.Timestamp and type(data.iloc[3, 0]) == pd._libs.tslibs.timestamps.Timestamp, "Date column type changed test failed"
+
+
 	# zero in the middle
 	data = [['2020-10-01', 1, 1, 1], 
 			['2020-10-02', 0, 0, 0],
@@ -35,7 +42,23 @@ def test_handle_missing_data():
 			['2020-10-04', 3, 3, 3]]
 	data = pd.DataFrame(data, columns=["date", 1, 2, 3])
 	data = dpp.handle_missing_data(data, start_date, end_date)
-	assert data.iloc[1, 1] == 2.0 and data.iloc[1, 2] == 2.0 and data.iloc[1, 3] == 2.0, "Zero in the middle test case failed."
+
+	assert data.iloc[0, 1] == 1.0, "Zero in the middle (first row, second column) test failed."
+	assert data.iloc[0, 2] == 1.0, "Zero in the middle (first row, third column) test failed."
+	assert data.iloc[0, 3] == 1.0, "Zero in the middle (first row, final column) test failed."
+
+	assert data.iloc[1, 1] == 2.0, "Zero in the middle (second row, second column) test failed."
+	assert data.iloc[1, 2] == 2.0, "Zero in the middle (second row, third column) test failed."
+	assert data.iloc[1, 3] == 2.0, "Zero in the middle (second row, final column) test failed."
+
+	assert data.iloc[2, 1] == 3.0, "Zero in the middle (third row, second column) test failed."
+	assert data.iloc[2, 2] == 3.0, "Zero in the middle (third row, third column) test failed."
+	assert data.iloc[2, 3] == 3.0, "Zero in the middle (third row, final column) test failed."
+
+	assert data.iloc[3, 1] == 3.0, "Zero in the middle (final row, second column) test failed."
+	assert data.iloc[3, 2] == 3.0, "Zero in the middle (final row, third column) test failed."
+	assert data.iloc[3, 3] == 3.0, "Zero in the middle (final row, final column) test failed."
+
 
 	# consecutive zeros
 	data = [['2020-10-01', 1, 1, 1],
@@ -44,8 +67,23 @@ def test_handle_missing_data():
 			['2020-10-04', 3, 3, 3]]
 	data = pd.DataFrame(data, columns=["date", 1, 2, 3])
 	data = dpp.handle_missing_data(data, start_date, end_date)
-	assert data.iloc[1, 1] == 2.0 and data.iloc[1, 2] == 2.0 and data.iloc[1, 3] == 2.0, "Consecutive zeros test case failed."
-	assert data.iloc[2, 1] == 2.5 and data.iloc[2, 2] == 2.5 and data.iloc[2, 3] == 2.5, "Consecutive zeros test case failed."
+	
+	assert data.iloc[0, 1] == 1.0, "Consecutive zeros (first row, second column) test case failed."
+	assert data.iloc[0, 2] == 1.0, "Consecutive zeros (first row, third column) test case failed."
+	assert data.iloc[0, 3] == 1.0, "Consecutive zeros (first row, final column) test case failed."
+
+	assert data.iloc[1, 1] == 2.0, "Consecutive zeros (second row, second column) test case failed."
+	assert data.iloc[1, 2] == 2.0, "Consecutive zeros (second row, third column) test case failed."
+	assert data.iloc[1, 3] == 2.0, "Consecutive zeros (second row, final column) test case failed."
+	
+	assert data.iloc[2, 1] == 2.5, "Consecutive zeros (third row, second column) test case failed."
+	assert data.iloc[2, 2] == 2.5, "Consecutive zeros (third row, third column) test case failed."
+	assert data.iloc[2, 3] == 2.5, "Consecutive zeros (third row, final column) test case failed."
+
+	assert data.iloc[3, 1] == 3.0, "Consecutive zeros (final row, second column) test case failed."
+	assert data.iloc[3, 2] == 3.0, "Consecutive zeros (final row, third column) test case failed."
+	assert data.iloc[3, 3] == 3.0, "Consecutive zeros (final row, final column) test case failed."
+
 
 	# leading zero
 	data = [['2020-10-01', 0, 0, 0],
@@ -54,7 +92,23 @@ def test_handle_missing_data():
 			['2020-10-04', 3, 3, 3]]
 	data = pd.DataFrame(data, columns=["date", 1, 2, 3])
 	data = dpp.handle_missing_data(data, start_date, end_date)
-	assert data.iloc[0, 1] == 1.0 and data.iloc[0, 2] == 1.0 and data.iloc[0, 3] == 1.0, "Leading zero test case failed."
+
+	assert data.iloc[0, 1] == 1.0, "Leading zero (first row, second column) test failed."
+	assert data.iloc[0, 2] == 1.0, "Leading zero (first row, third column) test failed."
+	assert data.iloc[0, 3] == 1.0, "Leading zero (first row, final column) test failed."
+
+	assert data.iloc[1, 1] == 1.0, "Leading zero (second row, second column) test failed."
+	assert data.iloc[1, 2] == 1.0, "Leading zero (second row, third column) test failed."
+	assert data.iloc[1, 3] == 1.0, "Leading zero (second row, final column) test failed."
+
+	assert data.iloc[2, 1] == 2.0, "Leading zero (third row, second column) test failed."
+	assert data.iloc[2, 2] == 2.0, "Leading zero (third row, third column) test failed."
+	assert data.iloc[2, 3] == 2.0, "Leading zero (third row, final column) test failed."
+
+	assert data.iloc[3, 1] == 3.0, "Leading zero (final row, second column) test failed."
+	assert data.iloc[3, 2] == 3.0, "Leading zero (final row, third column) test failed."
+	assert data.iloc[3, 3] == 3.0, "Leading zero (final row, final column) test failed."
+
 
 	# ending zero
 	data = [['2020-10-01', 1, 1, 1],
@@ -63,19 +117,39 @@ def test_handle_missing_data():
 			['2020-10-04', 0, 0, 0]]
 	data = pd.DataFrame(data, columns=["date", 1, 2, 3])
 	data = dpp.handle_missing_data(data, start_date, end_date)
-	assert data.iloc[3, 1] == 2.0 and data.iloc[3, 2] == 2.0 and data.iloc[3, 3] == 2.0, "Ending zero test case failed."
+
+	assert data.iloc[0, 1] == 1.0, "Ending zero (first row, second column) test failed."
+	assert data.iloc[0, 2] == 1.0, "Ending zero (first row, third column) test failed."
+	assert data.iloc[0, 3] == 1.0, "Ending zero (first row, final column) test failed."
+
+	assert data.iloc[1, 1] == 1.0, "Ending zero (second row, second column) test failed."
+	assert data.iloc[1, 2] == 1.0, "Ending zero (second row, third column) test failed."
+	assert data.iloc[1, 3] == 1.0, "Ending zero (second row, final column) test failed."
+
+	assert data.iloc[2, 1] == 2.0, "Ending zero (third row, second column) test failed."
+	assert data.iloc[2, 2] == 2.0, "Ending zero (third row, third column) test failed."
+	assert data.iloc[2, 3] == 2.0, "Ending zero (third row, final column) test failed."
+
+	assert data.iloc[3, 1] == 2.0, "Ending zero (final row, second column) test failed."
+	assert data.iloc[3, 2] == 2.0, "Ending zero (final row, third column) test failed."
+	assert data.iloc[3, 3] == 2.0, "Ending zero (final row, final column) test failed."
 
 
 
-def test_normalize_data_non_prescient():
+def test_normalize_data():
 	# check fear greed are out of 100
 	data = [['2020-10-01', 1, 1, 1], 
 			['2020-10-02', 1, 1, 1],
 			['2020-10-03', 4, 4, 4],
 			['2020-10-04', 2, 2, 2]]
 	data = pd.DataFrame(data, columns=["date", "fear_greed", 2, 3])
-	data = dpp.normalize_data_non_prescient(data)
-	assert data.iloc[0,1] == 1/100 and data.iloc[1,1] == 1/100 and data.iloc[2,1] == 4/100 and data.iloc[3,1] == 2/100, "Normalize data (non-prescient) fear_greed index test failed."
+	data = dpp.normalize_data(data)
+	
+	assert data.iloc[0,1] == 1/100, "Normalize data (first row) fear_greed index test failed."
+	assert data.iloc[1,1] == 1/100, "Normalize data (second row) fear_greed index test failed."
+	assert data.iloc[2,1] == 4/100, "Normalize data (third row) fear_greed index test failed."
+	assert data.iloc[3,1] == 2/100, "Normalize data (final row) fear_greed index test failed."
+
 
 	# standard
 	data = [['2020-10-01', 1, 1, 1], 
@@ -83,8 +157,13 @@ def test_normalize_data_non_prescient():
 			['2020-10-03', 4, 4, 4],
 			['2020-10-04', 2, 2, 2]]
 	data = pd.DataFrame(data, columns=["date", "fear_greed", 2, 3])
-	data = dpp.normalize_data_non_prescient(data)
-	assert data.iloc[0,2] == 1 and data.iloc[1,2] == 1 and data.iloc[2,2] == 1 and data.iloc[3,2] == 1/3, "Normalize data (non-prescient) standard test failed."
+	data = dpp.normalize_data(data)
+
+	assert data.iloc[0,2] == 1, "Normalize data (first row) standard test failed."
+	assert data.iloc[1,2] == 1, "Normalize data (second row) standard test failed." 
+	assert data.iloc[2,2] == 1, "Normalize data (third row) standard test failed." 
+	assert data.iloc[3,2] == 1/3, "Normalize data (final row) standard test failed."
+
 
 	# with zeros
 	data = [['2020-10-01', 0, 0, 0], 
@@ -92,8 +171,13 @@ def test_normalize_data_non_prescient():
 			['2020-10-03', 4, 4, 4],
 			['2020-10-04', 2, 2, 2]]
 	data = pd.DataFrame(data, columns=["date", "fear_greed", 2, 3])
-	data = dpp.normalize_data_non_prescient(data)
-	assert data.iloc[0,2] == 1 and data.iloc[1,2] == 1 and data.iloc[2,2] == 1 and data.iloc[3,2] == 1/2, "Normalize data (non-prescient) w/ zeros test failed."
+	data = dpp.normalize_data(data)
+
+	assert data.iloc[0,2] == 1, "Normalize data (first row) w/ zeros test failed." 
+	assert data.iloc[1,2] == 1, "Normalize data (second row) w/ zeros test failed." 
+	assert data.iloc[2,2] == 1, "Normalize data (third row) w/ zeros test failed." 
+	assert data.iloc[3,2] == 1/2, "Normalize data (final row) w/ zeros test failed."
+
 
 	# with only zeros
 	data = [['2020-10-01', 0, 0, 0], 
@@ -101,19 +185,11 @@ def test_normalize_data_non_prescient():
 			['2020-10-03', 0, 0, 0],
 			['2020-10-04', 0, 0, 0]]
 	data = pd.DataFrame(data, columns=["date", "fear_greed", 2, 3])
-	data = dpp.normalize_data_non_prescient(data)
-	assert data.iloc[0,2] == 1 and data.iloc[1,2] == 0 and data.iloc[2,2] == 0 and data.iloc[3,2] == 0, "Normalize data (non-prescient) w/ only zeros test failed."
-
-
-
-def test_normalize_data():
-	data = [['2020-10-01', 1, 1, 1], 
-			['2020-10-02', 0, 0, 0],
-			['2020-10-03', 3, 3, 3],
-			['2020-10-04', 3, 3, 3]]
-	data = pd.DataFrame(data, columns=["date", 1, 2, 3])
 	data = dpp.normalize_data(data)
-	assert data.iloc[0,1] == 1/3 and data.iloc[1,1] == 0 and data.iloc[2,1] == 1 and data.iloc[3,1] == 1, "Normalize data test failed."
+	assert data.iloc[0,2] == 1, "Normalize data (first row) w/ only zeros test failed." 
+	assert data.iloc[1,2] == 0, "Normalize data (second row) w/ only zeros test failed." 
+	assert data.iloc[2,2] == 0, "Normalize data (third row) w/ only zeros test failed." 
+	assert data.iloc[3,2] == 0, "Normalize data (final row) w/ only zeros test failed."
 
 
 
@@ -175,9 +251,10 @@ def test_calculate_fear_greed_SMAs():
 # ---------- DATA PROCESSOR TESTS ----------
 #
 def test_generate_dataset():
+	# create a communal dataset to use for all tests in this section
 	data = []
 	for _ in range(7):
-		row = [x+1 for x in range(26)]
+		row = [x+1 for x in range(nn.N_FEATURES)]
 		data.append(row)
 	data[0].append(0)
 	data[1].append(1)
@@ -186,14 +263,15 @@ def test_generate_dataset():
 	data[4].append(3)
 	data[5].append(3)
 	data[6].append(3)
-	data = pd.DataFrame(data, columns=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, "signal"])
+	data = pd.DataFrame(data, columns=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, "signal"])
 
 	# No augmentation
 	altered_data = dp.generate_dataset(data, len(data), 0)
-	assert len(altered_data) == 7 and len(altered_data[0]) == 2 and len(altered_data[0][0]) == 26, "No augmentation test failed."
+	assert len(altered_data) == 7, "No augmentation dataset length test failed"
+	assert len(altered_data[0]) == 2, "No augmentation feature/target tuple length test failed"
+	assert len(altered_data[0][0]) == nn.N_FEATURES, "No augmentation feature vector length test failed."
 
 	# 10x augmentation
-	altered_data = dp.generate_dataset(data, len(data), 0, 10)
 	# 10*3 for signal 0
 	# 10*3 for signal 1
 	# 10*2 for signal 2
@@ -202,19 +280,26 @@ def test_generate_dataset():
 	# 10*1 for signal 3
 	# 10*1 for signal 3
 	# + 7 for the original elements in the data
-	assert len(altered_data) == (10*3)+(10*3)+(10*2)+(10*2)+(10*1)+(10*1)+(10*1)+7 and len(altered_data[0]) == 2 and len(altered_data[0][0]) == 26, "Augmentation test failed."
+	altered_data = dp.generate_dataset(data, len(data), 0, 10)
+	assert len(altered_data) == (10*3)+(10*3)+(10*2)+(10*2)+(10*1)+(10*1)+(10*1)+7, "10x augmentation dataset length test failed"
+	assert len(altered_data[0]) == 2, "10x augmentation feature/target tuple length test failed" 
+	assert len(altered_data[0][0]) == nn.N_FEATURES, "10x augmentation feature vector length test failed."
 
 	# Testing offset
 	altered_data = dp.generate_dataset(data, len(data), 2, 10)
-	assert len(altered_data) == (10*2)+(10*2)+(10*1)+(10*1)+(10*1)+5 and len(altered_data[0]) == 2 and len(altered_data[0][0]) == 26, "Offset test failed."
+	assert len(altered_data) == (10*2)+(10*2)+(10*1)+(10*1)+(10*1)+5, "2 offset dataset length test failed"
+	assert len(altered_data[0]) == 2, "2 offset feature/target tuple length test failed"  
+	assert len(altered_data[0][0]) == nn.N_FEATURES, "2 offset feature vector length test failed."
 	
 	# Testing limit
 	altered_data = dp.generate_dataset(data, len(data)-2, 0, 10)
-	assert len(altered_data) == (10*2)+(10*2)+(10*1)+(10*1)+(10*2)+5 and len(altered_data[0]) == 2 and len(altered_data[0][0]) == 26, "Limit test failed."
+	assert len(altered_data) == (10*2)+(10*2)+(10*1)+(10*1)+(10*2)+5, "2 limit dataset length test failed"
+	assert len(altered_data[0]) == 2, "2 limit feature/target tuple length test failed"  
+	assert len(altered_data[0][0]) == nn.N_FEATURES, "2 limit feature vector length test failed."
 
 
 
-def create_fake_csv(coin):
+def create_fake_csv():
 	data = []
 	for i in range(100):
 		dt_list = []
@@ -228,16 +313,21 @@ def create_fake_csv(coin):
 	col_labels.append("signal")
 	
 	data = pd.DataFrame(data, columns=col_labels)
-	data.to_csv(f"datasets/complete/{coin}_historical_data_complete.csv")
+	data.to_csv("datasets/complete/fakecoin_historical_data_complete.csv")
 	
 	return data
 
 
 
+def destroy_fake_coin():
+	os.remove("datasets/complete/fakecoin_historical_data_complete.csv")
+
+
+
 def test_get_datasets():
 	coin = "fakecoin"
-	data = create_fake_csv(coin)
-	train_data, valid_data, test_data = dp.get_datasets(coin)
+	data = create_fake_csv()
+	train_data, valid_data, test_data = dp.get_datasets(coin, data_aug_factor=16)
 
 	# test with standard 16x augmentation
 	# len(data)*0.7*16 = the data augmentation portion
@@ -250,8 +340,8 @@ def test_get_datasets():
 	assert test_data[int(len(data)*0.15)-1][0][0] == 99, "Failed test_data value test in get_datasets test."
 
 	# test with 0 augmentation
-	data = create_fake_csv(coin)
-	train_data, valid_data, test_data = dp.get_datasets(coin, 0)
+	data = create_fake_csv()
+	train_data, valid_data, test_data = dp.get_datasets(coin)
 
 	assert len(train_data) == len(data)*0.7, "Failed train_data size test in get_datasets test."
 	assert len(valid_data) == len(data)*0.15, "Failed valid_data size test in get_datasets test."
@@ -259,6 +349,8 @@ def test_get_datasets():
 	assert train_data[int(len(data)*0.7)-1][0][0] == 69, "Failed train_data value test in get_datasets test."
 	assert valid_data[int(len(data)*0.15)-1][0][0] == 84, "Failed valid_data value test in get_datasets test."
 	assert test_data[int(len(data)*0.15)-1][0][0] == 99, "Failed test_data value test in get_datasets test."
+
+	destroy_fake_coin()
 
 
 
@@ -281,8 +373,6 @@ def run_data_preprocessor_tests():
 	print("test_handle_missing_data() tests all passed")
 	test_normalize_data()
 	print("test_normalize_data() tests all passed")
-	test_normalize_data_non_prescient()
-	print("test_normalize_data_non_prescient() tests all passed")
 	test_calculate_price_SMAs()
 	print("test_calculate_price_SMAs() tests all passed")
 	test_calculate_fear_greed_SMAs()

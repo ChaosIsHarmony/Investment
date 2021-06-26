@@ -11,13 +11,10 @@ WHEN testing need this version instead
 '''
 #from utils import neural_nets as nn
 
-
-DEVICE = torch.device("cpu")
-nn.MODEL.to(DEVICE)
 MODEL_FILEPATH = f"models/{nn.MODEL.get_class_name()}.pt"
 MODEL_CHECKPOINT_FILEPATH = f"models/checkpoint_{nn.MODEL.get_class_name()}.pt"
 BATCH_SIZE = 256 
-EPOCHS = 1 
+EPOCHS = 5 
 COIN = "bitcoin"
 REPORTS = [f"Model: {nn.MODEL.get_class_name()}", f"Learning rate: {nn.LEARNING_RATE}", f"Learning rate decay: {nn.LEARNING_RATE_DECAY}", f"Chance of dropout: {nn.DROPOUT}", f"Batch size: {BATCH_SIZE}", f"Epochs: {EPOCHS}", f"Coin: {COIN}"]
 
@@ -73,7 +70,11 @@ def generate_dataset(data, limit, offset, data_aug_per_sample=0):
 	return dataset
 
 
-def get_datasets(coin, data_aug_factor=16):
+def get_datasets(coin, data_aug_factor=0):
+	'''
+	Splits dataset into training, validation, and testing datasets.
+	NOTE: uses no data augmentation by default and will only apply data_aug_factor to the training dataset.
+	'''
 	# Load data
 	data = pd.read_csv(f"datasets/complete/{coin}_historical_data_complete.csv")
 	data = data.drop(columns=["date"])
@@ -107,7 +108,7 @@ def save_checkpoint(filepath, model):
 		"model": model,
 		"state_dict": model.state_dict(),
 		"epochs": EPOCHS,
-		"device": DEVICE,
+		"device": nn.DEVICE,
 		"optimizer_state": nn.OPTIMIZER.state_dict(),
 		"batch_size": BATCH_SIZE,
 		"dropout": nn.DROPOUT
@@ -141,16 +142,23 @@ def load_model(neural_net, filepath):
 # ----------- TRAINING FUNCTIONS ----------
 #
 def convert_to_tensor(feature, target):
+	'''
+	Converts the feature vector and target into pytorch-compatible tensors.
+	'''
 	feature_tensor = torch.tensor([feature], dtype=torch.float32)
-	feature_tensor = feature_tensor.to(DEVICE)
+	feature_tensor = feature_tensor.to(nn.DEVICE)
 	target_tensor = torch.tensor([target], dtype=torch.int64)
-	target_tensor = target_tensor.to(DEVICE)
+	target_tensor = target_tensor.to(nn.DEVICE)
 
 	return feature_tensor, target_tensor
 
 
 
 def take_one_step(feature, target, train_loss):
+	'''
+	Forward propogates a single feature vector through the network, the back propogates based on the loss.
+	Returns the cumulative training loss.
+	'''
 	# set to train mode here to activate components like dropout
 	nn.MODEL.train()
 	# make data pytorch compatible
@@ -171,6 +179,10 @@ def take_one_step(feature, target, train_loss):
 
 
 def validate_model(valid_data, train_loss, min_valid_loss):
+	'''
+	Validates the model on the validation dataset.
+	Returns the mininum validation loss, which could change depending on validation results.
+	'''
 	# set to evaluate mode to turn off components like dropout
 	nn.MODEL.eval()
 	valid_loss = 0.0
@@ -319,22 +331,39 @@ def validate_model_param_tuning(valid_data, min_valid_loss, model_architecture, 
 
 
 
+def terminate_early(train_loss_comp_ind, train_loss, steps, last_train_loss):
+	if train_loss_comp_ind >= 5 and ((train_loss/steps) - last_train_loss[train_loss_comp_ind-5]) > 0.001:
+		print(f"5-Batch Diff: {(train_loss/steps) - last_train_loss[train_loss_comp_ind-5]}")
+		return True
+	if train_loss_comp_ind >= 10 and ((train_loss/steps) - last_train_loss[train_loss_comp_ind-10]) > 0:
+		print(f"10-Batch Diff: {(train_loss/steps) - last_train_loss[train_loss_comp_ind-10]}")
+		return True
+	if train_loss_comp_ind >= 15 and ((train_loss/steps) - last_train_loss[train_loss_comp_ind-15]) > -0.1:
+		print(f"15-Batch Diff: {(train_loss/steps) - last_train_loss[train_loss_comp_ind-15]}")
+		return True
+	
+	return False
+
+
+
 def parameter_tuner():
 	train_data, valid_data, test_data = get_datasets(COIN)
 	best = [0.25, 0.25, 0, 0]
 	model_counter = 0
 
-	for eta in np.arange(0.0015, 0.005, 0.0005):
+	for eta in np.arange(0.001, 0.1, 0.005):
 		nn.LEARNING_RATE = eta
 		for decay in np.arange(0.9999, 0.99999, 0.00001):	
 			nn.LEARNING_RATE_DECAY = decay
-			for dropout in np.arange(0.05, 0.6, 0.05):
+			for dropout in np.arange(0.05, 0.085, 0.05):
 				print("Start of new Experiment\n__________________________")
+				print(f"Eta: {eta} | Decay: {decay} | Dropout: {dropout}")
 				report = "" 
 				nn.DROPOUT = dropout
 				
 				model_architecture = "Laptop_0"
 				nn.MODEL = nn.CryptoSoothsayer_Laptop_0(nn.N_FEATURES, nn.N_SIGNALS) 
+				nn.set_model_props()
 				start_time = time.time()
 				# Train
 				min_valid_loss = np.inf 
@@ -360,14 +389,7 @@ def parameter_tuner():
 							# breaks if training loss increase exceeds threshhold (i.e., the model stops learning)
 							last_train_loss.append(train_loss/steps)
 							train_loss_comp_ind += 1
-							if train_loss_comp_ind >= 5 and ((train_loss/steps) - last_train_loss[train_loss_comp_ind-5]) > 0.001:
-								print(f"5-Batch Diff: {(train_loss/steps) - last_train_loss[train_loss_comp_ind-5]}")
-								break
-							if train_loss_comp_ind >= 10 and ((train_loss/steps) - last_train_loss[train_loss_comp_ind-10]) > 0:
-								print(f"10-Batch Diff: {(train_loss/steps) - last_train_loss[train_loss_comp_ind-10]}")
-								break
-							if train_loss_comp_ind >= 15 and ((train_loss/steps) - last_train_loss[train_loss_comp_ind-15]) > -0.1:
-								print(f"15-Batch Diff: {(train_loss/steps) - last_train_loss[train_loss_comp_ind-15]}")
+							if terminate_early(train_loss_comp_ind, train_loss, steps, last_train_loss):
 								break
 
 
@@ -376,7 +398,7 @@ def parameter_tuner():
 				mod_acc = evaluate_model(model, test_data)
 
 				if mod_acc[1] >= best[1] or mod_acc[3] <= best[3]:
-					report += f"MODEL: {model_counter}\nPARAMETERS:\n\tLaptop_0\n\teta: {nn.LEARNING_RATE} | decay: {nn.LEARNING_RATE_DECAY} | dropout: {nn.DROPOUT}\nDECISIONS:\n\tPerfect Decision: {mod_acc[0]}\n\tAcceptable Decision: {mod_acc[1]}\n\tSignal Should Have Been Hodl: {mod_acc[2]}\n\tSignal and Answer Exact Opposite: {mod_acc[3]}"
+					report += f"MODEL: {model_counter}\nPARAMETERS:\n\t{model_architecture}\n\teta: {nn.LEARNING_RATE} | decay: {nn.LEARNING_RATE_DECAY} | dropout: {nn.DROPOUT}\nDECISIONS:\n\tPerfect Decision: {mod_acc[0]}\n\tAcceptable Decision: {mod_acc[1]}\n\tSignal Should Have Been Hodl: {mod_acc[2]}\n\tSignal and Answer Exact Opposite: {mod_acc[3]}"
 					save_model_state(f"models/CS_{model_architecture}_{model_counter}_1.pt", nn.MODEL)
 				
 				# erase chkpt and model
@@ -402,17 +424,17 @@ def continue_training():
 	# 
 	# ------------ DATA GENERATION ----------
 	#
-	train_data, valid_data, test_data = get_datasets(COIN)
+	train_data, valid_data, test_data = get_datasets(COIN, 64)
 
 	#
 	# ------------ MODEL TRAINING -----------
 	#
-	model_architecture = "Laptop_0"
-	model_number = 95 
-	nn.MODEL = load_model(nn.CryptoSoothsayer_Laptop_0(nn.N_FEATURES, nn.N_SIGNALS), f"models/CS_{model_architecture}_{model_number}_1.pt")
-	nn.DROPOUT = 0.4
-	nn.LEARNING_RATE = 0.001
-	nn.LEARNING_RATE_DECAY = 0.99998
+	model_architecture = "Laptop_2"
+	model_number = 24 
+	nn.MODEL = load_model(nn.CryptoSoothsayer_Laptop_2(nn.N_FEATURES, nn.N_SIGNALS), f"models/CS_{model_architecture}_{model_number}_1.pt")
+	nn.DROPOUT = 0.05
+	nn.LEARNING_RATE = 0.09
+	nn.LEARNING_RATE_DECAY = 0.99994
 	start_time = time.time()
 	train_and_save(train_data, valid_data, start_time)
 
