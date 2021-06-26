@@ -8,9 +8,15 @@ import torch.optim.lr_scheduler as lr_scheduler
 N_SIGNALS = 5
 N_FEATURES = 25
 # Tunable Hyperparameters
-DROPOUT = 0.1
-LEARNING_RATE = 0.001
-LEARNING_RATE_DECAY = 0.9999
+DROPOUT = None
+LEARNING_RATE = None
+LEARNING_RATE_DECAY = None
+# Model
+MODEL = None 
+DEVICE = None
+CRITERION = None
+OPTIMIZER = None
+SCHEDULER = None
 
 #
 # ---------- MODELS TRAINED ON RASPBERRY PI ----------
@@ -300,32 +306,84 @@ class CryptoSoothsayer_Laptop_4(nn.Module):
 
 
 
-class EmptyModel(nn.Module):
-	def __init__(self, input_size, n_signals):
-		super(EmptyModel, self).__init__()
-
-	def forward(self, inputs):
-		return None
-
-	def get_class_name(self):
-		return "THIS SHOULD NOT BE SEEN"
 
 
+#
+# -------------- GETTERS & SETTERS ---------------
+#
 
-def set_model_props():
-	global DEVICE, MODEL, CRITERION, OPTIMIZER, SCHEDULER
+def set_model_props(model):
+	global DEVICE, CRITERION, OPTIMIZER, SCHEDULER
 
 	DEVICE = torch.device("cpu")
-	MODEL.to(DEVICE)
+	model.to(DEVICE)
 	CRITERION = nn.CrossEntropyLoss()
-	OPTIMIZER = optim.Adam(MODEL.parameters(), lr=LEARNING_RATE)
+	OPTIMIZER = optim.Adam(model.parameters(), lr=LEARNING_RATE)
 	lambda1 = lambda epoch: LEARNING_RATE_DECAY 
 	SCHEDULER =  lr_scheduler.MultiplicativeLR(OPTIMIZER, lambda1)
 
 
 
-MODEL = EmptyModel(N_FEATURES, N_SIGNALS) 
-DEVICE = None
-CRITERION = None
-OPTIMIZER = None
-SCHEDULER = None
+def set_model(model_architecture): 
+	global MODEL
+
+	if "Laptop_0" in model_architecture:
+		MODEL = CryptoSoothsayer_Laptop_0(N_FEATURES, N_SIGNALS)
+	elif "Laptop_1" in model_architecture:
+		MODEL = CryptoSoothsayer_Laptop_1(N_FEATURES, N_SIGNALS)
+	elif "Laptop_2" in model_architecture:
+		MODEL = CryptoSoothsayer_Laptop_2(N_FEATURES, N_SIGNALS)
+	elif "Pi_0" in model_architecture:
+		MODEL = CryptoSoothsayer_Pi_0(N_FEATURES, N_SIGNALS)
+	elif "Pi_1" in model_architecture:
+		MODEL = CryptoSoothsayer_Pi_1(N_FEATURES, N_SIGNALS)
+	elif "PC_0" in model_architecture:
+		MODEL = CryptoSoothsayer_PC_0(N_FEATURES, N_SIGNALS)
+	elif "PC_1" in model_architecture:
+		MODEL = CryptoSoothsayer_PC_1(N_FEATURES, N_SIGNALS)
+
+
+
+def set_model_parameters(dropout, eta, eta_decay):
+	global DROPOUT, LEARNING_RATE, LEARNING_RATE_DECAY
+
+	DROPOUT = dropout
+	LEARNING_RATE = eta
+	LEARNING_RATE_DECAY = eta_decay
+
+
+
+def set_pretrained_model(model):
+	global MODEL
+	MODEL = model
+
+
+
+def get_model():
+	global MODEL
+	return MODEL
+
+
+
+def get_model_parameters():
+	global DROPOUT, LEARNING_RATE, LEARNING_RATE_DECAY
+	return DROPOUT, LEARNING_RATE, LEARNING_RATE_DECAY
+
+
+
+def get_device():
+	global DEVICE
+	return DEVICE
+
+def get_criterion():
+	global CRITERION
+	return CRITERION
+
+def get_optimizer():
+	global OPTIMIZER
+	return OPTIMIZER
+
+def get_scheduler():
+	global SCHEDULER
+	return SCHEDULER
+

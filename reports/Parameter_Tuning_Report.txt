@@ -1,7 +1,31 @@
 MODEL: 1
+Training Loss: 1.6405629164973894 | Min Valid Loss: 1.59874469550081
 PARAMETERS:
 	Laptop_0
-	eta: 0.001 | decay: 0.99991 | dropout: 0.05
+	eta: 0.0015 | decay: 0.9999 | dropout: 0.1
+DECISIONS:
+	Perfect Decision: 0.15503875968992248
+	Acceptable Decision: 0.15503875968992248
+	Signal Should Have Been Hodl: 0.046511627906976744
+	Signal and Answer Exact Opposite: 0.27906976744186046
+
+MODEL: 18
+Training Loss: 1.5903687490856586 | Min Valid Loss: 1.493190982545069
+PARAMETERS:
+	Laptop_0
+	eta: 0.0015 | decay: 0.99991 | dropout: 0.15000000000000002
+DECISIONS:
+	Perfect Decision: 0.17829457364341086
+	Acceptable Decision: 0.18604651162790697
+	Signal Should Have Been Hodl: 0.023255813953488372
+	Signal and Answer Exact Opposite: 0.05426356589147287
+
+
+MODEL: 22
+Training Loss: 1.612797995408376 | Min Valid Loss: 1.5530134790627532
+PARAMETERS:
+	Laptop_0
+	eta: 0.0015 | decay: 0.99991 | dropout: 0.35000000000000003
 DECISIONS:
 	Perfect Decision: 0.20155038759689922
 	Acceptable Decision: 0.20155038759689922
