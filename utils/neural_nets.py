@@ -344,7 +344,7 @@ def set_model(model_architecture):
 
 
 
-def set_model_parameters(dropout, eta, eta_decay):
+def set_model_parameters(dropout=0, eta=0, eta_decay=0):
 	global DROPOUT, LEARNING_RATE, LEARNING_RATE_DECAY
 
 	DROPOUT = dropout

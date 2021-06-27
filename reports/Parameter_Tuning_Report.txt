@@ -20,15 +20,17 @@ DECISIONS:
 	Signal Should Have Been Hodl: 0.023255813953488372
 	Signal and Answer Exact Opposite: 0.05426356589147287
 
-
-MODEL: 22
-Training Loss: 1.612797995408376 | Min Valid Loss: 1.5530134790627532
+MODEL: 80
+Training Loss: 1.4898940106729666 | Min Valid Loss: 1.5087108473445094
 PARAMETERS:
 	Laptop_0
-	eta: 0.0015 | decay: 0.99991 | dropout: 0.35000000000000003
+	eta: 0.0015 | decay: 0.9999499999999998 | dropout: 0.05
 DECISIONS:
-	Perfect Decision: 0.20155038759689922
-	Acceptable Decision: 0.20155038759689922
-	Signal Should Have Been Hodl: 0.0
+	Perfect Decision: 0.32558139534883723
+	Acceptable Decision: 0.32558139534883723
+	Signal Should Have Been Hodl: 0.007751937984496124
 	Signal and Answer Exact Opposite: 0.0
+
+
+
 

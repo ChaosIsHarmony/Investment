@@ -389,16 +389,16 @@ def continue_training():
 	# 
 	# ------------ DATA GENERATION ----------
 	#
-	train_data, valid_data, test_data = get_datasets(COIN, data_aug_factor = 20)
+	train_data, valid_data, test_data = get_datasets(COIN, data_aug_factor = 28)
 
 	#
 	# ------------ MODEL TRAINING -----------
 	#
 	model_architecture = "Laptop_0"
-	model_number = 18
+	model_number = 1
 	model_filepath = f"models/CS_{model_architecture}_{model_number}_param_tuning.pt"
 	
-	nn.set_model_parameters(dropout = 0.15, eta = 0.0015, eta_decay = 0.99991)
+	nn.set_model_parameters(dropout = 0.1, eta = 0.0015, eta_decay = 0.9999)
 	nn.set_pretrained_model(load_model(nn.CryptoSoothsayer_Laptop_0(nn.N_FEATURES, nn.N_SIGNALS), model_filepath))
 	nn.set_model_props(nn.get_model())
 	model = nn.get_model()

@@ -152,24 +152,34 @@ def populate_stat_report(coin, data, report):
 		report.append(item)
 
 
+def load_model(neural_net, filepath):
+	model = neural_net
+	model.load_state_dict(torch.load(filepath))
+
+
+	return model
+
+
 
 def get_models(best):
-	models = {}
+	models = []
+	nn.set_model_parameters()
 	for i in range(len(best)):
 		if "Laptop_0" in best[i]:
-			models[best[i]] = nn.CryptoSoothsayer_Laptop_0(nn.N_FEATURES, nn.N_SIGNALS)
+			models.append(load_model(nn.CryptoSoothsayer_Laptop_0(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
 		elif "Laptop_1" in best[i]:
-			models[best[i]] = nn.CryptoSoothsayer_Laptop_1(nn.N_FEATURES, nn.N_SIGNALS)
+			models.append(load_model(nn.CryptoSoothsayer_Laptop_1(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
 		elif "Laptop_2" in best[i]:
-			models[best[i]] = nn.CryptoSoothsayer_Laptop_2(nn.N_FEATURES, nn.N_SIGNALS)
+			models.append(load_model(nn.CryptoSoothsayer_Laptop_2(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
 		elif "Pi_0" in best[i]:
-			models[best[i]] = nn.CryptoSoothsayer_Pi_0(nn.N_FEATURES, nn.N_SIGNALS)
+			models.append(load_model(nn.CryptoSoothsayer_Pi_0(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
 		elif "Pi_1" in best[i]:
-			models[best[i]] = nn.CryptoSoothsayer_Pi_1(nn.N_FEATURES, nn.N_SIGNALS)
+			models.append(load_model(nn.CryptoSoothsayer_Pi_1(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
 		elif "PC_0" in best[i]:
-			models[best[i]] = nn.CryptoSoothsayer_PC_0(nn.N_FEATURES, nn.N_SIGNALS)
+			models.append(load_model(nn.CryptoSoothsayer_PC_0(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
 		elif "PC_1" in best[i]:
-			models[best[i]] = nn.CryptoSoothsayer_PC_1(nn.N_FEATURES, nn.N_SIGNALS)
+			models.append(load_model(nn.CryptoSoothsayer_PC_1(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
+
 
 	return models
 
@@ -179,7 +189,7 @@ def generate_signals():
 	report = []
 
 	with open("reports/best_performers.txt") as f:
-		best = f.read().splitlines() 
+		best_models = f.read().splitlines() 
 
 	for coin in dt_agg.coin_id:
 		data = pd.read_csv(f"datasets/clean/{coin}_historical_data_clean.csv")
@@ -193,14 +203,11 @@ def generate_signals():
 		best_model_signal = 6 # set out of bounds to begin with 
 
 		# get the best performing models
-		models = get_models(best)
+		models = get_models(best_models)
 
-		for filepath in models.keys():
-			# load model
-			model = models[filepath]
-			model.load_state_dict(torch.load(filepath))
-			model.to(torch.device("cpu"))
+		for i in range(len(models)):
 			# set to prediction mode
+			model = models[i]
 			model.eval()
 			# make the data pytorch compatible
 			feature_tensor = torch.tensor([data], dtype=torch.float32)
@@ -208,7 +215,7 @@ def generate_signals():
 			with torch.no_grad():
 				output = model(feature_tensor)
 
-			if filepath == best[0]:
+			if i == 0:
 				best_model_signal = int(torch.argmax(output, dim=1))
 			
 			for i in range(len(n_votes)):
@@ -221,9 +228,12 @@ def generate_signals():
 		signal_v = DECISIONS[torch.argmax(n_votes)]
 		signal_w = DECISIONS[torch.argmax(n_weights)]
 		signal_b = DECISIONS[best_model_signal]
+
+		best_w = n_weights[torch.argmax(n_weights)]
 		second_best_w = n_weights[torch.argmin(n_weights)]
+		worst_w = n_weights[torch.argmin(n_weights)]
 		for weight in n_weights:
-			if weight > second_best_w and weight < n_weights[torch.argmax(n_weights)]:
+			if weight > second_best_w and weight < best_w:
 				second_best_w = weight
 
 		report.append("\nAction Signals")
@@ -231,8 +241,10 @@ def generate_signals():
 		report.append(f"Signal by votes:\t{signal_v}")
 		report.append(f"Signal by weights:\t{signal_w}")
 		report.append(f"\tWeights:\t{list(n_weights)}")
-		report.append(f"\tDiff 1st and 2nd:\t{(n_weights[torch.argmax(n_weights)] - second_best_w) / len(best):>9.4f}")
-		report.append(f"\tDiff 1st and last:\t{(n_weights[torch.argmax(n_weights)] - n_weights[torch.argmin(n_weights)]) / len(best):>9.4f}")
+		report.append(f"\tDiff 1st and 2nd:\t{(best_w - second_best_w)/len(best_models):>9.4f}")
+		report.append(f"\tDiff 1st and last:\t{(best_w - worst_w)/len(best_models):>9.4f}")
+		report.append(f"\tBuy vs. Sell:\t{(n_weights[0] + n_weights[1])/len(best_models):>9.4f} vs. {(n_weights[2] + n_weights[3])/len(best_models):.4f}")
+		report.append(f"\tDiff Buy and Sell:\t{abs((n_weights[0] + n_weights[1])/len(best_models) - (n_weights[2] + n_weights[3])/len(best_models)):.4f}")
 
 
 	return report
