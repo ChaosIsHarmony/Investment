@@ -334,7 +334,7 @@ def parameter_tuner():
 				print(f"Eta: {eta} | Decay: {decay} | Dropout: {dropout}")
 				report = "" 
 				
-				model_architecture = "Laptop_0"
+				model_architecture = "PC_0"
 				nn.set_model_parameters(dropout, eta, decay)
 				nn.set_model(model_architecture) 
 				nn.set_model_props(nn.get_model())
@@ -401,12 +401,12 @@ def continue_training():
 	#
 	# ------------ MODEL TRAINING -----------
 	#
-	model_architecture = "Laptop_0"
+	model_architecture = "PC_0"
 	model_number = 67
 	model_filepath = f"models/CS_{model_architecture}_{model_number}_dummy.pt"
 	
 	nn.set_model_parameters(dropout = 0.2, eta = 0.001, eta_decay = 0.99994)
-	nn.set_pretrained_model(load_model(nn.CryptoSoothsayer_Laptop_0(nn.N_FEATURES, nn.N_SIGNALS), model_filepath))
+	nn.set_pretrained_model(load_model(nn.CryptoSoothsayer_PC_0(nn.N_FEATURES, nn.N_SIGNALS), model_filepath))
 	nn.set_model_props()
 	model = nn.get_model()
 
