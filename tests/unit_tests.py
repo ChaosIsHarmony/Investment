@@ -2,6 +2,7 @@
 RUN WITH: $ python3 -m unittest tests.unit_tests
 '''
 import utils
+from utils import data_aggregator as da
 from utils import data_preprocessor as dpp
 from utils import data_processor as dp
 from utils import neural_nets as nn
@@ -10,10 +11,42 @@ import os
 import copy
 import pandas as pd
 import numpy as np
+from datetime import date, datetime
 
 #
 # ---------- DATA AGGREGATOR TESTS ----------
 #
+def test_get_correct_date_format():
+	wonky_date_str = "2021-06-14" 
+	wonky_date = datetime.strptime(wonky_date_str, '%Y-%m-%d')
+	correct_date = da.get_correct_date_format(wonky_date)
+
+	assert str(correct_date) == "14-06-2021", "Failed get_correct_date_format test."
+
+
+
+def test_get_community_score():
+	pass
+
+
+
+def test_get_dev_score():
+	pass
+
+
+
+def test_get_public_interest_score():
+	pass
+
+
+
+def test_extract_basic_data():
+	pass
+
+
+
+def test_get_time():
+	pass
 
 #
 # ---------- DATA PREPROCESSOR TESTS ----------
@@ -340,7 +373,6 @@ def test_get_datasets():
 	assert test_data[int(len(data)*0.15)-1][0][0] == 99, "Failed test_data value test in get_datasets test."
 
 	# test with 0 augmentation
-	data = create_fake_csv()
 	train_data, valid_data, test_data = dp.get_datasets(coin)
 
 	assert len(train_data) == len(data)*0.7, "Failed train_data size test in get_datasets test."
@@ -355,7 +387,29 @@ def test_get_datasets():
 
 
 def test_shuffle_data():
-	assert False
+	data = [[0],
+			[1],
+			[2],
+			[3],
+			[4],
+			[5],
+			[6],
+			[7],
+			[8],
+			[9]]
+	
+	data = dp.shuffle_data(data)
+
+	assert (data[0] == [0] and data[1] == [1] and data[2] == [2] and data[3] == [3] and data[4] == [4] and data[5] == [5] and data[6] == [6] and data[7] == [7] and data[8] == [8] and data[9] == [9]) == False, "Failed random shuffling of data in shuffle_data test."
+
+
+
+def test_terminate_early():
+	prev_valid_losses = [ 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0 ]
+	assert dp.terminate_early(prev_valid_losses) == True, "Failed should terminate early in terminate_early test."
+
+	prev_valid_losses.reverse()
+	assert dp.terminate_early(prev_valid_losses) == False, "Failed should not terminate early in terminate_early test."
 
 
 
@@ -364,29 +418,32 @@ def test_shuffle_data():
 #
 
 def run_data_aggregator_tests():
-	pass
+	test_get_correct_date_format()
+	print("test_get_correct_date_format() tests all passed.")
 
 
 
 def run_data_preprocessor_tests():
 	test_handle_missing_data()
-	print("test_handle_missing_data() tests all passed")
+	print("test_handle_missing_data() tests all passed.")
 	test_normalize_data()
-	print("test_normalize_data() tests all passed")
+	print("test_normalize_data() tests all passed.")
 	test_calculate_price_SMAs()
-	print("test_calculate_price_SMAs() tests all passed")
+	print("test_calculate_price_SMAs() tests all passed.")
 	test_calculate_fear_greed_SMAs()
-	print("test_calculate_fear_greed_SMAs() tests all passed")
+	print("test_calculate_fear_greed_SMAs() tests all passed.")
 
 
 
 def run_data_processor_tests():
 	test_generate_dataset()
-	print("test_generate_dataset() tests all passed")
+	print("test_generate_dataset() tests all passed.")
 	test_get_datasets()
-	print("test_get_datasets() tests all passed")
+	print("test_get_datasets() tests all passed.")
 	test_shuffle_data()
-	print("test_shuffle_data() tests all passed")
+	print("test_shuffle_data() tests all passed.")
+	test_terminate_early()
+	print("test_terminate_early() tests all passed.")
 
 
 

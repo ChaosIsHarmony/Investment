@@ -1,3 +1,11 @@
+'''
+This file is used to train the neural nets. It is comprised of several trainers:
+
+	- The Parameter Tuner
+		- Used to find promising parameters to more fully train networks on
+	- The Transfer Leaner
+		- Used to continue the learning either in parameter tuned models or when training for other cryptoassets (change COIN variable to reflect dataset)
+'''
 import os
 import pandas as pd
 import torch
@@ -5,11 +13,11 @@ from datetime import datetime
 import time
 import random
 import numpy as np
-import neural_nets as nn
+#import neural_nets as nn
 '''
 WHEN testing need this version instead
 '''
-#from utils import neural_nets as nn
+from utils import neural_nets as nn
 
 BATCH_SIZE = 256 
 EPOCHS = 5
@@ -22,6 +30,7 @@ REPORTS = []
 def shuffle_data(data):
 	'''
 	Used for shuffling the data during the training/validation phases.
+	NOTE: Param data is a Python list.
 	'''
 	size = len(data)
 	for row_ind in range(size):
@@ -131,10 +140,10 @@ def convert_to_tensor(feature, target):
 
 
 
-def take_one_step(model, feature, target, train_loss):
+def take_one_step(model, feature, target):
 	'''
 	Forward propogates a single feature vector through the network, the back propogates based on the loss.
-	Returns the cumulative training loss.
+	Returns the training loss.
 	'''
 	# set to train mode here to activate components like dropout
 	model.train()
@@ -149,16 +158,16 @@ def take_one_step(model, feature, target, train_loss):
 	nn.get_optimizer().step()
 	# adjust learning rate
 	nn.get_scheduler().step()
-	train_loss += loss.item()
+	train_loss = loss.item()
 
 	return train_loss
 
 
 
-def validate_model(model, valid_data, train_loss):
+def validate_model(model, valid_data):
 	'''
 	Validates the model on the validation dataset.
-	Returns the validation loss.
+	Returns the average validation loss.
 	'''
 	global REPORTS
 
@@ -175,11 +184,7 @@ def validate_model(model, valid_data, train_loss):
 			valid_loss += loss.item()
 
 	
-	valid_loss = valid_loss/len(valid_data)	
-	report = f"Training Loss: {train_loss:.4f} | Validation Loss: {valid_loss:.4f} | eta: {nn.OPTIMIZER.state_dict()['param_groups'][0]['lr']:.6f}"
-	REPORTS.append(report)
-
-	return valid_loss
+	return valid_loss/len(valid_data)
 
 
 
@@ -204,10 +209,12 @@ def terminate_early(prev_valid_losses):
 
 
 
-def print_batch_status(train_loss, valid_loss, steps, start_time):
+def print_batch_status(avg_train_loss, avg_valid_loss, start_time):
 	now = datetime.now()
 	current_time = now.strftime("%H:%M:%S")
-	print(f"System Time: {current_time} | Time Elapsed: {(time.time() - start_time) / 60:.1f} mins. | Training Loss: {train_loss/steps:.4f} | Validation Loss: {valid_loss:.4f}")
+	report = f"System Time: {current_time} | Time Elapsed: {(time.time() - start_time) / 60:.1f} mins. | Avg. Training Loss: {avg_train_loss:.4f} | Avg. Validation Loss: {avg_valid_loss:.4f} | eta: {nn.OPTIMIZER.state_dict()['param_groups'][0]['lr']:.6f}"
+	REPORTS.append(report)
+	print(report)
 
 
 
@@ -218,20 +225,23 @@ def train(model, train_data, valid_data, start_time):
 
 	epoch = 0
 	prev_valid_losses = []
+
 	while epoch < EPOCHS:
 		steps = 0
-		train_loss = 0.0
+		total_train_loss = 0.0
+		total_valid_loss = 0.0
 
 		for feature, target in train_data:
 			steps += 1
 			# train model on feature
-			train_loss = take_one_step(model, feature, target, train_loss)
+			total_train_loss += take_one_step(model, feature, target)
 			# if end of batch or end of dataset, validate model
 			if steps % BATCH_SIZE == 0 or steps == len(train_data)-1:
-				valid_loss = validate_model(model, valid_data, train_loss/steps)
-				print_batch_status(train_loss, valid_loss, steps, start_time)
-
-				prev_valid_losses.append(valid_loss)
+				avg_train_loss = total_train_loss / steps
+				total_valid_loss += validate_model(model, valid_data)
+				avg_valid_loss = total_valid_loss / (steps / BATCH_SIZE)
+				print_batch_status(avg_train_loss, avg_valid_loss, start_time)
+				prev_valid_losses.append(avg_valid_loss)
 				if terminate_early(prev_valid_losses):
 					epoch = EPOCHS
 					break
@@ -326,7 +336,7 @@ def parameter_tuner():
 	train_data, valid_data, test_data = get_datasets(COIN)
 	model_counter = 0
 
-	for eta in np.arange(0.002, 0.003, 0.0005):
+	for eta in np.arange(0.003, 0.004, 0.0005):
 		for decay in np.arange(0.9999, 0.99999, 0.00001):	
 			for dropout in np.arange(0.05, 0.85, 0.05):
 				print("Start of new Experiment\n__________________________")
@@ -341,24 +351,27 @@ def parameter_tuner():
 
 				start_time = time.time()
 				train_data = shuffle_data(train_data)
-				prev_valid_loss = [] 
+				prev_valid_losses = [] 
+				prev_train_losses = [] 
 
 				# Train
 				for epoch in range(1):
 					steps = 0
-					train_loss = 0.0
+					total_train_loss = 0.0
+					total_valid_loss = 0.0
 
 					for feature, target in train_data:
 						steps += 1
 						# train model on feature
-						train_loss = take_one_step(model, feature, target, train_loss)
+						total_train_loss += take_one_step(model, feature, target)
 						# if end of batch or end of dataset, validate model
 						if steps % BATCH_SIZE == 0 or steps == len(train_data)-1:
-							valid_loss = validate_model(model, valid_data, train_loss/steps)
-
-							print_batch_status(train_loss, valid_loss, steps, start_time)
-							last_train_loss.append(train_loss/steps)
-							prev_valid_losses.append(valid_loss)
+							avg_train_loss = total_train_loss / steps
+							total_valid_loss += validate_model(model, valid_data)
+							avg_valid_loss = total_valid_loss / (steps / BATCH_SIZE)
+							print_batch_status(avg_train_loss, avg_valid_loss, start_time)
+							prev_train_losses.append(avg_train_loss)
+							prev_valid_losses.append(avg_valid_loss)
 							if terminate_early(prev_valid_losses):
 								break
 
@@ -366,7 +379,7 @@ def parameter_tuner():
 				
 				mod_acc = evaluate_model(model, test_data)
 				
-				report += f"MODEL: {model_counter}\nTraining Loss: {last_train_loss[-1]} | Min Valid Loss: {min_valid_loss}\nPARAMETERS:\n\t{model_architecture}\n\teta: {nn.LEARNING_RATE} | decay: {nn.LEARNING_RATE_DECAY} | dropout: {nn.DROPOUT}\nDECISIONS:\n\tPerfect Decision: {mod_acc[0]}\n\tAcceptable Decision: {mod_acc[1]}\n\tSignal Should Have Been Hodl: {mod_acc[2]}\n\tSignal and Answer Exact Opposite: {mod_acc[3]}"
+				report += f"MODEL: {model_counter}\nLast Training Loss: {prev_train_losses[-1]} | Last Valid Loss: {prev_valid_losses[-1]}\nPARAMETERS:\n\t{model_architecture}\n\teta: {nn.LEARNING_RATE} | decay: {nn.LEARNING_RATE_DECAY} | dropout: {nn.DROPOUT}\nDECISIONS:\n\tPerfect Decision: {mod_acc[0]}\n\tAcceptable Decision: {mod_acc[1]}\n\tSignal Should Have Been Hodl: {mod_acc[2]}\n\tSignal and Answer Exact Opposite: {mod_acc[3]}"
 				
 				if len(report) > 0:
 					with open(f"reports/Parameter_Tuning_Report.txt", "a") as f:
@@ -389,16 +402,16 @@ def continue_training():
 	# 
 	# ------------ DATA GENERATION ----------
 	#
-	train_data, valid_data, test_data = get_datasets(COIN, data_aug_factor = 28)
+	train_data, valid_data, test_data = get_datasets(COIN, data_aug_factor = 0)
 
 	#
 	# ------------ MODEL TRAINING -----------
 	#
 	model_architecture = "Laptop_0"
-	model_number = 1
+	model_number = 0 
 	model_filepath = f"models/CS_{model_architecture}_{model_number}_param_tuning.pt"
 	
-	nn.set_model_parameters(dropout = 0.1, eta = 0.0015, eta_decay = 0.9999)
+	nn.set_model_parameters(dropout = 0.15, eta = 0.0025, eta_decay = 0.99992)
 	nn.set_pretrained_model(load_model(nn.CryptoSoothsayer_Laptop_0(nn.N_FEATURES, nn.N_SIGNALS), model_filepath))
 	nn.set_model_props(nn.get_model())
 	model = nn.get_model()
@@ -427,4 +440,4 @@ def continue_training():
 	
 
 
-continue_training()
+#continue_training()

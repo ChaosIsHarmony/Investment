@@ -5,3 +5,5 @@ models/best/CS_Pi_0_20_67-80_20xaug.pt
 models/best/CS_Pi_0_20_65-80_23xaug.pt
 models/best/CS_Laptop_0_80_66-77_16xaug.pt
 models/best/CS_Laptop_0_18_61-73_28xaug.pt
+models/best/CS_Pi_0_113_60-74_128xaug.pt
+models/best/CS_Pi_0_113_47-80_128xaug.pt

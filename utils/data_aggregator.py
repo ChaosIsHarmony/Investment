@@ -160,9 +160,9 @@ def get_time():
 
 def merge_datasets(coin, list_of_datasets, all_data=False):
 	'''
-	Merges two or more datasets
+	Merges two or more datasets.
 	
-	NOTE: param must be a list of pandas dataframes
+	NOTE: Param list_of_datasets must be a list of pandas DataFrames
 	'''
 	merged_data = pd.concat(list_of_datasets)
 	merged_data["date"] = pd.to_datetime(merged_data["date"], dayfirst=True, infer_datetime_format=True)
@@ -196,11 +196,11 @@ def merge_new_dataset_with_old(coin, by_range=True):
 
 	merge_datasets(coin, data_to_merge)
 
-#merge_new_dataset_with_old("aave")
+
 
 def fetch_missing_data_by_dates(coin, dates):
 	'''
-	WARNING: Cannot automatically fetch Fear/Greed index
+	WARNING: Cannot automatically fetch Fear/Greed index <- This is partially alleviated by the data_preprocessors handle_missing_data method.
 	'''
 	historical_data = []
 	missing_dates = []
@@ -222,13 +222,18 @@ def fetch_missing_data_by_dates(coin, dates):
 	if len(missing_dates) > 0:
 		ans = input("Try again? [y/n] ")
 		if (ans.lower())[0] == 'y':
-			fetch_missing_data_by_dates(coin, missing_dates)
+			more_data = fetch_missing_data_by_dates(coin, missing_dates)
+			# merge the data
+			historical_data = pd.DataFrame(historical_data)
+			historical_data = pd.concat(more_data)
 
 	# save as CSV
 	coin_data = pd.DataFrame(historical_data)
 	coin_data.to_csv(f"datasets/raw/{coin}_historical_data_by_date.csv", index=False)
 		
 	print(f"{coin} data successfully pulled and stored.")
+	
+	return coin_data
 
 
 
@@ -261,7 +266,10 @@ def fetch_missing_data_by_range(coin, n_days, start_delta):
 	if len(missing_dates) > 0:
 		ans = input("Try again? [y/n] ")
 		if (ans.lower())[0] == 'y':
-			fetch_missing_data_by_dates(coin, missing_dates)
+			more_data = fetch_missing_data_by_dates(coin, missing_dates)
+			# merge the data
+			historical_data = pd.DataFrame(historical_data)
+			historical_data = pd.concat(more_data)
 
 	# save as CSV
 	coin_data = pd.DataFrame(historical_data)

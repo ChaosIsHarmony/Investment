@@ -243,8 +243,8 @@ def generate_signals():
 		report.append(f"\tWeights:\t{list(n_weights)}")
 		report.append(f"\tDiff 1st and 2nd:\t{(best_w - second_best_w)/len(best_models):>9.4f}")
 		report.append(f"\tDiff 1st and last:\t{(best_w - worst_w)/len(best_models):>9.4f}")
-		report.append(f"\tBuy vs. Sell:\t{(n_weights[0] + n_weights[1])/len(best_models):>9.4f} vs. {(n_weights[2] + n_weights[3])/len(best_models):.4f}")
-		report.append(f"\tDiff Buy and Sell:\t{abs((n_weights[0] + n_weights[1])/len(best_models) - (n_weights[2] + n_weights[3])/len(best_models)):.4f}")
+		report.append(f"\tBuy vs. Sell:\t\t{(n_weights[0] + n_weights[1])/len(best_models):>9.4f} vs. {(n_weights[3] + n_weights[4])/len(best_models):.4f}")
+		report.append(f"\tDiff Buy and Sell:\t{abs((n_weights[0] + n_weights[1])/len(best_models) - (n_weights[3] + n_weights[4])/len(best_models)):>9.4f}")
 
 
 	return report
