@@ -67,7 +67,7 @@ def get_fg_indicator(fg_index):
 
 
 
-def populate_stat_report(coin, data, report):
+def populate_stat_report_full(coin, data, report):
 	basic_stats = ["\n\n\n________________________________________", 
 					f"Report for {coin.upper()}:", 
 					"Basic Stats", 
@@ -152,6 +152,53 @@ def populate_stat_report(coin, data, report):
 		report.append(item)
 
 
+
+def populate_stat_report_essentials(coin, data, report):
+	basic_stats = ["\n\n\n________________________________________", 
+					f"Report for {coin.upper()}:", 
+					"Basic Stats", 
+					"[1.0 is the highest; 0.0 is the lowest]", 
+					f"price:\t\t{data[PRICE]:.6f}", 
+					f"market_cap:\t{data[MARKET_CAP]:.6f}", 
+					f"volume:\t\t{data[VOLUME]:.6f}", 
+					f"fear/greed\t{data[FEAR_GREED]:.6f} [{get_fg_indicator(data[FEAR_GREED])}]"]
+	
+	price_ratios = ["\nPrice Ratios", 
+					"[>0 means greater risk/overvalued; <0 means less risk/undervalued]"] 
+
+	if data[PRICE_200_SMA] > 0:
+		price_ratios.append(f"\t50-day/200-day:\t\t{data[PRICE_50_SMA]/data[PRICE_200_SMA]:>9.6f}")
+	if data[PRICE_250_SMA] > 0:
+		price_ratios.append(f"\t50-day/250-day:\t\t{data[PRICE_50_SMA]/data[PRICE_250_SMA]:>9.6f}")
+	if data[PRICE_300_SMA] > 0:
+		price_ratios.append(f"\t50-day/300-day:\t\t{data[PRICE_50_SMA]/data[PRICE_300_SMA]:>9.6f}")
+	if data[PRICE_350_SMA] > 0:
+		price_ratios.append(f"\t50-day/350-day:\t\t{data[PRICE_50_SMA]/data[PRICE_350_SMA]:>9.6f}")
+	else:
+		price_ratios.append("WARNING: DATA MISSING FROM SMAs; MODEL MAY BE UNRELIABLE")
+
+	price_deltas = ["\nPrice Deltas", 
+					"[<0 shows a decrease; >0 shows an increase]", 
+					f"25-day -> Present:\t\t{data[PRICE]-data[PRICE_25_SMA]:>9.6f}", 
+					f"50-day -> Present:\t\t{data[PRICE]-data[PRICE_50_SMA]:>9.6f}", 
+					f"100-day -> Present:\t\t{data[PRICE]-data[PRICE_100_SMA]:>9.6f}"]
+	
+	fear_greed_deltas = ["\nFear/Greed Deltas", 
+						"[>0 is greedier; <0 is more fearful]", 
+						f"7-day -> Present:\t{data[FEAR_GREED]-data[FG_7_SMA]:>9.6f}", 
+						f"15-day -> Present:\t{data[FEAR_GREED]-data[FG_15_SMA]:>9.6f}", 
+						f"30-day -> Present:\t{data[FEAR_GREED]-data[FG_30_SMA]:>9.6f}"]
+
+	for item in basic_stats:
+		report.append(item)
+	for item in price_ratios:
+		report.append(item)
+	for item in price_deltas:
+		report.append(item)
+	for item in fear_greed_deltas:
+		report.append(item)
+
+
 def load_model(neural_net, filepath):
 	model = neural_net
 	model.load_state_dict(torch.load(filepath))
@@ -185,7 +232,7 @@ def get_models(best):
 
 
 
-def generate_signals():
+def generate_signals(full_report=False):
 	report = []
 
 	with open("reports/best_performers.txt") as f:
@@ -196,7 +243,10 @@ def generate_signals():
 		# extracts the most recent data as a python list
 		data = data[data["date"] == str(date.today()-timedelta(0))].values.tolist()[0][1:]
 		# stat report
-		populate_stat_report(coin, data, report)	
+		if full_report:
+			populate_stat_report_full(coin, data, report)
+		else:
+			populate_stat_report_essentials(coin, data, report)	
 
 		n_votes = [0, 0, 0, 0, 0] # buy 2x, buy x, hodl, sell y, sell 2y
 		n_weights = [0, 0, 0, 0, 0]
@@ -235,16 +285,18 @@ def generate_signals():
 		for weight in n_weights:
 			if weight > second_best_w and weight < best_w:
 				second_best_w = weight
+		formatted_w_list = [round((x/len(best_models)), 4) for x in n_weights.tolist()]	
 
 		report.append("\nAction Signals")
 		report.append(f"Signal by best nn:\t{signal_b}")
 		report.append(f"Signal by votes:\t{signal_v}")
 		report.append(f"Signal by weights:\t{signal_w}")
-		report.append(f"\tWeights:\t{list(n_weights)}")
+		report.append("\t[Greater disparities mean a more confident signal]")
+		report.append(f"\tWeights:\t{formatted_w_list}")
 		report.append(f"\tDiff 1st and 2nd:\t{(best_w - second_best_w)/len(best_models):>9.4f}")
 		report.append(f"\tDiff 1st and last:\t{(best_w - worst_w)/len(best_models):>9.4f}")
-		report.append(f"\tBuy vs. Sell:\t\t{(n_weights[0] + n_weights[1])/len(best_models):>9.4f} vs. {(n_weights[3] + n_weights[4])/len(best_models):.4f}")
 		report.append(f"\tDiff Buy and Sell:\t{abs((n_weights[0] + n_weights[1])/len(best_models) - (n_weights[3] + n_weights[4])/len(best_models)):>9.4f}")
+		report.append(f"\tBuy vs. Sell:\t\t{(n_weights[0] + n_weights[1])/len(best_models):>9.4f} vs. {(n_weights[3] + n_weights[4])/len(best_models):.4f}")
 
 
 	return report
@@ -267,5 +319,9 @@ if (fetch_data.lower())[0] == 'y':
 	fetch_new_data(days_back)
 	process_new_data()
 
-report = generate_signals()
+full_report = input("Full report? [y/n; y gives all the gory details] ")
+if (full_report.lower())[0] == 'y':
+	report = generate_signals(True)
+else:
+	report = generate_signals()
 generate_report(report)

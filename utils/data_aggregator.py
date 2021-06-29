@@ -42,7 +42,8 @@ def get_historic_data(coin, date):
 
 def get_correct_date_format(date):
 	'''
-	Puts the Python datetime into a format the coingecko api finds more copacetic i.e., dd-mm-yyyy
+	Puts the Python datetime into a formatted string the coingecko api finds more copacetic i.e., dd-mm-yyyy.
+	NOTE: Param date must be a datetime object.
 	'''
 	well_formed_date = ""
 	if date.day < 10:
@@ -61,18 +62,29 @@ def get_correct_date_format(date):
 
 
 
-def get_community_score(data):
+def get_generic_score(data):
 	'''
-	Calculates a score for a coin's community health based on social media presence (Facebook, Twitter, & Reddit)
+	Extracts score for given field from data.
+	NOTE: Param data is a dictionary.
 	'''
 	score = 0
 
 	for key in data.keys():
 		if data[key]:
-			# type cast to float is because one of the metrics was stored as a str instead of a numeric type
-			score += float(data[key])
+			try:
+				score += float(data[key])
+			except Exception:
+				print("Bad value when extracting score.")
 
 	return score
+
+
+def get_community_score(data):
+	'''
+	Calculates a score for a coin's community health based on social media presence (Facebook, Twitter, & Reddit).
+	NOTE: Param data is a dictionary with several social media site names as keys.
+	'''
+	return get_generic_score(data)
 
 
 
@@ -104,15 +116,9 @@ def get_dev_score(data):
 
 def get_public_interest_score(data):
 	'''
-	Calculates the score related to searches for the coin
+	Calculates the score related to searches in search engines for the coin.
 	'''
-	score = 0
-
-	for key in data.keys():
-		if data[key]:
-			score += data[key]
-
-	return score
+	return get_generic_score(data)
 
 
 
@@ -120,12 +126,13 @@ def extract_basic_data(data, date):
 	'''
 	Extracts all useful information from the coingecko data.
 	Returns a dictionary.
+	NOTE:
+		- Param data is a dictionary converted from JSON fetched from coingecko.
+		- Param date is a string formatted to match coingecko's api specs.
 	'''
 	data_dict = {}
 
-	date = datetime.strptime(date, "%d-%m-%Y")
-	
-	data_dict["date"] = str(date.year) + "-" + str(date.month) + "-" + str(date.day)
+	data_dict["date"] = date
 
 	if "market_data" in data.keys():
 		data_dict["price"] = data["market_data"]["current_price"]["twd"]
@@ -152,7 +159,8 @@ def extract_basic_data(data, date):
 
 def get_time():
 	'''
-	Returns current time rounded to milliseconds
+	Returns current time rounded to milliseconds.
+	NOTE: time.time() returns current time as a floating point.
 	'''
 	return int(round(time.time() * 1000))
 
@@ -278,7 +286,6 @@ def fetch_missing_data_by_range(coin, n_days, start_delta):
 	print(f"{coin} data successfully pulled and stored.")
 
 
-#fetch_missing_data_by_range("aave", 120, 109)
 
 def run(how_far_back):
 	'''
@@ -289,7 +296,7 @@ def run(how_far_back):
 	api_call_cycle_start = get_time() 
 	fear_greed = get_fear_greed_by_range(how_far_back)
 	
-	for coin in ["aave"]: #coin_id:
+	for coin in ["dogecoin"]: #coin_id:
 		date_delta = -1 
 		fear_greed_ind = 0
 		has_next = True
@@ -326,7 +333,6 @@ def run(how_far_back):
 				print(f"Days from today: {date_delta}")
 				missing_dates.append(next_date)
 				continue
-
 			
 			daily_data = extract_basic_data(data, next_date)
 			daily_data["fear_greed"] = fear_greed[fear_greed_ind]["value"]
@@ -334,8 +340,6 @@ def run(how_far_back):
 
 			historical_data.append(daily_data)
 		
-		print("BROKE")
-
 		# save as CSV
 		coin_data = pd.DataFrame(historical_data)
 		coin_data.to_csv(f"datasets/raw/{coin}_historical_data_raw.csv", index=False)
@@ -349,4 +353,4 @@ def run(how_far_back):
 
 
 
-#run(600)
+#run(10)

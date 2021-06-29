@@ -411,7 +411,7 @@ def continue_training():
 	model_number = 0 
 	model_filepath = f"models/CS_{model_architecture}_{model_number}_param_tuning.pt"
 	
-	nn.set_model_parameters(dropout = 0.15, eta = 0.0025, eta_decay = 0.99992)
+	nn.set_model_parameters(dropout = 0.05, eta = 0.003, eta_decay = 0.9999)
 	nn.set_pretrained_model(load_model(nn.CryptoSoothsayer_Laptop_0(nn.N_FEATURES, nn.N_SIGNALS), model_filepath))
 	nn.set_model_props(nn.get_model())
 	model = nn.get_model()

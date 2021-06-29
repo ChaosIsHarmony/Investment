@@ -25,28 +25,67 @@ def test_get_correct_date_format():
 
 
 
-def test_get_community_score():
-	pass
+def test_get_generic_score():
+	'''
+	get_community_score() and get_public_interest_score() methods both use get_generic_score() method
+	'''
+	data = {"fb": 1000, "twitter": 500, "reddit": 250}
+	community_score = da.get_community_score(data)
+
+	assert community_score == 1750, "Failed default get_community_score test."
+
+	data = {"fb": "1000", "twitter": "500", "reddit": "250"}
+	community_score = da.get_community_score(data)
+
+	assert community_score == 1750, "Failed str -> float casting test in get_community_score test."
+
+	data = {"fb": "apple", "twitter": "500", "reddit": "250"}
+	try:
+		community_score = da.get_community_score(data)
+		assert False, "Failed exception throwing test in get_community_score test."
+	except:
+		pass
 
 
 
 def test_get_dev_score():
-	pass
-
-
-
-def test_get_public_interest_score():
+	'''
+	No longer in use, but may become relevant if more coins provide data for this metric.
+	'''
 	pass
 
 
 
 def test_extract_basic_data():
-	pass
+	# valid data
+	date = "18-01-2021"
+	data = {
+		"market_data": { "current_price": { "twd": 1 }, "market_cap": { "twd": 2 }, "total_volume": { "twd": 3 } },
+		"community_data": { "fb": 4, "reddit": 5 },
+		"dev_stats": { },
+		"public_interest_stats": { "alexa": 6, "bing": 7 }
+	}
+	data_dict = da.extract_basic_data(data, date)
+
+	assert data_dict["date"] == date, "Failed extract date in extract_basic_data test."
+	assert data_dict["price"] == 1, "Failed extract price in extract_basic_data test."
+	assert data_dict["market_cap"] == 2, "Failed extract market cap in extract_basic_data test."
+	assert data_dict["volume"] == 3, "Failed extract volume in extract_basic_data test."
+	assert data_dict["community_score"] == 4+5, "Failed extract community score in extract_basic_data test."
+	assert data_dict["public_interest_score"] == 6+7, "Failed extract public interest score in extract_basic_data test."
+
+	# bad data
+	data = { "this...": "...contains none of the information needed to be extracted and should all result in zero values." }
+	data_dict = da.extract_basic_data(data, date)
+
+	assert data_dict["date"] == date, "Failed extract date in bad data extract_basic_data test."
+	assert data_dict["price"] == 0, "Failed extract price in bad data extract_basic_data test."
+	assert data_dict["market_cap"] == 0, "Failed extract market cap in bad data extract_basic_data test."
+	assert data_dict["volume"] == 0, "Failed extract volume in bad data extract_basic_data test."
+	assert data_dict["community_score"] == 0, "Failed extract community score in bad data extract_basic_data test."
+	assert data_dict["public_interest_score"] == 0, "Failed extract public interest score in bad data extract_basic_data test."
 
 
-
-def test_get_time():
-	pass
 
 #
 # ---------- DATA PREPROCESSOR TESTS ----------
@@ -420,6 +459,11 @@ def test_terminate_early():
 def run_data_aggregator_tests():
 	test_get_correct_date_format()
 	print("test_get_correct_date_format() tests all passed.")
+	test_get_generic_score()
+	print("test_get_generic_score() tests all passed.")
+	test_extract_basic_data()
+	print("test_extract_basic_data() tests all passed.")
+	test_get_time()
 
 
 
