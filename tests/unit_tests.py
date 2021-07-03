@@ -319,6 +319,58 @@ def test_calculate_fear_greed_SMAs():
 	assert total(469,498)/30 == data.iloc[30,9], "The 30-day fear/greed SMA test failed."
 
 
+
+def test_get_weighting_constant():
+	w_const = dpp.get_weighting_constant(4)
+
+	assert 0.099 < w_const < 0.11, f"WRONG VALUE: 0.099 < {w_const} < 0.11 | Failed get_weighting_constant test."
+
+	w_const = dpp.get_weighting_constant(7)
+
+	assert 0.0356 < w_const < 0.0358, f"WRONG VALUE: 0.0356 < {w_const} 0.0358 | Failed get_weighting_constant test."
+
+
+
+def test_calculate_signals():
+	'''
+	Based on the specific model where signals change at different threshholds (see get_signal() in data_preprocessor.py). Change assertions if model changes.
+	'''
+	# ascending
+	data = []
+	for i in range(1, 100):
+		data.append([i])
+	
+	data = pd.DataFrame(data, columns=["price"])
+	data = dpp.calculate_signals(data, 7)
+
+	# 7 -> 14 : ((14-7) / 7) * weight_const * 7 = 0.25 
+	# 7 -> 13 : ((13-7) / 7) * weight_const * 6 = 0.184
+	# 7 -> 12 : I(12-7) / 7) * weight_const * 5 = 0.128
+	# 7 -> 11 : ((11-7) / 7) * weight_const * 4 = 0.082
+	# 7 -> 10 : ((10-7) / 7) * weight_const * 3 = 0.046
+	# 7 -> 9 : ((9-7) / 7) * weight_const * 2 = 0.020
+	# 7 -> 8 : ((8-7) / 7) * weight_const * 1 = 0.005
+	# avg = 0.714
+	assert data["signal"][6] == 0, f"WRONG VALUE: {data['signal'][6]:.4f} != 0 | Failed BUY 3X signal in test_calculate_signals test."  
+	assert data["signal"][9] == 1, f"WRONG VALUE: {data['signal'][9]:.4f} != 1 | Failed BUY 2X signal in test_calculate_signals test."  
+	assert data["signal"][16] == 2, f"WRONG VALUE: {data['signal'][16]:.4f} != 2 | Failed BUY X signal in test_calculate_signals test."  
+	assert data["signal"][33] == 3, f"WRONG VALUE: {data['signal'][33]:.4f} != 3 | Failed positive HODL signal in test_calculate_signals test."  
+	
+	# descending
+	data = []
+	for i in range(1, 100):
+		data.append([1/i])
+	
+	data = pd.DataFrame(data, columns=["price"])
+	data = dpp.calculate_signals(data, 7)
+
+	assert data["signal"][3] == 6, f"WRONG VALUE: {data['signal'][3]:.4f} != 6 | Failed SELL 3Y signal in test_calculate_signals test."  
+	assert data["signal"][4] == 5, f"WRONG VALUE: {data['signal'][4]:.4f} != 5 | Failed SELL 2Y signal in test_calculate_signals test."  
+	assert data["signal"][11] == 4, f"WRONG VALUE: {data['signal'][11]:.4f} != 4 | Failed SELL Y signal in test_calculate_signals test."  
+	assert data["signal"][27] == 3, f"WRONG VALUE: {data['signal'][27]:.4f} != 3 | Failed HODL signal in test_calculate_signals test."  
+
+
+
 #
 # ---------- DATA PROCESSOR TESTS ----------
 #
@@ -463,7 +515,6 @@ def run_data_aggregator_tests():
 	print("test_get_generic_score() tests all passed.")
 	test_extract_basic_data()
 	print("test_extract_basic_data() tests all passed.")
-	test_get_time()
 
 
 
@@ -476,6 +527,11 @@ def run_data_preprocessor_tests():
 	print("test_calculate_price_SMAs() tests all passed.")
 	test_calculate_fear_greed_SMAs()
 	print("test_calculate_fear_greed_SMAs() tests all passed.")
+	test_get_weighting_constant()
+	print("test_get_weighting_constant() tests all passed.")
+	test_calculate_signals()
+	print("test_calculate_signals() tests all passed.")
+
 
 
 

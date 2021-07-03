@@ -3,7 +3,7 @@ models/best/CS_Laptop_0_18_67-80_18xaug.pt
 models/best/CS_Laptop_0_1_67-80_18xaug.pt
 models/best/CS_Pi_0_20_67-80_20xaug.pt
 models/best/CS_Pi_0_20_65-80_23xaug.pt
+models/best/CS_PC_0_304_60-80_32xaug.pt
+models/best/CS_PC_0_289_67-78_32xaug.pt
+models/best/CS_PC_0_289_64-77_32xaug.pt
 models/best/CS_Laptop_0_80_66-77_16xaug.pt
-models/best/CS_Laptop_0_18_61-73_28xaug.pt
-models/best/CS_Pi_0_113_47-80_128xaug.pt
-models/best/CS_PC_0_293_47-80_512xaug.pt

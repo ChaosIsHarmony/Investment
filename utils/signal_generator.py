@@ -213,19 +213,19 @@ def get_models(best):
 	nn.set_model_parameters()
 	for i in range(len(best)):
 		if "Laptop_0" in best[i]:
-			models.append(load_model(nn.CryptoSoothsayer_Laptop_0(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
+			models.append(load_model(nn.CryptoSoothsayer_Laptop_0(nn.N_FEATURES, nn.N_SIGNALS_GRANULAR), best[i]))
 		elif "Laptop_1" in best[i]:
-			models.append(load_model(nn.CryptoSoothsayer_Laptop_1(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
+			models.append(load_model(nn.CryptoSoothsayer_Laptop_1(nn.N_FEATURES, nn.N_SIGNALS_GRANULAR), best[i]))
 		elif "Laptop_2" in best[i]:
-			models.append(load_model(nn.CryptoSoothsayer_Laptop_2(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
+			models.append(load_model(nn.CryptoSoothsayer_Laptop_2(nn.N_FEATURES, nn.N_SIGNALS_GRANULAR), best[i]))
 		elif "Pi_0" in best[i]:
-			models.append(load_model(nn.CryptoSoothsayer_Pi_0(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
+			models.append(load_model(nn.CryptoSoothsayer_Pi_0(nn.N_FEATURES, nn.N_SIGNALS_GRANULAR), best[i]))
 		elif "Pi_1" in best[i]:
-			models.append(load_model(nn.CryptoSoothsayer_Pi_1(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
+			models.append(load_model(nn.CryptoSoothsayer_Pi_1(nn.N_FEATURES, nn.N_SIGNALS_GRANULAR), best[i]))
 		elif "PC_0" in best[i]:
-			models.append(load_model(nn.CryptoSoothsayer_PC_0(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
+			models.append(load_model(nn.CryptoSoothsayer_PC_0(nn.N_FEATURES, nn.N_SIGNALS_GRANULAR), best[i]))
 		elif "PC_1" in best[i]:
-			models.append(load_model(nn.CryptoSoothsayer_PC_1(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
+			models.append(load_model(nn.CryptoSoothsayer_PC_1(nn.N_FEATURES, nn.N_SIGNALS_GRANULAR), best[i]))
 
 
 	return models
@@ -241,16 +241,16 @@ def generate_signals(full_report=False):
 	for coin in dt_agg.coin_id:
 		data = pd.read_csv(f"datasets/clean/{coin}_historical_data_clean.csv")
 		# extracts the most recent data as a python list
-		data = data[data["date"] == str(date.today()-timedelta(0))].values.tolist()[0][1:]
+		data = data[data["date"] == str(date.today()-timedelta(0))].values.tolist()[0][1:-1]
 		# stat report
 		if full_report:
 			populate_stat_report_full(coin, data, report)
 		else:
 			populate_stat_report_essentials(coin, data, report)	
 
-		n_votes = [0, 0, 0, 0, 0] # buy 2x, buy x, hodl, sell y, sell 2y
-		n_weights = [0, 0, 0, 0, 0]
-		best_model_signal = 6 # set out of bounds to begin with 
+		n_votes = [0, 0, 0, 0, 0, 0, 0] # buy 3x, buy 2x, buy x, hodl, sell y, sell 2y, sell 3y
+		n_weights = [0, 0, 0, 0, 0, 0, 0]
+		best_model_signal = 7 # set out of bounds to begin with 
 
 		# get the best performing models
 		models = get_models(best_models)
@@ -280,8 +280,10 @@ def generate_signals(full_report=False):
 		signal_b = DECISIONS[best_model_signal]
 
 		best_w = n_weights[torch.argmax(n_weights)]
-		second_best_w = n_weights[torch.argmin(n_weights)]
+		second_best_w = n_weights[torch.argmin(n_weights)] # placeholder
 		worst_w = n_weights[torch.argmin(n_weights)]
+		buy_signal = (n_weights[0] + n_weights[1] + n_weights[2])/len(best_models)
+		sell_signal = (n_weights[4] + n_weights[5] + n_weights[6])/len(best_models)
 		for weight in n_weights:
 			if weight > second_best_w and weight < best_w:
 				second_best_w = weight
@@ -295,8 +297,8 @@ def generate_signals(full_report=False):
 		report.append(f"\tWeights:\t{formatted_w_list}")
 		report.append(f"\tDiff 1st and 2nd:\t{(best_w - second_best_w)/len(best_models):>9.4f}")
 		report.append(f"\tDiff 1st and last:\t{(best_w - worst_w)/len(best_models):>9.4f}")
-		report.append(f"\tDiff Buy and Sell:\t{abs((n_weights[0] + n_weights[1])/len(best_models) - (n_weights[3] + n_weights[4])/len(best_models)):>9.4f}")
-		report.append(f"\tBuy vs. Sell:\t\t{(n_weights[0] + n_weights[1])/len(best_models):>9.4f} vs. {(n_weights[3] + n_weights[4])/len(best_models):.4f}")
+		report.append(f"\tAbsolute diff Buy and Sell:\t{abs(buy_signal - sell_signal):>9.4f}")
+		report.append(f"\tBuy vs. Sell:\t\t{buy_signal:>9.4f} vs. {sell_signal:.4f}")
 
 
 	return report

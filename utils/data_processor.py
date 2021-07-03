@@ -13,11 +13,11 @@ from datetime import datetime
 import time
 import random
 import numpy as np
-#import neural_nets as nn
+import neural_nets as nn
 '''
 WHEN testing need this version instead
 '''
-from utils import neural_nets as nn
+#from utils import neural_nets as nn
 
 BATCH_SIZE = 256 
 EPOCHS = 5
@@ -169,8 +169,6 @@ def validate_model(model, valid_data):
 	Validates the model on the validation dataset.
 	Returns the average validation loss.
 	'''
-	global REPORTS
-
 	# set to evaluate mode to turn off components like dropout
 	model.eval()
 	valid_loss = 0.0
@@ -224,10 +222,10 @@ def train(model, train_data, valid_data, start_time):
 	train_data = shuffle_data(train_data)
 
 	epoch = 0
-	prev_valid_losses = []
 
 	while epoch < EPOCHS:
 		steps = 0
+		prev_valid_losses = []
 		total_train_loss = 0.0
 		total_valid_loss = 0.0
 
@@ -243,7 +241,7 @@ def train(model, train_data, valid_data, start_time):
 				print_batch_status(avg_train_loss, avg_valid_loss, start_time)
 				prev_valid_losses.append(avg_valid_loss)
 				if terminate_early(prev_valid_losses):
-					epoch = EPOCHS
+					#epoch = EPOCHS
 					break
 	
 		epoch += 1
@@ -275,16 +273,16 @@ def evaluate_model(model, test_data):
 		if decision == target_tensor:
 			correct += 1
 		# correct direction, but extent was wrong (e.g., target = BUY X, decision = BUY 2X)
-		elif (target_tensor == 0 or target_tensor == 1) and (decision == 0 or decision == 1):
+		elif (target_tensor == 0 or target_tensor == 1 or target_tensor == 2) and (decision == 0 or decision == 1 or decision == 2):
 			mostly_correct += 1
 		# correct direction, but extent was wrong (e.g., target = SELL X, decision = SELL 2X)
-		elif (target_tensor == 3 or target_tensor == 4) and (decision == 3 or decision == 4):
+		elif (target_tensor == 4 or target_tensor == 5 or target_tensor == 6) and (decision == 4 or decision == 5 or decision == 6):
 			mostly_correct += 1
 		# catastrophic failure (e.g., told to buy when should have sold)
-		elif (target_tensor > 2 and decision < 2) or (target_tensor < 2 and decision > 2):
+		elif (target_tensor > 3 and decision < 3) or (target_tensor < 3 and decision > 3):
 			catastrophic_fail += 1
 		# severe failure (e.g., should have hodled but was told to buy or sell
-		elif target_tensor == 2 and (decision < 2 or decision > 2):
+		elif target_tensor == 3 and (decision < 3 or decision > 3):
 			nasty_fail += 1
 		# decision was to hodl, but should have sold or bought
 		else:
@@ -336,14 +334,15 @@ def parameter_tuner():
 	train_data, valid_data, test_data = get_datasets(COIN)
 	model_counter = 0
 
-	for eta in np.arange(0.003, 0.004, 0.0005):
+	#for eta in np.arange(0.004, 0.005, 0.0005):
+	for eta in np.arange(0.001, 0.0015, 0.0005):
 		for decay in np.arange(0.9999, 0.99999, 0.00001):	
 			for dropout in np.arange(0.05, 0.85, 0.05):
 				print("Start of new Experiment\n__________________________")
 				print(f"Eta: {eta} | Decay: {decay} | Dropout: {dropout}")
 				report = "" 
 				
-				model_architecture = "Laptop_0"
+				model_architecture = "Laptop_1"
 				nn.set_model_parameters(dropout, eta, decay)
 				nn.set_model(model_architecture) 
 				nn.set_model_props(nn.get_model())
@@ -402,17 +401,17 @@ def continue_training():
 	# 
 	# ------------ DATA GENERATION ----------
 	#
-	train_data, valid_data, test_data = get_datasets(COIN, data_aug_factor = 0)
+	train_data, valid_data, test_data = get_datasets(COIN, data_aug_factor = 128)
 
 	#
 	# ------------ MODEL TRAINING -----------
 	#
-	model_architecture = "Laptop_0"
-	model_number = 0 
+	model_architecture = "Laptop_1"
+	model_number = 1
 	model_filepath = f"models/CS_{model_architecture}_{model_number}_param_tuning.pt"
 	
-	nn.set_model_parameters(dropout = 0.05, eta = 0.003, eta_decay = 0.9999)
-	nn.set_pretrained_model(load_model(nn.CryptoSoothsayer_Laptop_0(nn.N_FEATURES, nn.N_SIGNALS), model_filepath))
+	nn.set_model_parameters(dropout = 0.75, eta = 0.0019, eta_decay = 0.9999)
+	nn.set_pretrained_model(load_model(nn.CryptoSoothsayer_Laptop_1(nn.N_FEATURES, nn.N_SIGNALS_GRANULAR), model_filepath))
 	nn.set_model_props(nn.get_model())
 	model = nn.get_model()
 
@@ -440,4 +439,4 @@ def continue_training():
 	
 
 
-#continue_training()
+continue_training()

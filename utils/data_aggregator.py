@@ -13,7 +13,7 @@ import time
 import pandas as pd
 import numpy as np
 
-coin_id = ["aave", "algorand", "bitcoin", "cardano", "chainlink", "cosmos", "decentraland", "ethereum", "matic-network", "polkadot", "solana", "the-graph", "theta-token"]
+coin_id = ["aave", "algorand", "bitcoin", "cardano", "chainlink", "cosmos", "ethereum", "matic-network", "polkadot", "solana", "the-graph", "theta-token"]
 
 
 
@@ -206,7 +206,7 @@ def merge_new_dataset_with_old(coin, by_range=True):
 
 
 
-def fetch_missing_data_by_dates(coin, dates):
+def fetch_missing_data_by_dates(coin, dates, verbose=False):
 	'''
 	WARNING: Cannot automatically fetch Fear/Greed index <- This is partially alleviated by the data_preprocessors handle_missing_data method.
 	'''
@@ -239,13 +239,14 @@ def fetch_missing_data_by_dates(coin, dates):
 	coin_data = pd.DataFrame(historical_data)
 	coin_data.to_csv(f"datasets/raw/{coin}_historical_data_by_date.csv", index=False)
 		
-	print(f"{coin} data successfully pulled and stored.")
+	if verbose:
+		print(f"{coin} data successfully pulled and stored.")
 	
 	return coin_data
 
 
 
-def fetch_missing_data_by_range(coin, n_days, start_delta):
+def fetch_missing_data_by_range(coin, n_days, start_delta, verbose=False):
 	today = date.today() - timedelta(start_delta)
 	historical_data = []
 	missing_dates = []
@@ -283,7 +284,8 @@ def fetch_missing_data_by_range(coin, n_days, start_delta):
 	coin_data = pd.DataFrame(historical_data)
 	coin_data.to_csv(f"datasets/raw/{coin}_historical_data_by_range.csv", index=False)
 		
-	print(f"{coin} data successfully pulled and stored.")
+	if verbose:
+		print(f"{coin} data successfully pulled and stored.")
 
 
 
@@ -346,7 +348,7 @@ def run(how_far_back):
 		
 		# if missing dates
 		if len(missing_dates) > 0:
-			fetch_missing_data_by_dates(coin, missing_dates)
+			fetch_missing_data_by_dates(coin, missing_dates, verbose=True)
 			merge_new_dataset_with_old(coin, by_range=False)
 
 		print(f"{coin} data successfully pulled and stored.")

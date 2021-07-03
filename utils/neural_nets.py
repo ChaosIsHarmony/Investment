@@ -6,6 +6,7 @@ import torch.optim.lr_scheduler as lr_scheduler
 
 # Fixed parameters
 N_SIGNALS = 5
+N_SIGNALS_GRANULAR = 7
 N_FEATURES = 25
 # Tunable Hyperparameters
 DROPOUT = None
@@ -226,6 +227,7 @@ class CryptoSoothsayer_Laptop_1(nn.Module):
 		out = self.dropout(F.relu(self.layer_10(out)))
 		out = self.dropout(F.relu(self.layer_11(out)))
 		out = self.dropout(F.relu(self.layer_12(out)))
+		out = self.dropout(F.relu(self.layer_13(out)))
 		out = self.layer_output(out)
 		return out
 
@@ -306,8 +308,6 @@ class CryptoSoothsayer_Laptop_4(nn.Module):
 
 
 
-
-
 #
 # -------------- GETTERS & SETTERS ---------------
 #
@@ -328,19 +328,19 @@ def set_model(model_architecture):
 	global MODEL
 
 	if "Laptop_0" in model_architecture:
-		MODEL = CryptoSoothsayer_Laptop_0(N_FEATURES, N_SIGNALS)
+		MODEL = CryptoSoothsayer_Laptop_0(N_FEATURES, N_SIGNALS_GRANULAR)
 	elif "Laptop_1" in model_architecture:
-		MODEL = CryptoSoothsayer_Laptop_1(N_FEATURES, N_SIGNALS)
+		MODEL = CryptoSoothsayer_Laptop_1(N_FEATURES, N_SIGNALS_GRANULAR)
 	elif "Laptop_2" in model_architecture:
-		MODEL = CryptoSoothsayer_Laptop_2(N_FEATURES, N_SIGNALS)
+		MODEL = CryptoSoothsayer_Laptop_2(N_FEATURES, N_SIGNALS_GRANULAR)
 	elif "Pi_0" in model_architecture:
-		MODEL = CryptoSoothsayer_Pi_0(N_FEATURES, N_SIGNALS)
+		MODEL = CryptoSoothsayer_Pi_0(N_FEATURES, N_SIGNALS_GRANULAR)
 	elif "Pi_1" in model_architecture:
-		MODEL = CryptoSoothsayer_Pi_1(N_FEATURES, N_SIGNALS)
+		MODEL = CryptoSoothsayer_Pi_1(N_FEATURES, N_SIGNALS_GRANULAR)
 	elif "PC_0" in model_architecture:
-		MODEL = CryptoSoothsayer_PC_0(N_FEATURES, N_SIGNALS)
+		MODEL = CryptoSoothsayer_PC_0(N_FEATURES, N_SIGNALS_GRANULAR)
 	elif "PC_1" in model_architecture:
-		MODEL = CryptoSoothsayer_PC_1(N_FEATURES, N_SIGNALS)
+		MODEL = CryptoSoothsayer_PC_1(N_FEATURES, N_SIGNALS_GRANULAR)
 
 
 

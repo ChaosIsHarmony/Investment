@@ -42,15 +42,16 @@ def handle_missing_data(data, start_date, end_date):
 def normalize_data(data):
 	'''
 	Normalizes data using min-max normalization but only up until the given point in history, e.g., datapoint for 2021/02/28 does not have any knowledge of data from 01/03/2021 and onwards.
+	NOTE: only uses 2 until seocnd to last column, because 1st column is the date and the last column is the signal (i.e., what the appropriate action to take should be).
 	'''
 	data_cp = data.copy(deep=True)
 
 	# 1st row items only have themselves as history
-	for column in range(1, data.shape[1]):
+	for column in range(1, data.shape[1]-1):
 		data_cp.iloc[0, column] = 1.0
 
 	for i in range(1, data.shape[0]):
-		for column in range(1, data.shape[1]):
+		for column in range(1, data.shape[1]-1):
 			col_max = data.iloc[:i+1, column].max()
 			col_min = data.iloc[:i+1, column].min()
 			# to avoid division by zero
@@ -61,7 +62,7 @@ def normalize_data(data):
 			data_cp.iloc[i, column] = (data.iloc[i, column] - col_min) / (col_max - col_min)
 
 	# last row
-	for column in range(1, data.shape[1]):
+	for column in range(1, data.shape[1]-1):
 		col_max = data.iloc[:, column].max()
 		col_min = data.iloc[:, column].min()
 		if col_max == col_min and col_max != 0:
@@ -162,13 +163,78 @@ def calculate_SMAs(data):
 
 
 
+def get_signal_value(percent_delta):
+	'''
+	Returns signal to BUY, SELL, or HODL [0-6 scale] based on percent_delta over given period (as determined by the calling method).
+	'''
+	signal = 3 # HODL by default
+
+	# SELL - lower is stronger
+	if percent_delta < -0.3:
+		signal = 6
+	elif percent_delta < -0.15:
+		signal = 5
+	elif percent_delta < -0.1:
+		signal = 4
+	# BUY - higher is stronger
+	elif percent_delta > 0.3:
+		signal = 0
+	elif percent_delta > 0.15:
+		signal = 1
+	elif percent_delta > 0.1:
+		signal = 2
+
+	return signal
+
+
+
+def get_weighting_constant(n=28):
+	'''
+	Calculates weighting constant required for the given period so that all weights add to 1.
+	NOTE: simplified from (100 / ((n * (n+1)) / 2)) / 100, where the numerator provides a constant that when multiplied by unit increments, the addition of all terms from 1 -> n will add to 1.
+	'''
+	return 2 / (n*(n+1))
+
+
+
+def calculate_signals(data, limit=28):
+	'''
+	Calculates the signal on a scale from 0-6 (BUY 3x -> SELL 3Y) based on weighted average of the price future (days_out) price movement deltas.
+	If percentage increase exceeds given threshold, then SELL; if decrease then BUY.
+	If percentage increase/decrease does not exceed minimum thresholds, then HODL.
+	NOTE: Weights days in the more distant future more heavily.
+	'''
+	signals = []
+	weighting_constant = get_weighting_constant(limit)
+	for ind in range(len(data) - limit):
+		current_price = data["price"][ind]
+		price_delta_avg = 0.0
+		for days_from_now in range(1, limit+1):
+			later_price = data["price"][ind+days_from_now]
+			percent_delta = (later_price - current_price) / current_price
+			price_delta_avg += percent_delta * weighting_constant * days_from_now
+		signals.append(get_signal_value(price_delta_avg))
+
+	data["signal"] = pd.Series(signals)
+
+	print(data["signal"].value_counts())
+
+	data = data.fillna(0)
+
+	return data
+
+
+
 def process_data(data, start_date, end_date):
 	'''
 	Processes the basic data provided by coingecko in the following ways:
 		
 		- Fills in missing values
-		- Normalizes all values by dividing by the max value in each category
 		- Calculates Simple Moving Averages for a variety of intervals
+		- Calculates the signal for that day
+			- Prescient looking forward x-days and averaging the price_deltas
+		- Normalizes all values by dividing by the max value in each category
+			- Normalizes neither date nor signal columns
 	'''
 	# Fill in missing values
 	data = handle_missing_data(data, start_date, end_date)
@@ -176,6 +242,10 @@ def process_data(data, start_date, end_date):
 	# Calculate SMAs 
 	data = calculate_SMAs(data)
 	print("SMA calculation complete.")
+	# Calculate signals
+	days_from_now = 7 * 5 # 7 * n weeks 
+	data = calculate_signals(data, days_from_now)
+	print(f"Signal calculation for {days_from_now} days from now complete.")
 	# Normalize, must happen after SMA calculation or will skew results
 	data = normalize_data(data)
 	print("Data normalization complete.")
