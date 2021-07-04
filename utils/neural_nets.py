@@ -333,6 +333,8 @@ def set_model(model_architecture):
 		MODEL = CryptoSoothsayer_Laptop_1(N_FEATURES, N_SIGNALS_GRANULAR)
 	elif "Laptop_2" in model_architecture:
 		MODEL = CryptoSoothsayer_Laptop_2(N_FEATURES, N_SIGNALS_GRANULAR)
+	elif "Laptop_3" in model_architecture:
+		MODEL = CryptoSoothsayer_Laptop_3(N_FEATURES, N_SIGNALS_GRANULAR)
 	elif "Pi_0" in model_architecture:
 		MODEL = CryptoSoothsayer_Pi_0(N_FEATURES, N_SIGNALS_GRANULAR)
 	elif "Pi_1" in model_architecture:

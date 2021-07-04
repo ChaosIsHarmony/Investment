@@ -20,7 +20,7 @@ WHEN testing need this version instead
 #from utils import neural_nets as nn
 
 BATCH_SIZE = 256 
-EPOCHS = 5
+EPOCHS = 20
 COIN = "bitcoin"
 REPORTS = []
 
@@ -197,9 +197,9 @@ def terminate_early(prev_valid_losses):
 		while ind > 0:
 			valid_loss_trend += prev_valid_losses[ind] - prev_valid_losses[ind-1]
 			ind -= 1
-			if valid_loss_trend > 0:
-				epoch = EPOCHS
-				return True
+		
+		if valid_loss_trend > 0:
+			return True
 				
 		prev_valid_losses.pop(0)
 
@@ -337,12 +337,12 @@ def parameter_tuner():
 	#for eta in np.arange(0.004, 0.005, 0.0005):
 	for eta in np.arange(0.001, 0.0015, 0.0005):
 		for decay in np.arange(0.9999, 0.99999, 0.00001):	
-			for dropout in np.arange(0.05, 0.85, 0.05):
+			for dropout in np.arange(0.8, 0.85, 0.05):
 				print("Start of new Experiment\n__________________________")
 				print(f"Eta: {eta} | Decay: {decay} | Dropout: {dropout}")
 				report = "" 
 				
-				model_architecture = "Laptop_1"
+				model_architecture = "Laptop_3"
 				nn.set_model_parameters(dropout, eta, decay)
 				nn.set_model(model_architecture) 
 				nn.set_model_props(nn.get_model())
@@ -401,17 +401,17 @@ def continue_training():
 	# 
 	# ------------ DATA GENERATION ----------
 	#
-	train_data, valid_data, test_data = get_datasets(COIN, data_aug_factor = 128)
+	train_data, valid_data, test_data = get_datasets(COIN, data_aug_factor = 10)
 
 	#
 	# ------------ MODEL TRAINING -----------
 	#
-	model_architecture = "Laptop_1"
-	model_number = 1
+	model_architecture = "Laptop_3"
+	model_number = 3
 	model_filepath = f"models/CS_{model_architecture}_{model_number}_param_tuning.pt"
 	
-	nn.set_model_parameters(dropout = 0.75, eta = 0.0019, eta_decay = 0.9999)
-	nn.set_pretrained_model(load_model(nn.CryptoSoothsayer_Laptop_1(nn.N_FEATURES, nn.N_SIGNALS_GRANULAR), model_filepath))
+	nn.set_model_parameters(dropout = 0.5, eta = 0.005, eta_decay = 0.9999)
+	nn.set_pretrained_model(load_model(nn.CryptoSoothsayer_Laptop_3(nn.N_FEATURES, nn.N_SIGNALS_GRANULAR), model_filepath))
 	nn.set_model_props(nn.get_model())
 	model = nn.get_model()
 
@@ -421,7 +421,7 @@ def continue_training():
 	start_time = time.time()
 	
 	train(model, train_data, valid_data, start_time)
-	save_model(model, f"models/CS_{model_architecture}_{model_number}_mod.pt")
+	save_model(model, f"models/CS_{model_architecture}_{model_number}_mod_20.pt")
 
 	#
 	# ------------ MODEL TESTING -----------

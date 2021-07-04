@@ -9,3 +9,113 @@ DECISIONS:
 	Signal Should Have Been Hodl: 0.007874015748031496
 	Signal and Answer Exact Opposite: 0.0
 
+MODEL: 0
+Last Training Loss: 281.96928788536786 | Last Valid Loss: 2.4597456623234164
+PARAMETERS:
+	Laptop_3
+	eta: 0.001 | decay: 0.9999 | dropout: 0.8
+DECISIONS:
+	Perfect Decision: 0.36507936507936506
+	Acceptable Decision: 0.36507936507936506
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 1
+Last Training Loss: 302.4106137988587 | Last Valid Loss: 2.7762143412550837
+PARAMETERS:
+	Laptop_3
+	eta: 0.001 | decay: 0.99991 | dropout: 0.8
+DECISIONS:
+	Perfect Decision: 0.36507936507936506
+	Acceptable Decision: 0.36507936507936506
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2
+Last Training Loss: 326.4737156614864 | Last Valid Loss: 8.976105911045858
+PARAMETERS:
+	Laptop_3
+	eta: 0.001 | decay: 0.9999199999999999 | dropout: 0.8
+DECISIONS:
+	Perfect Decision: 0.36507936507936506
+	Acceptable Decision: 0.36507936507936506
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 3
+Last Training Loss: 401.6875534989504 | Last Valid Loss: 40.32791167627622
+PARAMETERS:
+	Laptop_3
+	eta: 0.001 | decay: 0.9999299999999999 | dropout: 0.8
+DECISIONS:
+	Perfect Decision: 0.10317460317460317
+	Acceptable Decision: 0.31746031746031744
+	Signal Should Have Been Hodl: 0.36507936507936506
+	Signal and Answer Exact Opposite: 0.31746031746031744
+
+MODEL: 4
+Last Training Loss: 269.5960076530064 | Last Valid Loss: 7.56550142152342
+PARAMETERS:
+	Laptop_3
+	eta: 0.001 | decay: 0.9999399999999998 | dropout: 0.8
+DECISIONS:
+	Perfect Decision: 0.10317460317460317
+	Acceptable Decision: 0.31746031746031744
+	Signal Should Have Been Hodl: 0.36507936507936506
+	Signal and Answer Exact Opposite: 0.31746031746031744
+
+MODEL: 5
+Last Training Loss: 311.88462744110075 | Last Valid Loss: 2.572879693854345
+PARAMETERS:
+	Laptop_3
+	eta: 0.001 | decay: 0.9999499999999998 | dropout: 0.8
+DECISIONS:
+	Perfect Decision: 0.36507936507936506
+	Acceptable Decision: 0.36507936507936506
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 6
+Last Training Loss: 325.5630974891846 | Last Valid Loss: 5.533149431249612
+PARAMETERS:
+	Laptop_3
+	eta: 0.001 | decay: 0.9999599999999997 | dropout: 0.8
+DECISIONS:
+	Perfect Decision: 0.36507936507936506
+	Acceptable Decision: 0.36507936507936506
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 7
+Last Training Loss: 340.87854240791336 | Last Valid Loss: 31.706742874354536
+PARAMETERS:
+	Laptop_3
+	eta: 0.001 | decay: 0.9999699999999997 | dropout: 0.8
+DECISIONS:
+	Perfect Decision: 0.36507936507936506
+	Acceptable Decision: 0.36507936507936506
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 8
+Last Training Loss: 316.0850816655008 | Last Valid Loss: 2.498292701616679
+PARAMETERS:
+	Laptop_3
+	eta: 0.001 | decay: 0.9999799999999996 | dropout: 0.8
+DECISIONS:
+	Perfect Decision: 0.36507936507936506
+	Acceptable Decision: 0.36507936507936506
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 9
+Last Training Loss: 304.9391433285384 | Last Valid Loss: 13.693624496668987
+PARAMETERS:
+	Laptop_3
+	eta: 0.001 | decay: 0.9999899999999996 | dropout: 0.8
+DECISIONS:
+	Perfect Decision: 0.36507936507936506
+	Acceptable Decision: 0.36507936507936506
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
