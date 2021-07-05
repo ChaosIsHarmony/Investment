@@ -215,15 +215,6 @@ class CryptoSoothsayer_PC_1(nn.Module):
 
 
 
-<<<<<<< HEAD
-class CryptoSoothsayer_PC_3(nn.Module):
-	def __init__(self, input_size, n_signals):
-		super(CryptoSoothsayer_PC_3, self).__init__()
-		self.layer_1 = nn.Linear(input_size, 78125)
-		self.layer_2 = nn.Linear(78125, 3125)
-		self.layer_3 = nn.Linear(3125, 125)
-		self.layer_output = nn.Linear(125, n_signals)
-=======
 class CryptoSoothsayer_PC_2(nn.Module):
 	def __init__(self, input_size, n_signals):
 		super(CryptoSoothsayer_PC_2, self).__init__()
@@ -248,17 +239,11 @@ class CryptoSoothsayer_PC_3(nn.Module):
 		super(CryptoSoothsayer_PC_3, self).__init__()
 		self.layer_1 = nn.Linear(input_size, 16)
 		self.layer_output = nn.Linear(16, n_signals)
->>>>>>> 103032e1dbb9bcabdbb84302c9c8f5ccd49be863
 		self.dropout = nn.Dropout(DROPOUT)
 
 
 	def forward(self, inputs):
 		out = self.dropout(F.relu(self.layer_1(inputs)))
-<<<<<<< HEAD
-		out = self.dropout(F.relu(self.layer_2(out)))
-		out = self.dropout(F.relu(self.layer_3(out)))
-=======
->>>>>>> 103032e1dbb9bcabdbb84302c9c8f5ccd49be863
 		out = self.layer_output(out)
 		return out
 
@@ -271,13 +256,8 @@ class CryptoSoothsayer_PC_3(nn.Module):
 class CryptoSoothsayer_PC_4(nn.Module):
 	def __init__(self, input_size, n_signals):
 		super(CryptoSoothsayer_PC_4, self).__init__()
-<<<<<<< HEAD
-		self.layer_1 = nn.Linear(input_size,13 )
-		self.layer_output = nn.Linear(13, n_signals)
-=======
 		self.layer_1 = nn.Linear(input_size, 17)
 		self.layer_output = nn.Linear(17, n_signals)
->>>>>>> 103032e1dbb9bcabdbb84302c9c8f5ccd49be863
 		self.dropout = nn.Dropout(DROPOUT)
 
 
@@ -290,8 +270,6 @@ class CryptoSoothsayer_PC_4(nn.Module):
 	def get_class_name(self):
 		return "CryptoSoothsayer_PC_4"
 
-<<<<<<< HEAD
-=======
 
 
 class CryptoSoothsayer_PC_5(nn.Module):
@@ -331,7 +309,6 @@ class CryptoSoothsayer_PC_6(nn.Module):
 		return "CryptoSoothsayer_PC_6"
 
 
->>>>>>> 103032e1dbb9bcabdbb84302c9c8f5ccd49be863
 
 #
 # ---------- MODELS TRAINED ON LAPTOP ----------
@@ -524,13 +501,6 @@ def set_model(model_architecture):
 	elif "PC_0" in model_architecture:
 		MODEL = CryptoSoothsayer_PC_0(N_FEATURES, N_SIGNALS)
 	elif "PC_1" in model_architecture:
-<<<<<<< HEAD
-		MODEL = CryptoSoothsayer_PC_1(N_FEATURES, N_SIGNALS_GRANULAR)
-	elif "PC_3" in model_architecture:
-		MODEL = CryptoSoothsayer_PC_3(N_FEATURES, N_SIGNALS_GRANULAR)
-	elif "PC_4" in model_architecture:
-		MODEL = CryptoSoothsayer_PC_4(N_FEATURES, N_SIGNALS_GRANULAR)
-=======
 		MODEL = CryptoSoothsayer_PC_1(N_FEATURES, N_SIGNALS)
 	elif "PC_2" in model_architecture:
 		MODEL = CryptoSoothsayer_PC_2(N_FEATURES, N_SIGNALS)
@@ -542,7 +512,6 @@ def set_model(model_architecture):
 		MODEL = CryptoSoothsayer_PC_5(N_FEATURES, N_SIGNALS)
 	elif "PC_6" in model_architecture:
 		MODEL = CryptoSoothsayer_PC_6(N_FEATURES, N_SIGNALS)
->>>>>>> 103032e1dbb9bcabdbb84302c9c8f5ccd49be863
 
 
 

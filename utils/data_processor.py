@@ -334,23 +334,14 @@ def parameter_tuner():
 	train_data, valid_data, test_data = get_datasets(COIN, 32)
 	model_counter = 0
 
-<<<<<<< HEAD
-	#for eta in np.arange(0.004, 0.005, 0.0005):
-	for eta in np.arange(0.001, 0.0025, 0.0005):
-=======
 	for eta in np.arange(0.001, 0.0015, 0.0005):
->>>>>>> 103032e1dbb9bcabdbb84302c9c8f5ccd49be863
 		for decay in np.arange(0.9999, 0.99999, 0.00001):	
 			for dropout in np.arange(0.05, 0.85, 0.05):
 				print("Start of new Experiment\n__________________________")
 				print(f"Eta: {eta} | Decay: {decay} | Dropout: {dropout}")
 				report = "" 
 				
-<<<<<<< HEAD
-				model_architecture = "PC_4"
-=======
-				model_architecture = "Laptop_0"
->>>>>>> 103032e1dbb9bcabdbb84302c9c8f5ccd49be863
+				model_architecture = "PC_0"
 				nn.set_model_parameters(dropout, eta, decay)
 				nn.set_model(model_architecture) 
 				nn.set_model_props(nn.get_model())
@@ -362,11 +353,8 @@ def parameter_tuner():
 
 				# Train
 				for epoch in range(5):
-<<<<<<< HEAD
-=======
 					# setup
 					train_data = shuffle_data(train_data)
->>>>>>> 103032e1dbb9bcabdbb84302c9c8f5ccd49be863
 					steps = 0
 					total_train_loss = 0.0
 					total_valid_loss = 0.0
@@ -421,21 +409,12 @@ def continue_training():
 	#
 	# ------------ MODEL TRAINING -----------
 	#
-<<<<<<< HEAD
 	model_architecture = "PC_0"
 	model_number = 3
 	model_filepath = f"models/CS_{model_architecture}_{model_number}_param_tuning.pt"
 	
 	nn.set_model_parameters(dropout = 0.5, eta = 0.005, eta_decay = 0.9999)
 	nn.set_pretrained_model(load_model(nn.CryptoSoothsayer_PC_3(nn.N_FEATURES, nn.N_SIGNALS_GRANULAR), model_filepath))
-=======
-	model_architecture = "Laptop_0"
-	model_number = 86
-	model_filepath = f"models/CS_{model_architecture}_{model_number}_param_tuning.pt"
-	
-	nn.set_model_parameters(dropout = 0.35, eta = 0.001, eta_decay = 0.99995)
-	nn.set_pretrained_model(load_model(nn.CryptoSoothsayer_Laptop_0(nn.N_FEATURES, nn.N_SIGNALS), model_filepath))
->>>>>>> 103032e1dbb9bcabdbb84302c9c8f5ccd49be863
 	nn.set_model_props(nn.get_model())
 	model = nn.get_model()
 
