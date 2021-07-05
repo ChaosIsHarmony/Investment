@@ -5,7 +5,7 @@ import torch.optim as optim
 import torch.optim.lr_scheduler as lr_scheduler
 
 # Fixed parameters
-N_SIGNALS = 5
+N_SIGNALS = 3
 N_SIGNALS_GRANULAR = 7
 N_FEATURES = 25
 # Tunable Hyperparameters
@@ -158,33 +158,13 @@ class CryptoSoothsayer_PC_1(nn.Module):
 class CryptoSoothsayer_Laptop_0(nn.Module):
 	def __init__(self, input_size, n_signals):
 		super(CryptoSoothsayer_Laptop_0, self).__init__()
-		self.layer_1 = nn.Linear(input_size, 4096)
-		self.layer_2 = nn.Linear(4096, 2048)
-		self.layer_3 = nn.Linear(2048, 1024)
-		self.layer_4 = nn.Linear(1024, 512)
-		self.layer_5 = nn.Linear(512, 128)
-		self.layer_6 = nn.Linear(128, 256)
-		self.layer_7 = nn.Linear(256, 128)
-		self.layer_8 = nn.Linear(128, 64)
-		self.layer_9 = nn.Linear(64, 32)
-		self.layer_10 = nn.Linear(32, 16)
-		self.layer_11 = nn.Linear(16, 8)
-		self.layer_output = nn.Linear(8, n_signals)
+		self.layer_1 = nn.Linear(input_size, 20)
+		self.layer_output = nn.Linear(20, n_signals)
 		self.dropout = nn.Dropout(DROPOUT)
 
 
 	def forward(self, inputs):
 		out = self.dropout(F.relu(self.layer_1(inputs)))
-		out = self.dropout(F.relu(self.layer_2(out)))
-		out = self.dropout(F.relu(self.layer_3(out)))
-		out = self.dropout(F.relu(self.layer_4(out)))
-		out = self.dropout(F.relu(self.layer_5(out)))
-		out = self.dropout(F.relu(self.layer_6(out)))
-		out = self.dropout(F.relu(self.layer_7(out)))
-		out = self.dropout(F.relu(self.layer_8(out)))
-		out = self.dropout(F.relu(self.layer_9(out)))
-		out = self.dropout(F.relu(self.layer_10(out)))
-		out = self.dropout(F.relu(self.layer_11(out)))
 		out = self.layer_output(out)
 		return out
 
@@ -197,37 +177,13 @@ class CryptoSoothsayer_Laptop_0(nn.Module):
 class CryptoSoothsayer_Laptop_1(nn.Module):
 	def __init__(self, input_size, n_signals):
 		super(CryptoSoothsayer_Laptop_1, self).__init__()
-		self.layer_1 = nn.Linear(input_size, 1024)
-		self.layer_2 = nn.Linear(1024, 2048)
-		self.layer_3 = nn.Linear(2048, 4096)
-		self.layer_4 = nn.Linear(4096, 2048)
-		self.layer_5 = nn.Linear(2048, 1024)
-		self.layer_6 = nn.Linear(1024, 512)
-		self.layer_7 = nn.Linear(512, 128)
-		self.layer_8 = nn.Linear(128, 256)
-		self.layer_9 = nn.Linear(256, 128)
-		self.layer_10 = nn.Linear(128, 64)
-		self.layer_11 = nn.Linear(64, 32)
-		self.layer_12 = nn.Linear(32, 16)
-		self.layer_13 = nn.Linear(16, 8)
-		self.layer_output = nn.Linear(8, n_signals)
+		self.layer_1 = nn.Linear(input_size, 21)
+		self.layer_output = nn.Linear(21, n_signals)
 		self.dropout = nn.Dropout(DROPOUT)
 
 
 	def forward(self, inputs):
 		out = self.dropout(F.relu(self.layer_1(inputs)))
-		out = self.dropout(F.relu(self.layer_2(out)))
-		out = self.dropout(F.relu(self.layer_3(out)))
-		out = self.dropout(F.relu(self.layer_4(out)))
-		out = self.dropout(F.relu(self.layer_5(out)))
-		out = self.dropout(F.relu(self.layer_6(out)))
-		out = self.dropout(F.relu(self.layer_7(out)))
-		out = self.dropout(F.relu(self.layer_8(out)))
-		out = self.dropout(F.relu(self.layer_9(out)))
-		out = self.dropout(F.relu(self.layer_10(out)))
-		out = self.dropout(F.relu(self.layer_11(out)))
-		out = self.dropout(F.relu(self.layer_12(out)))
-		out = self.dropout(F.relu(self.layer_13(out)))
 		out = self.layer_output(out)
 		return out
 
@@ -240,15 +196,13 @@ class CryptoSoothsayer_Laptop_1(nn.Module):
 class CryptoSoothsayer_Laptop_2(nn.Module):
 	def __init__(self, input_size, n_signals):
 		super(CryptoSoothsayer_Laptop_2, self).__init__()
-		self.layer_1 = nn.Linear(input_size, 16384)
-		self.layer_2 = nn.Linear(16384, 64)
-		self.layer_output = nn.Linear(64, n_signals)
+		self.layer_1 = nn.Linear(input_size, 22)
+		self.layer_output = nn.Linear(22, n_signals)
 		self.dropout = nn.Dropout(DROPOUT)
 
 
 	def forward(self, inputs):
 		out = self.dropout(F.relu(self.layer_1(inputs)))
-		out = self.dropout(F.relu(self.layer_2(out)))
 		out = self.layer_output(out)
 		return out
 
@@ -261,25 +215,17 @@ class CryptoSoothsayer_Laptop_2(nn.Module):
 class CryptoSoothsayer_Laptop_3(nn.Module):
 	def __init__(self, input_size, n_signals):
 		super(CryptoSoothsayer_Laptop_3, self).__init__()
-		self.layer_1 = nn.Linear(input_size, 16384)
-		self.layer_2 = nn.Linear(16384, 4096)
-		self.layer_3 = nn.Linear(4096, 1024)
-		self.layer_4 = nn.Linear(1024, 256)
-		self.layer_5 = nn.Linear(256, 32)
-		self.layer_output = nn.Linear(32, n_signals)
+		self.layer_1 = nn.Linear(input_size, 23)
+		self.layer_output = nn.Linear(23, n_signals)
 		self.dropout = nn.Dropout(DROPOUT)
 
 
 	def forward(self, inputs):
 		out = self.dropout(F.relu(self.layer_1(inputs)))
-		out = self.dropout(F.relu(self.layer_2(out)))
-		out = self.dropout(F.relu(self.layer_3(out)))
-		out = self.dropout(F.relu(self.layer_4(out)))
-		out = self.dropout(F.relu(self.layer_5(out)))
 		out = self.layer_output(out)
 		return out
 
-	
+
 	def get_class_name(self):
 		return "CryptoSoothsayer_Laptop_3"
 
@@ -288,17 +234,13 @@ class CryptoSoothsayer_Laptop_3(nn.Module):
 class CryptoSoothsayer_Laptop_4(nn.Module):
 	def __init__(self, input_size, n_signals):
 		super(CryptoSoothsayer_Laptop_4, self).__init__()
-		self.layer_1 = nn.Linear(input_size, 4096)
-		self.layer_2 = nn.Linear(4096, 16384)
-		self.layer_3 = nn.Linear(16384, 256)
-		self.layer_output = nn.Linear(256, n_signals)
+		self.layer_1 = nn.Linear(input_size, 24)
+		self.layer_output = nn.Linear(24, n_signals)
 		self.dropout = nn.Dropout(DROPOUT)
 
 
 	def forward(self, inputs):
 		out = self.dropout(F.relu(self.layer_1(inputs)))
-		out = self.dropout(F.relu(self.layer_2(out)))
-		out = self.dropout(F.relu(self.layer_3(out)))
 		out = self.layer_output(out)
 		return out
 
@@ -306,6 +248,43 @@ class CryptoSoothsayer_Laptop_4(nn.Module):
 	def get_class_name(self):
 		return "CryptoSoothsayer_Laptop_4"
 
+
+
+class CryptoSoothsayer_Laptop_5(nn.Module):
+	def __init__(self, input_size, n_signals):
+		super(CryptoSoothsayer_Laptop_5, self).__init__()
+		self.layer_1 = nn.Linear(input_size, 25)
+		self.layer_output = nn.Linear(25, n_signals)
+		self.dropout = nn.Dropout(DROPOUT)
+
+
+	def forward(self, inputs):
+		out = self.dropout(F.relu(self.layer_1(inputs)))
+		out = self.layer_output(out)
+		return out
+
+	
+	def get_class_name(self):
+		return "CryptoSoothsayer_Laptop_5"
+
+
+
+class CryptoSoothsayer_Laptop_6(nn.Module):
+	def __init__(self, input_size, n_signals):
+		super(CryptoSoothsayer_Laptop_6, self).__init__()
+		self.layer_1 = nn.Linear(input_size, 26)
+		self.layer_output = nn.Linear(26, n_signals)
+		self.dropout = nn.Dropout(DROPOUT)
+
+
+	def forward(self, inputs):
+		out = self.dropout(F.relu(self.layer_1(inputs)))
+		out = self.layer_output(out)
+		return out
+
+	
+	def get_class_name(self):
+		return "CryptoSoothsayer_Laptop_6"
 
 
 #
@@ -328,21 +307,27 @@ def set_model(model_architecture):
 	global MODEL
 
 	if "Laptop_0" in model_architecture:
-		MODEL = CryptoSoothsayer_Laptop_0(N_FEATURES, N_SIGNALS_GRANULAR)
+		MODEL = CryptoSoothsayer_Laptop_0(N_FEATURES, N_SIGNALS)
 	elif "Laptop_1" in model_architecture:
-		MODEL = CryptoSoothsayer_Laptop_1(N_FEATURES, N_SIGNALS_GRANULAR)
+		MODEL = CryptoSoothsayer_Laptop_1(N_FEATURES, N_SIGNALS)
 	elif "Laptop_2" in model_architecture:
-		MODEL = CryptoSoothsayer_Laptop_2(N_FEATURES, N_SIGNALS_GRANULAR)
+		MODEL = CryptoSoothsayer_Laptop_2(N_FEATURES, N_SIGNALS)
 	elif "Laptop_3" in model_architecture:
-		MODEL = CryptoSoothsayer_Laptop_3(N_FEATURES, N_SIGNALS_GRANULAR)
+		MODEL = CryptoSoothsayer_Laptop_3(N_FEATURES, N_SIGNALS)
+	elif "Laptop_4" in model_architecture:
+		MODEL = CryptoSoothsayer_Laptop_4(N_FEATURES, N_SIGNALS)
+	elif "Laptop_5" in model_architecture:
+		MODEL = CryptoSoothsayer_Laptop_5(N_FEATURES, N_SIGNALS)
+	elif "Laptop_6" in model_architecture:
+		MODEL = CryptoSoothsayer_Laptop_6(N_FEATURES, N_SIGNALS)
 	elif "Pi_0" in model_architecture:
-		MODEL = CryptoSoothsayer_Pi_0(N_FEATURES, N_SIGNALS_GRANULAR)
+		MODEL = CryptoSoothsayer_Pi_0(N_FEATURES, N_SIGNALS)
 	elif "Pi_1" in model_architecture:
-		MODEL = CryptoSoothsayer_Pi_1(N_FEATURES, N_SIGNALS_GRANULAR)
+		MODEL = CryptoSoothsayer_Pi_1(N_FEATURES, N_SIGNALS)
 	elif "PC_0" in model_architecture:
-		MODEL = CryptoSoothsayer_PC_0(N_FEATURES, N_SIGNALS_GRANULAR)
+		MODEL = CryptoSoothsayer_PC_0(N_FEATURES, N_SIGNALS)
 	elif "PC_1" in model_architecture:
-		MODEL = CryptoSoothsayer_PC_1(N_FEATURES, N_SIGNALS_GRANULAR)
+		MODEL = CryptoSoothsayer_PC_1(N_FEATURES, N_SIGNALS)
 
 
 

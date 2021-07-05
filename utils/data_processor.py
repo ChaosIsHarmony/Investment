@@ -84,10 +84,16 @@ def get_datasets(coin, data_aug_factor=0):
 	'''
 	global REPORTS
 
+
 	# Load data
 	data = pd.read_csv(f"datasets/complete/{coin}_historical_data_complete.csv")
 	data = data.drop(columns=["date"])
 	data["signal"] = data["signal"].astype("int64")
+
+	# Check for any anomalous, unnormalized data in all columns except the signal column
+	for c in range(len(data.columns)-1):
+		for r in range(len(data)):
+			assert (data.iloc[r, c] > 1) == False, f"ERROR: Unnormalized data still present in the dataset in column: {data.columns[c]}."
 
 	# Split into training, validation, testing
 	# 70-15-15 split
@@ -98,12 +104,15 @@ def get_datasets(coin, data_aug_factor=0):
 
 	train_data = generate_dataset(data, train_end, 0, data_aug_factor)
 	REPORTS.append(f"Length Training Data: {len(train_data)}")
+	print("Training dataset created.")
 
 	valid_data = generate_dataset(data, valid_end, train_end)
 	REPORTS.append(f"Length Validation Data: {len(valid_data)}")
+	print("Validation dataset created.")
 
 	test_data = generate_dataset(data, n_datapoints, valid_end)
 	REPORTS.append(f"Length Testing Data: {len(test_data)}") 
+	print("Testing dataset created.")
 
 	return train_data, valid_data, test_data
 
@@ -219,11 +228,11 @@ def print_batch_status(avg_train_loss, avg_valid_loss, start_time):
 def train(model, train_data, valid_data, start_time):
 	global REPORTS, EPOCHS, BATCH_SIZE
 
-	train_data = shuffle_data(train_data)
-
 	epoch = 0
 
 	while epoch < EPOCHS:
+		# setup
+		train_data = shuffle_data(train_data)
 		steps = 0
 		prev_valid_losses = []
 		total_train_loss = 0.0
@@ -241,7 +250,6 @@ def train(model, train_data, valid_data, start_time):
 				print_batch_status(avg_train_loss, avg_valid_loss, start_time)
 				prev_valid_losses.append(avg_valid_loss)
 				if terminate_early(prev_valid_losses):
-					#epoch = EPOCHS
 					break
 	
 		epoch += 1
@@ -257,7 +265,6 @@ def evaluate_model(model, test_data):
 
 	model.eval()
 	correct = 0
-	mostly_correct = 0
 	safe_fail = 0
 	nasty_fail = 0
 	catastrophic_fail = 0
@@ -272,17 +279,11 @@ def evaluate_model(model, test_data):
 		# flawless
 		if decision == target_tensor:
 			correct += 1
-		# correct direction, but extent was wrong (e.g., target = BUY X, decision = BUY 2X)
-		elif (target_tensor == 0 or target_tensor == 1 or target_tensor == 2) and (decision == 0 or decision == 1 or decision == 2):
-			mostly_correct += 1
-		# correct direction, but extent was wrong (e.g., target = SELL X, decision = SELL 2X)
-		elif (target_tensor == 4 or target_tensor == 5 or target_tensor == 6) and (decision == 4 or decision == 5 or decision == 6):
-			mostly_correct += 1
 		# catastrophic failure (e.g., told to buy when should have sold)
-		elif (target_tensor > 3 and decision < 3) or (target_tensor < 3 and decision > 3):
+		elif (target_tensor > 1 and decision < 1) or (target_tensor < 1 and decision > 1):
 			catastrophic_fail += 1
 		# severe failure (e.g., should have hodled but was told to buy or sell
-		elif target_tensor == 3 and (decision < 3 or decision > 3):
+		elif target_tensor == 1 and (decision < 1 or decision > 1):
 			nasty_fail += 1
 		# decision was to hodl, but should have sold or bought
 		else:
@@ -290,8 +291,7 @@ def evaluate_model(model, test_data):
 
 	report = f"""
 	POSITIVE:
-		[++] Perfect accuracy: {correct/len(test_data):>10.4f}
-		[+] Model good enough accuracy: {(mostly_correct + correct)/len(test_data):>10.4f}
+		[+] Perfect accuracy: {correct/len(test_data):>10.4f}
 	NEGATIVE:
 		[-] Told to hodl but should have sold/bought rate: {safe_fail/len(test_data):>10.4f}
 		[--] Should have hodled but told to sell/buy rate: {nasty_fail/len(test_data):>10.4f}
@@ -300,7 +300,7 @@ def evaluate_model(model, test_data):
 	REPORTS.append(report)
 	print(report)
 
-	return [correct/len(test_data), (mostly_correct+correct)/len(test_data), nasty_fail/len(test_data), catastrophic_fail/len(test_data)]
+	return [correct/len(test_data), safe_fail/len(test_data), nasty_fail/len(test_data), catastrophic_fail/len(test_data)]
 
 
 
@@ -331,30 +331,30 @@ def generate_report():
 def parameter_tuner():
 	global COIN, BATCH_SIZE, EPOCHS
 
-	train_data, valid_data, test_data = get_datasets(COIN)
+	train_data, valid_data, test_data = get_datasets(COIN, 32)
 	model_counter = 0
 
-	#for eta in np.arange(0.004, 0.005, 0.0005):
 	for eta in np.arange(0.001, 0.0015, 0.0005):
 		for decay in np.arange(0.9999, 0.99999, 0.00001):	
-			for dropout in np.arange(0.8, 0.85, 0.05):
+			for dropout in np.arange(0.05, 0.85, 0.05):
 				print("Start of new Experiment\n__________________________")
 				print(f"Eta: {eta} | Decay: {decay} | Dropout: {dropout}")
 				report = "" 
 				
-				model_architecture = "Laptop_3"
+				model_architecture = "Laptop_0"
 				nn.set_model_parameters(dropout, eta, decay)
 				nn.set_model(model_architecture) 
 				nn.set_model_props(nn.get_model())
 				model = nn.get_model()
 
 				start_time = time.time()
-				train_data = shuffle_data(train_data)
 				prev_valid_losses = [] 
 				prev_train_losses = [] 
 
 				# Train
-				for epoch in range(1):
+				for epoch in range(5):
+					# setup
+					train_data = shuffle_data(train_data)
 					steps = 0
 					total_train_loss = 0.0
 					total_valid_loss = 0.0
@@ -378,7 +378,7 @@ def parameter_tuner():
 				
 				mod_acc = evaluate_model(model, test_data)
 				
-				report += f"MODEL: {model_counter}\nLast Training Loss: {prev_train_losses[-1]} | Last Valid Loss: {prev_valid_losses[-1]}\nPARAMETERS:\n\t{model_architecture}\n\teta: {nn.LEARNING_RATE} | decay: {nn.LEARNING_RATE_DECAY} | dropout: {nn.DROPOUT}\nDECISIONS:\n\tPerfect Decision: {mod_acc[0]}\n\tAcceptable Decision: {mod_acc[1]}\n\tSignal Should Have Been Hodl: {mod_acc[2]}\n\tSignal and Answer Exact Opposite: {mod_acc[3]}"
+				report += f"MODEL: {model_counter}\nLast Training Loss: {prev_train_losses[-1]} | Last Valid Loss: {prev_valid_losses[-1]}\nPARAMETERS:\n\t{model_architecture}\n\teta: {nn.LEARNING_RATE} | decay: {nn.LEARNING_RATE_DECAY} | dropout: {nn.DROPOUT}\nDECISIONS:\n\tPerfect Decision: {mod_acc[0]}\n\tTold to Hodl, though Should Have Bought/Sold: {mod_acc[1]}\n\tSignal Should Have Been Hodl: {mod_acc[2]}\n\tSignal and Answer Exact Opposite: {mod_acc[3]}"
 				
 				if len(report) > 0:
 					with open(f"reports/Parameter_Tuning_Report.txt", "a") as f:
@@ -401,17 +401,20 @@ def continue_training():
 	# 
 	# ------------ DATA GENERATION ----------
 	#
-	train_data, valid_data, test_data = get_datasets(COIN, data_aug_factor = 10)
+	start_time = time.time()
+	print("Creating datasets...")
+	train_data, valid_data, test_data = get_datasets(COIN, data_aug_factor = 512)
+	print(f"Datasets created in {(time.time()-start_time)/60:.1f} mins")
 
 	#
 	# ------------ MODEL TRAINING -----------
 	#
-	model_architecture = "Laptop_3"
-	model_number = 3
+	model_architecture = "Laptop_0"
+	model_number = 86
 	model_filepath = f"models/CS_{model_architecture}_{model_number}_param_tuning.pt"
 	
-	nn.set_model_parameters(dropout = 0.5, eta = 0.005, eta_decay = 0.9999)
-	nn.set_pretrained_model(load_model(nn.CryptoSoothsayer_Laptop_3(nn.N_FEATURES, nn.N_SIGNALS_GRANULAR), model_filepath))
+	nn.set_model_parameters(dropout = 0.35, eta = 0.001, eta_decay = 0.99995)
+	nn.set_pretrained_model(load_model(nn.CryptoSoothsayer_Laptop_0(nn.N_FEATURES, nn.N_SIGNALS), model_filepath))
 	nn.set_model_props(nn.get_model())
 	model = nn.get_model()
 
@@ -421,7 +424,7 @@ def continue_training():
 	start_time = time.time()
 	
 	train(model, train_data, valid_data, start_time)
-	save_model(model, f"models/CS_{model_architecture}_{model_number}_mod_20.pt")
+	save_model(model, f"models/CS_{model_architecture}_{model_number}_trained.pt")
 
 	#
 	# ------------ MODEL TESTING -----------
