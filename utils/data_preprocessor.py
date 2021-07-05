@@ -165,24 +165,16 @@ def calculate_SMAs(data):
 
 def get_signal_value(percent_delta):
 	'''
-	Returns signal to BUY, SELL, or HODL [0-6 scale] based on percent_delta over given period (as determined by the calling method).
+	Returns signal to BUY, SELL, or HODL [0-3 scale] based on percent_delta over given period (as determined by the calling method).
 	'''
-	signal = 3 # HODL by default
+	signal = 1 # HODL by default
 
 	# SELL - lower is stronger
-	if percent_delta < -0.3:
-		signal = 6
-	elif percent_delta < -0.15:
-		signal = 5
-	elif percent_delta < -0.1:
-		signal = 4
+	if percent_delta < -0.1:
+		signal = 2 
 	# BUY - higher is stronger
-	elif percent_delta > 0.3:
-		signal = 0
-	elif percent_delta > 0.15:
-		signal = 1
 	elif percent_delta > 0.1:
-		signal = 2
+		signal = 0
 
 	return signal
 
@@ -199,7 +191,7 @@ def get_weighting_constant(n=28):
 
 def calculate_signals(data, limit=28):
 	'''
-	Calculates the signal on a scale from 0-6 (BUY 3x -> SELL 3Y) based on weighted average of the price future (days_out) price movement deltas.
+	Calculates the signal on a scale from 0-3 (BUY, HODL, & SELL) based on weighted average of the price future (days_out) price movement deltas.
 	If percentage increase exceeds given threshold, then SELL; if decrease then BUY.
 	If percentage increase/decrease does not exceed minimum thresholds, then HODL.
 	NOTE: Weights days in the more distant future more heavily.
