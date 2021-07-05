@@ -2,6 +2,7 @@
 RUN WITH: $ python3 -m unittest tests.unit_tests
 '''
 import utils
+from utils import data_aggregator as da
 from utils import data_preprocessor as dpp
 from utils import data_processor as dp
 from utils import neural_nets as nn
@@ -10,10 +11,81 @@ import os
 import copy
 import pandas as pd
 import numpy as np
+from datetime import date, datetime
 
 #
 # ---------- DATA AGGREGATOR TESTS ----------
 #
+def test_get_correct_date_format():
+	wonky_date_str = "2021-06-14" 
+	wonky_date = datetime.strptime(wonky_date_str, '%Y-%m-%d')
+	correct_date = da.get_correct_date_format(wonky_date)
+
+	assert str(correct_date) == "14-06-2021", "Failed get_correct_date_format test."
+
+
+
+def test_get_generic_score():
+	'''
+	get_community_score() and get_public_interest_score() methods both use get_generic_score() method
+	'''
+	data = {"fb": 1000, "twitter": 500, "reddit": 250}
+	community_score = da.get_community_score(data)
+
+	assert community_score == 1750, "Failed default get_community_score test."
+
+	data = {"fb": "1000", "twitter": "500", "reddit": "250"}
+	community_score = da.get_community_score(data)
+
+	assert community_score == 1750, "Failed str -> float casting test in get_community_score test."
+
+	data = {"fb": "apple", "twitter": "500", "reddit": "250"}
+	try:
+		community_score = da.get_community_score(data)
+		assert False, "Failed exception throwing test in get_community_score test."
+	except:
+		pass
+
+
+
+def test_get_dev_score():
+	'''
+	No longer in use, but may become relevant if more coins provide data for this metric.
+	'''
+	pass
+
+
+
+def test_extract_basic_data():
+	# valid data
+	date = "18-01-2021"
+	data = {
+		"market_data": { "current_price": { "twd": 1 }, "market_cap": { "twd": 2 }, "total_volume": { "twd": 3 } },
+		"community_data": { "fb": 4, "reddit": 5 },
+		"dev_stats": { },
+		"public_interest_stats": { "alexa": 6, "bing": 7 }
+	}
+	data_dict = da.extract_basic_data(data, date)
+
+	assert data_dict["date"] == date, "Failed extract date in extract_basic_data test."
+	assert data_dict["price"] == 1, "Failed extract price in extract_basic_data test."
+	assert data_dict["market_cap"] == 2, "Failed extract market cap in extract_basic_data test."
+	assert data_dict["volume"] == 3, "Failed extract volume in extract_basic_data test."
+	assert data_dict["community_score"] == 4+5, "Failed extract community score in extract_basic_data test."
+	assert data_dict["public_interest_score"] == 6+7, "Failed extract public interest score in extract_basic_data test."
+
+	# bad data
+	data = { "this...": "...contains none of the information needed to be extracted and should all result in zero values." }
+	data_dict = da.extract_basic_data(data, date)
+
+	assert data_dict["date"] == date, "Failed extract date in bad data extract_basic_data test."
+	assert data_dict["price"] == 0, "Failed extract price in bad data extract_basic_data test."
+	assert data_dict["market_cap"] == 0, "Failed extract market cap in bad data extract_basic_data test."
+	assert data_dict["volume"] == 0, "Failed extract volume in bad data extract_basic_data test."
+	assert data_dict["community_score"] == 0, "Failed extract community score in bad data extract_basic_data test."
+	assert data_dict["public_interest_score"] == 0, "Failed extract public interest score in bad data extract_basic_data test."
+
+
 
 #
 # ---------- DATA PREPROCESSOR TESTS ----------
@@ -247,6 +319,58 @@ def test_calculate_fear_greed_SMAs():
 	assert total(469,498)/30 == data.iloc[30,9], "The 30-day fear/greed SMA test failed."
 
 
+
+def test_get_weighting_constant():
+	w_const = dpp.get_weighting_constant(4)
+
+	assert 0.099 < w_const < 0.11, f"WRONG VALUE: 0.099 < {w_const} < 0.11 | Failed get_weighting_constant test."
+
+	w_const = dpp.get_weighting_constant(7)
+
+	assert 0.0356 < w_const < 0.0358, f"WRONG VALUE: 0.0356 < {w_const} 0.0358 | Failed get_weighting_constant test."
+
+
+
+def test_calculate_signals():
+	'''
+	Based on the specific model where signals change at different threshholds (see get_signal() in data_preprocessor.py). Change assertions if model changes.
+	'''
+	# ascending
+	data = []
+	for i in range(1, 100):
+		data.append([i])
+	
+	data = pd.DataFrame(data, columns=["price"])
+	data = dpp.calculate_signals(data, 7)
+
+	# 7 -> 14 : ((14-7) / 7) * weight_const * 7 = 0.25 
+	# 7 -> 13 : ((13-7) / 7) * weight_const * 6 = 0.184
+	# 7 -> 12 : I(12-7) / 7) * weight_const * 5 = 0.128
+	# 7 -> 11 : ((11-7) / 7) * weight_const * 4 = 0.082
+	# 7 -> 10 : ((10-7) / 7) * weight_const * 3 = 0.046
+	# 7 -> 9 : ((9-7) / 7) * weight_const * 2 = 0.020
+	# 7 -> 8 : ((8-7) / 7) * weight_const * 1 = 0.005
+	# avg = 0.714
+	assert data["signal"][6] == 0, f"WRONG VALUE: {data['signal'][6]:.4f} != 0 | Failed BUY 3X signal in test_calculate_signals test."  
+	assert data["signal"][9] == 1, f"WRONG VALUE: {data['signal'][9]:.4f} != 1 | Failed BUY 2X signal in test_calculate_signals test."  
+	assert data["signal"][16] == 2, f"WRONG VALUE: {data['signal'][16]:.4f} != 2 | Failed BUY X signal in test_calculate_signals test."  
+	assert data["signal"][33] == 3, f"WRONG VALUE: {data['signal'][33]:.4f} != 3 | Failed positive HODL signal in test_calculate_signals test."  
+	
+	# descending
+	data = []
+	for i in range(1, 100):
+		data.append([1/i])
+	
+	data = pd.DataFrame(data, columns=["price"])
+	data = dpp.calculate_signals(data, 7)
+
+	assert data["signal"][3] == 6, f"WRONG VALUE: {data['signal'][3]:.4f} != 6 | Failed SELL 3Y signal in test_calculate_signals test."  
+	assert data["signal"][4] == 5, f"WRONG VALUE: {data['signal'][4]:.4f} != 5 | Failed SELL 2Y signal in test_calculate_signals test."  
+	assert data["signal"][11] == 4, f"WRONG VALUE: {data['signal'][11]:.4f} != 4 | Failed SELL Y signal in test_calculate_signals test."  
+	assert data["signal"][27] == 3, f"WRONG VALUE: {data['signal'][27]:.4f} != 3 | Failed HODL signal in test_calculate_signals test."  
+
+
+
 #
 # ---------- DATA PROCESSOR TESTS ----------
 #
@@ -340,7 +464,6 @@ def test_get_datasets():
 	assert test_data[int(len(data)*0.15)-1][0][0] == 99, "Failed test_data value test in get_datasets test."
 
 	# test with 0 augmentation
-	data = create_fake_csv()
 	train_data, valid_data, test_data = dp.get_datasets(coin)
 
 	assert len(train_data) == len(data)*0.7, "Failed train_data size test in get_datasets test."
@@ -355,7 +478,29 @@ def test_get_datasets():
 
 
 def test_shuffle_data():
-	assert False
+	data = [[0],
+			[1],
+			[2],
+			[3],
+			[4],
+			[5],
+			[6],
+			[7],
+			[8],
+			[9]]
+	
+	data = dp.shuffle_data(data)
+
+	assert (data[0] == [0] and data[1] == [1] and data[2] == [2] and data[3] == [3] and data[4] == [4] and data[5] == [5] and data[6] == [6] and data[7] == [7] and data[8] == [8] and data[9] == [9]) == False, "Failed random shuffling of data in shuffle_data test."
+
+
+
+def test_terminate_early():
+	prev_valid_losses = [ 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0 ]
+	assert dp.terminate_early(prev_valid_losses) == True, "Failed should terminate early in terminate_early test."
+
+	prev_valid_losses.reverse()
+	assert dp.terminate_early(prev_valid_losses) == False, "Failed should not terminate early in terminate_early test."
 
 
 
@@ -364,29 +509,41 @@ def test_shuffle_data():
 #
 
 def run_data_aggregator_tests():
-	pass
+	test_get_correct_date_format()
+	print("test_get_correct_date_format() tests all passed.")
+	test_get_generic_score()
+	print("test_get_generic_score() tests all passed.")
+	test_extract_basic_data()
+	print("test_extract_basic_data() tests all passed.")
 
 
 
 def run_data_preprocessor_tests():
 	test_handle_missing_data()
-	print("test_handle_missing_data() tests all passed")
+	print("test_handle_missing_data() tests all passed.")
 	test_normalize_data()
-	print("test_normalize_data() tests all passed")
+	print("test_normalize_data() tests all passed.")
 	test_calculate_price_SMAs()
-	print("test_calculate_price_SMAs() tests all passed")
+	print("test_calculate_price_SMAs() tests all passed.")
 	test_calculate_fear_greed_SMAs()
-	print("test_calculate_fear_greed_SMAs() tests all passed")
+	print("test_calculate_fear_greed_SMAs() tests all passed.")
+	test_get_weighting_constant()
+	print("test_get_weighting_constant() tests all passed.")
+	test_calculate_signals()
+	print("test_calculate_signals() tests all passed.")
+
 
 
 
 def run_data_processor_tests():
 	test_generate_dataset()
-	print("test_generate_dataset() tests all passed")
+	print("test_generate_dataset() tests all passed.")
 	test_get_datasets()
-	print("test_get_datasets() tests all passed")
+	print("test_get_datasets() tests all passed.")
 	test_shuffle_data()
-	print("test_shuffle_data() tests all passed")
+	print("test_shuffle_data() tests all passed.")
+	test_terminate_early()
+	print("test_terminate_early() tests all passed.")
 
 
 

@@ -67,7 +67,7 @@ def get_fg_indicator(fg_index):
 
 
 
-def populate_stat_report(coin, data, report):
+def populate_stat_report_full(coin, data, report):
 	basic_stats = ["\n\n\n________________________________________", 
 					f"Report for {coin.upper()}:", 
 					"Basic Stats", 
@@ -153,54 +153,111 @@ def populate_stat_report(coin, data, report):
 
 
 
+def populate_stat_report_essentials(coin, data, report):
+	basic_stats = ["\n\n\n________________________________________", 
+					f"Report for {coin.upper()}:", 
+					"Basic Stats", 
+					"[1.0 is the highest; 0.0 is the lowest]", 
+					f"price:\t\t{data[PRICE]:.6f}", 
+					f"market_cap:\t{data[MARKET_CAP]:.6f}", 
+					f"volume:\t\t{data[VOLUME]:.6f}", 
+					f"fear/greed\t{data[FEAR_GREED]:.6f} [{get_fg_indicator(data[FEAR_GREED])}]"]
+	
+	price_ratios = ["\nPrice Ratios", 
+					"[>0 means greater risk/overvalued; <0 means less risk/undervalued]"] 
+
+	if data[PRICE_200_SMA] > 0:
+		price_ratios.append(f"\t50-day/200-day:\t\t{data[PRICE_50_SMA]/data[PRICE_200_SMA]:>9.6f}")
+	if data[PRICE_250_SMA] > 0:
+		price_ratios.append(f"\t50-day/250-day:\t\t{data[PRICE_50_SMA]/data[PRICE_250_SMA]:>9.6f}")
+	if data[PRICE_300_SMA] > 0:
+		price_ratios.append(f"\t50-day/300-day:\t\t{data[PRICE_50_SMA]/data[PRICE_300_SMA]:>9.6f}")
+	if data[PRICE_350_SMA] > 0:
+		price_ratios.append(f"\t50-day/350-day:\t\t{data[PRICE_50_SMA]/data[PRICE_350_SMA]:>9.6f}")
+	else:
+		price_ratios.append("WARNING: DATA MISSING FROM SMAs; MODEL MAY BE UNRELIABLE")
+
+	price_deltas = ["\nPrice Deltas", 
+					"[<0 shows a decrease; >0 shows an increase]", 
+					f"25-day -> Present:\t\t{data[PRICE]-data[PRICE_25_SMA]:>9.6f}", 
+					f"50-day -> Present:\t\t{data[PRICE]-data[PRICE_50_SMA]:>9.6f}", 
+					f"100-day -> Present:\t\t{data[PRICE]-data[PRICE_100_SMA]:>9.6f}"]
+	
+	fear_greed_deltas = ["\nFear/Greed Deltas", 
+						"[>0 is greedier; <0 is more fearful]", 
+						f"7-day -> Present:\t{data[FEAR_GREED]-data[FG_7_SMA]:>9.6f}", 
+						f"15-day -> Present:\t{data[FEAR_GREED]-data[FG_15_SMA]:>9.6f}", 
+						f"30-day -> Present:\t{data[FEAR_GREED]-data[FG_30_SMA]:>9.6f}"]
+
+	for item in basic_stats:
+		report.append(item)
+	for item in price_ratios:
+		report.append(item)
+	for item in price_deltas:
+		report.append(item)
+	for item in fear_greed_deltas:
+		report.append(item)
+
+
+def load_model(neural_net, filepath):
+	model = neural_net
+	model.load_state_dict(torch.load(filepath))
+
+
+	return model
+
+
+
 def get_models(best):
-	models = {}
+	models = []
+	nn.set_model_parameters()
 	for i in range(len(best)):
 		if "Laptop_0" in best[i]:
-			models[best[i]] = nn.CryptoSoothsayer_Laptop_0(nn.N_FEATURES, nn.N_SIGNALS)
+			models.append(load_model(nn.CryptoSoothsayer_Laptop_0(nn.N_FEATURES, nn.N_SIGNALS_GRANULAR), best[i]))
 		elif "Laptop_1" in best[i]:
-			models[best[i]] = nn.CryptoSoothsayer_Laptop_1(nn.N_FEATURES, nn.N_SIGNALS)
+			models.append(load_model(nn.CryptoSoothsayer_Laptop_1(nn.N_FEATURES, nn.N_SIGNALS_GRANULAR), best[i]))
 		elif "Laptop_2" in best[i]:
-			models[best[i]] = nn.CryptoSoothsayer_Laptop_2(nn.N_FEATURES, nn.N_SIGNALS)
+			models.append(load_model(nn.CryptoSoothsayer_Laptop_2(nn.N_FEATURES, nn.N_SIGNALS_GRANULAR), best[i]))
 		elif "Pi_0" in best[i]:
-			models[best[i]] = nn.CryptoSoothsayer_Pi_0(nn.N_FEATURES, nn.N_SIGNALS)
+			models.append(load_model(nn.CryptoSoothsayer_Pi_0(nn.N_FEATURES, nn.N_SIGNALS_GRANULAR), best[i]))
 		elif "Pi_1" in best[i]:
-			models[best[i]] = nn.CryptoSoothsayer_Pi_1(nn.N_FEATURES, nn.N_SIGNALS)
+			models.append(load_model(nn.CryptoSoothsayer_Pi_1(nn.N_FEATURES, nn.N_SIGNALS_GRANULAR), best[i]))
 		elif "PC_0" in best[i]:
-			models[best[i]] = nn.CryptoSoothsayer_PC_0(nn.N_FEATURES, nn.N_SIGNALS)
+			models.append(load_model(nn.CryptoSoothsayer_PC_0(nn.N_FEATURES, nn.N_SIGNALS_GRANULAR), best[i]))
 		elif "PC_1" in best[i]:
-			models[best[i]] = nn.CryptoSoothsayer_PC_1(nn.N_FEATURES, nn.N_SIGNALS)
+			models.append(load_model(nn.CryptoSoothsayer_PC_1(nn.N_FEATURES, nn.N_SIGNALS_GRANULAR), best[i]))
+
 
 	return models
 
 
 
-def generate_signals():
+def generate_signals(full_report=False):
 	report = []
 
 	with open("reports/best_performers.txt") as f:
-		best = f.read().splitlines() 
+		best_models = f.read().splitlines() 
 
 	for coin in dt_agg.coin_id:
 		data = pd.read_csv(f"datasets/clean/{coin}_historical_data_clean.csv")
 		# extracts the most recent data as a python list
-		data = data[data["date"] == str(date.today()-timedelta(0))].values.tolist()[0][1:]
+		data = data[data["date"] == str(date.today()-timedelta(0))].values.tolist()[0][1:-1]
 		# stat report
-		populate_stat_report(coin, data, report)	
+		if full_report:
+			populate_stat_report_full(coin, data, report)
+		else:
+			populate_stat_report_essentials(coin, data, report)	
 
-		n_votes = [0, 0, 0, 0, 0] # buy 2x, buy x, hodl, sell y, sell 2y
-		n_weights = [0, 0, 0, 0, 0]
-		best_model_signal = 6 # set out of bounds to begin with 
+		n_votes = [0, 0, 0, 0, 0, 0, 0] # buy 3x, buy 2x, buy x, hodl, sell y, sell 2y, sell 3y
+		n_weights = [0, 0, 0, 0, 0, 0, 0]
+		best_model_signal = 7 # set out of bounds to begin with 
 
 		# get the best performing models
-		models = get_models(best)
+		models = get_models(best_models)
 
-		for filepath in models.keys():
-			# load model
-			model = models[filepath]
-			model.load_state_dict(torch.load(filepath))
-			model.to(torch.device("cpu"))
+		for i in range(len(models)):
 			# set to prediction mode
+			model = models[i]
 			model.eval()
 			# make the data pytorch compatible
 			feature_tensor = torch.tensor([data], dtype=torch.float32)
@@ -208,7 +265,7 @@ def generate_signals():
 			with torch.no_grad():
 				output = model(feature_tensor)
 
-			if filepath == best[0]:
+			if i == 0:
 				best_model_signal = int(torch.argmax(output, dim=1))
 			
 			for i in range(len(n_votes)):
@@ -221,18 +278,27 @@ def generate_signals():
 		signal_v = DECISIONS[torch.argmax(n_votes)]
 		signal_w = DECISIONS[torch.argmax(n_weights)]
 		signal_b = DECISIONS[best_model_signal]
-		second_best_w = n_weights[torch.argmin(n_weights)]
+
+		best_w = n_weights[torch.argmax(n_weights)]
+		second_best_w = n_weights[torch.argmin(n_weights)] # placeholder
+		worst_w = n_weights[torch.argmin(n_weights)]
+		buy_signal = (n_weights[0] + n_weights[1] + n_weights[2])/len(best_models)
+		sell_signal = (n_weights[4] + n_weights[5] + n_weights[6])/len(best_models)
 		for weight in n_weights:
-			if weight > second_best_w and weight < n_weights[torch.argmax(n_weights)]:
+			if weight > second_best_w and weight < best_w:
 				second_best_w = weight
+		formatted_w_list = [round((x/len(best_models)), 4) for x in n_weights.tolist()]	
 
 		report.append("\nAction Signals")
 		report.append(f"Signal by best nn:\t{signal_b}")
 		report.append(f"Signal by votes:\t{signal_v}")
 		report.append(f"Signal by weights:\t{signal_w}")
-		report.append(f"\tWeights:\t{list(n_weights)}")
-		report.append(f"\tDiff 1st and 2nd:\t{(n_weights[torch.argmax(n_weights)] - second_best_w) / len(best):>9.4f}")
-		report.append(f"\tDiff 1st and last:\t{(n_weights[torch.argmax(n_weights)] - n_weights[torch.argmin(n_weights)]) / len(best):>9.4f}")
+		report.append("\t[Greater disparities mean a more confident signal]")
+		report.append(f"\tWeights:\t{formatted_w_list}")
+		report.append(f"\tDiff 1st and 2nd:\t{(best_w - second_best_w)/len(best_models):>9.4f}")
+		report.append(f"\tDiff 1st and last:\t{(best_w - worst_w)/len(best_models):>9.4f}")
+		report.append(f"\tAbsolute diff Buy and Sell:\t{abs(buy_signal - sell_signal):>9.4f}")
+		report.append(f"\tBuy vs. Sell:\t\t{buy_signal:>9.4f} vs. {sell_signal:.4f}")
 
 
 	return report
@@ -255,5 +321,9 @@ if (fetch_data.lower())[0] == 'y':
 	fetch_new_data(days_back)
 	process_new_data()
 
-report = generate_signals()
+full_report = input("Full report? [y/n; y gives all the gory details] ")
+if (full_report.lower())[0] == 'y':
+	report = generate_signals(True)
+else:
+	report = generate_signals()
 generate_report(report)

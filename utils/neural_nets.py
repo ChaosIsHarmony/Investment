@@ -6,6 +6,7 @@ import torch.optim.lr_scheduler as lr_scheduler
 
 # Fixed parameters
 N_SIGNALS = 5
+N_SIGNALS_GRANULAR = 7
 N_FEATURES = 25
 # Tunable Hyperparameters
 DROPOUT = None
@@ -150,6 +151,46 @@ class CryptoSoothsayer_PC_1(nn.Module):
 
 
 
+class CryptoSoothsayer_PC_3(nn.Module):
+	def __init__(self, input_size, n_signals):
+		super(CryptoSoothsayer_PC_3, self).__init__()
+		self.layer_1 = nn.Linear(input_size, 78125)
+		self.layer_2 = nn.Linear(78125, 3125)
+		self.layer_3 = nn.Linear(3125, 125)
+		self.layer_output = nn.Linear(125, n_signals)
+		self.dropout = nn.Dropout(DROPOUT)
+
+
+	def forward(self, inputs):
+		out = self.dropout(F.relu(self.layer_1(inputs)))
+		out = self.dropout(F.relu(self.layer_2(out)))
+		out = self.dropout(F.relu(self.layer_3(out)))
+		out = self.layer_output(out)
+		return out
+
+
+	def get_class_name(self):
+		return "CryptoSoothsayer_PC_3"
+
+
+
+class CryptoSoothsayer_PC_4(nn.Module):
+	def __init__(self, input_size, n_signals):
+		super(CryptoSoothsayer_PC_4, self).__init__()
+		self.layer_1 = nn.Linear(input_size,13 )
+		self.layer_output = nn.Linear(13, n_signals)
+		self.dropout = nn.Dropout(DROPOUT)
+
+
+	def forward(self, inputs):
+		out = self.dropout(F.relu(self.layer_1(inputs)))
+		out = self.layer_output(out)
+		return out
+
+
+	def get_class_name(self):
+		return "CryptoSoothsayer_PC_4"
+
 
 #
 # ---------- MODELS TRAINED ON LAPTOP ----------
@@ -226,6 +267,7 @@ class CryptoSoothsayer_Laptop_1(nn.Module):
 		out = self.dropout(F.relu(self.layer_10(out)))
 		out = self.dropout(F.relu(self.layer_11(out)))
 		out = self.dropout(F.relu(self.layer_12(out)))
+		out = self.dropout(F.relu(self.layer_13(out)))
 		out = self.layer_output(out)
 		return out
 
@@ -306,8 +348,6 @@ class CryptoSoothsayer_Laptop_4(nn.Module):
 
 
 
-
-
 #
 # -------------- GETTERS & SETTERS ---------------
 #
@@ -328,23 +368,29 @@ def set_model(model_architecture):
 	global MODEL
 
 	if "Laptop_0" in model_architecture:
-		MODEL = CryptoSoothsayer_Laptop_0(N_FEATURES, N_SIGNALS)
+		MODEL = CryptoSoothsayer_Laptop_0(N_FEATURES, N_SIGNALS_GRANULAR)
 	elif "Laptop_1" in model_architecture:
-		MODEL = CryptoSoothsayer_Laptop_1(N_FEATURES, N_SIGNALS)
+		MODEL = CryptoSoothsayer_Laptop_1(N_FEATURES, N_SIGNALS_GRANULAR)
 	elif "Laptop_2" in model_architecture:
-		MODEL = CryptoSoothsayer_Laptop_2(N_FEATURES, N_SIGNALS)
+		MODEL = CryptoSoothsayer_Laptop_2(N_FEATURES, N_SIGNALS_GRANULAR)
+	elif "Laptop_3" in model_architecture:
+		MODEL = CryptoSoothsayer_Laptop_3(N_FEATURES, N_SIGNALS_GRANULAR)
 	elif "Pi_0" in model_architecture:
-		MODEL = CryptoSoothsayer_Pi_0(N_FEATURES, N_SIGNALS)
+		MODEL = CryptoSoothsayer_Pi_0(N_FEATURES, N_SIGNALS_GRANULAR)
 	elif "Pi_1" in model_architecture:
-		MODEL = CryptoSoothsayer_Pi_1(N_FEATURES, N_SIGNALS)
+		MODEL = CryptoSoothsayer_Pi_1(N_FEATURES, N_SIGNALS_GRANULAR)
 	elif "PC_0" in model_architecture:
-		MODEL = CryptoSoothsayer_PC_0(N_FEATURES, N_SIGNALS)
+		MODEL = CryptoSoothsayer_PC_0(N_FEATURES, N_SIGNALS_GRANULAR)
 	elif "PC_1" in model_architecture:
-		MODEL = CryptoSoothsayer_PC_1(N_FEATURES, N_SIGNALS)
+		MODEL = CryptoSoothsayer_PC_1(N_FEATURES, N_SIGNALS_GRANULAR)
+	elif "PC_3" in model_architecture:
+		MODEL = CryptoSoothsayer_PC_3(N_FEATURES, N_SIGNALS_GRANULAR)
+	elif "PC_4" in model_architecture:
+		MODEL = CryptoSoothsayer_PC_4(N_FEATURES, N_SIGNALS_GRANULAR)
 
 
 
-def set_model_parameters(dropout, eta, eta_decay):
+def set_model_parameters(dropout=0, eta=0, eta_decay=0):
 	global DROPOUT, LEARNING_RATE, LEARNING_RATE_DECAY
 
 	DROPOUT = dropout
