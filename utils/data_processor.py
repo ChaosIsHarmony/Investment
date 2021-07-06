@@ -3,7 +3,7 @@ This file is used to train the neural nets. It is comprised of several trainers:
 
 	- The Parameter Tuner
 		- Used to find promising parameters to more fully train networks on
-	- The Transfer Leaner
+	- The Transfer Learner
 		- Used to continue the learning either in parameter tuned models or when training for other cryptoassets (change COIN variable to reflect dataset)
 '''
 import os
@@ -174,10 +174,11 @@ def take_one_step(model, feature, target):
 
 
 
-def validate_model(model, valid_data):
+def validate_model(model, valid_data, lowest_valid_loss, filepath):
 	'''
 	Validates the model on the validation dataset.
-	Returns the average validation loss.
+	Saves model if validation loss is lower than the current lowest.
+	Returns the average validation loss and lowest validation loss.
 	'''
 	# set to evaluate mode to turn off components like dropout
 	model.eval()
@@ -191,8 +192,11 @@ def validate_model(model, valid_data):
 			loss = nn.get_criterion()(model_output, target_tensor)
 			valid_loss += loss.item()
 
-	
-	return valid_loss/len(valid_data)
+	if valid_loss/len(valid_data) < lowest_valid_loss:
+		lowest_valid_loss = valid_loss/len(valid_data)
+		save_model(model, filepath)
+
+	return valid_loss/len(valid_data), lowest_valid_loss
 
 
 
@@ -226,10 +230,11 @@ def print_batch_status(avg_train_loss, avg_valid_loss, start_time):
 
 
 
-def train(model, train_data, valid_data, start_time):
+def fully_train(model, train_data, valid_data, start_time, filepath):
 	global REPORTS, EPOCHS, BATCH_SIZE
 
 	epoch = 0
+	lowest_valid_loss = np.inf
 
 	while epoch < EPOCHS:
 		# setup
@@ -245,9 +250,11 @@ def train(model, train_data, valid_data, start_time):
 			total_train_loss += take_one_step(model, feature, target)
 			# if end of batch or end of dataset, validate model
 			if steps % BATCH_SIZE == 0 or steps == len(train_data)-1:
-				avg_train_loss = total_train_loss / steps
-				total_valid_loss += validate_model(model, valid_data)
+				valid_loss, lowest_valid_loss = validate_model(model, valid_data, lowest_valid_loss, filepath)
+
+				total_valid_loss += valid_loss
 				avg_valid_loss = total_valid_loss / (steps / BATCH_SIZE)
+				avg_train_loss = total_train_loss / steps
 				print_batch_status(avg_train_loss, avg_valid_loss, start_time)
 				prev_valid_losses.append(avg_valid_loss)
 				if terminate_early(prev_valid_losses):
@@ -319,9 +326,8 @@ def join_all_reports():
 
 
 def generate_report():
-	report = open(f"reports/{nn.get_model().get_class_name()}_report.txt", "w")
-	report.write(join_all_reports())
-	report.close()
+	with open(f"reports/{nn.get_model().get_class_name()}_report.txt", "w") as report:
+		report.write(join_all_reports())
 
 
 
@@ -331,24 +337,26 @@ def generate_report():
 
 def parameter_tuner():
 	global COIN, BATCH_SIZE, EPOCHS
-
-	train_data, valid_data, test_data = get_datasets(COIN, 32)
+	data_aug_factor = 32
+	print("Creating datasets...")
+	train_data, valid_data, test_data = get_datasets(COIN, data_aug_factor)
 	model_counter = 0
 
-	for eta in np.arange(0.001, 0.01, 0.0005):
+	for eta in np.arange(0.00025, 0.0105, 0.00025):
 		for decay in np.arange(0.9999, 0.99999, 0.00001):	
 			for dropout in np.arange(0.05, 0.85, 0.05):
 				print("Start of new Experiment\n__________________________")
 				print(f"Eta: {eta} | Decay: {decay} | Dropout: {dropout}")
 				report = "" 
 				
-				model_architecture = "Laptop_1"
+				model_architecture = "Laptop_0"
 				nn.set_model_parameters(dropout, eta, decay)
 				nn.set_model(model_architecture) 
 				nn.set_model_props(nn.get_model())
 				model = nn.get_model()
 
 				start_time = time.time()
+				lowest_valid_loss = np.inf
 				prev_valid_losses = [] 
 				prev_train_losses = [] 
 
@@ -366,16 +374,20 @@ def parameter_tuner():
 						total_train_loss += take_one_step(model, feature, target)
 						# if end of batch or end of dataset, validate model
 						if steps % BATCH_SIZE == 0 or steps == len(train_data)-1:
-							avg_train_loss = total_train_loss / steps
-							total_valid_loss += validate_model(model, valid_data)
+							valid_loss, lowest_valid_loss = validate_model(model, valid_data, lowest_valid_loss, f"models/{COIN}_{model_architecture}_{model_counter}_param_tuning.pt")
+							total_valid_loss += valid_loss
+
 							avg_valid_loss = total_valid_loss / (steps / BATCH_SIZE)
+							avg_train_loss = total_train_loss / steps
+							
 							print_batch_status(avg_train_loss, avg_valid_loss, start_time)
+							
 							prev_train_losses.append(avg_train_loss)
 							prev_valid_losses.append(avg_valid_loss)
+							
 							if terminate_early(prev_valid_losses):
 								break
 
-				save_model(model, f"models/CS_{model_architecture}_{model_counter}_param_tuning.pt")
 				
 				mod_acc = evaluate_model(model, test_data)
 				
@@ -416,7 +428,7 @@ def continue_training():
 	for model_params in promising_models:
 		model_architecture = model_params["architecture"]
 		model_number = model_params["model_num"]
-		model_filepath = f"models/CS_{model_architecture}_{model_number}_param_tuning.pt"
+		model_filepath = f"models/{COIN}_{model_architecture}_{model_number}_param_tuning.pt"
 	
 		nn.set_model_parameters(dropout = model_params["dropout"], eta = model_params["eta"], eta_decay = model_params["decay"])
 		nn.set_model(model_architecture)
@@ -429,11 +441,13 @@ def continue_training():
 
 		start_time = time.time()
 	
-		train(model, train_data, valid_data, start_time)
+		fully_train(model, train_data, valid_data, start_time, f"models/{COIN}_{model_architecture}_{model_number}_lowest_val_loss.pt")
 
 		#
 		# ------------ MODEL TESTING -----------
 		#
+		# load model with lowest validation loss
+		model = load_model(model, f"models/{COIN}_{model_architecture}_{model_number}_lowest_val_loss.pt")
 		report = "EVALUATE TRAINED MODEL"
 		REPORTS.append(report)
 		print(report)
@@ -441,7 +455,7 @@ def continue_training():
 
 		# if accuracy is higher than 0.4 and inaccuracy is lower than 0.15
 		if model_acc[0] > 0.4 and model_acc[3] < 0.15:
-			save_model(model, f"models/CS_{model_architecture}_{model_number}_{int(round(model_acc[0], 2) * 100)}-{int(round(model_acc[3], 2))}_{data_aug_factor}xaug.pt")
+			save_model(model, f"models/{COIN}_{model_architecture}_{model_number}_{int(round(model_acc[0], 2) * 100)}-{int(round(model_acc[3], 2))}_{data_aug_factor}xaug.pt")
 
 			#
 			# ---------- GENERATE REPORT -----------
