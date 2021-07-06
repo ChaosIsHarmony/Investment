@@ -13,6 +13,7 @@ from datetime import datetime
 import time
 import random
 import numpy as np
+import param_trainer_parser
 import neural_nets as nn
 '''
 WHEN testing need this version instead
@@ -207,7 +208,7 @@ def terminate_early(prev_valid_losses):
 			valid_loss_trend += prev_valid_losses[ind] - prev_valid_losses[ind-1]
 			ind -= 1
 		
-		if valid_loss_trend > 0:
+		if valid_loss_trend >= 0:
 			return True
 				
 		prev_valid_losses.pop(0)
@@ -332,9 +333,9 @@ def parameter_tuner():
 	global COIN, BATCH_SIZE, EPOCHS
 
 	train_data, valid_data, test_data = get_datasets(COIN, 32)
-	model_counter = 0
+	model_counter = 160
 
-	for eta in np.arange(0.001, 0.0015, 0.0005):
+	for eta in np.arange(0.0015, 0.01, 0.0005):
 		for decay in np.arange(0.9999, 0.99999, 0.00001):	
 			for dropout in np.arange(0.05, 0.85, 0.05):
 				print("Start of new Experiment\n__________________________")
@@ -398,47 +399,54 @@ def parameter_tuner():
 #
 def continue_training():
 	global REPORTS, COIN, EPOCHS, BATCH_SIZE
+
 	# 
 	# ------------ DATA GENERATION ----------
 	#
 	start_time = time.time()
+	data_aug_factor = 512
 	print("Creating datasets...")
-	train_data, valid_data, test_data = get_datasets(COIN, data_aug_factor = 512)
+	train_data, valid_data, test_data = get_datasets(COIN, data_aug_factor)
 	print(f"Datasets created in {(time.time()-start_time)/60:.1f} mins")
 
 	#
 	# ------------ MODEL TRAINING -----------
 	#
-	model_architecture = "Laptop_0"
-	model_number = 86
-	model_filepath = f"models/CS_{model_architecture}_{model_number}_param_tuning.pt"
+	promising_models = param_trainer_parser.parse_reports()
+	for model_params in promising_models:
+		model_architecture = model_params["architecture"]
+		model_number = model_params["model_num"]
+		model_filepath = f"models/CS_{model_architecture}_{model_number}_param_tuning.pt"
 	
-	nn.set_model_parameters(dropout = 0.35, eta = 0.001, eta_decay = 0.99995)
-	nn.set_pretrained_model(load_model(nn.CryptoSoothsayer_Laptop_0(nn.N_FEATURES, nn.N_SIGNALS), model_filepath))
-	nn.set_model_props(nn.get_model())
-	model = nn.get_model()
+		nn.set_model_parameters(dropout = model_params["dropout"], eta = model_params["eta"], eta_decay = model_params["decay"])
+		nn.set_model(model_architecture)
+		nn.set_pretrained_model(load_model(nn.get_model(), model_filepath))
+		nn.set_model_props(nn.get_model())
+		model = nn.get_model()
 
-	dropout, eta, eta_decay = nn.get_model_parameters()
-	reports = [f"Model: {model.get_class_name()}", f"Learning rate: {eta}", f"Learning rate decay: {eta_decay}", f"Chance of dropout: {dropout}", f"Batch size: {BATCH_SIZE}", f"Epochs: {EPOCHS}", f"Coin: {COIN}"]
+		dropout, eta, eta_decay = nn.get_model_parameters()
+		reports = [f"Model: {model.get_class_name()}", f"Learning rate: {eta}", f"Learning rate decay: {eta_decay}", f"Chance of dropout: {dropout}", f"Batch size: {BATCH_SIZE}", f"Epochs: {EPOCHS}", f"Coin: {COIN}"]
 
-	start_time = time.time()
+		start_time = time.time()
 	
-	train(model, train_data, valid_data, start_time)
-	save_model(model, f"models/CS_{model_architecture}_{model_number}_trained.pt")
+		train(model, train_data, valid_data, start_time)
 
-	#
-	# ------------ MODEL TESTING -----------
-	#
-	# Load
-	report = "EVALUATE TRAINED MODEL"
-	REPORTS.append(report)
-	print(report)
-	evaluate_model(model, test_data)
+		#
+		# ------------ MODEL TESTING -----------
+		#
+		report = "EVALUATE TRAINED MODEL"
+		REPORTS.append(report)
+		print(report)
+		model_acc = evaluate_model(model, test_data)
 
-	#
-	# ---------- GENERATE REPORT -----------
-	#
-	generate_report()
+		# if accuracy is higher than 0.4 and inaccuracy is lower than 0.15
+		if model_acc[0] > 0.4 and model_acc[3] < 0.15:
+			save_model(model, f"models/CS_{model_architecture}_{model_number}_{int(round(model_acc[0], 2) * 100)}-{int(round(model_acc[3], 2))}_{data_aug_factor}xaug.pt")
+
+			#
+			# ---------- GENERATE REPORT -----------
+			#
+			generate_report()
 	
 
 
