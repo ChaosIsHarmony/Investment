@@ -1,236 +1,1617 @@
-MODEL: 10
-Last Training Loss: 0.9634643819881603 | Last Valid Loss: 1.9585174430930425
+MODEL: 0
+Last Training Loss: 0.9386913269991055 | Last Valid Loss: 2.0930633507077654
 PARAMETERS:
-	Laptop_0
-	eta: 0.001 | decay: 0.9999 | dropout: 0.55
+	PC_0
+	eta: 0.001 | decay: 0.9999 | dropout: 0.05
 DECISIONS:
-	Perfect Decision: 0.376
-	Acceptable Decision: 0.376
-	Signal Should Have Been Hodl: 0.256
-	Signal and Answer Exact Opposite: 0.096
-
-MODEL: 14
-Last Training Loss: 1.0303737673675641 | Last Valid Loss: 1.498540344692412
-PARAMETERS:
-	Laptop_0
-	eta: 0.001 | decay: 0.9999 | dropout: 0.7500000000000001
-DECISIONS:
-	Perfect Decision: 0.376
-	Acceptable Decision: 0.376
-	Signal Should Have Been Hodl: 0.056
-	Signal and Answer Exact Opposite: 0.008
-
-MODEL: 17
-Last Training Loss: 0.9167783319426235 | Last Valid Loss: 2.353079681831693
-PARAMETERS:
-	Laptop_0
-	eta: 0.001 | decay: 0.99991 | dropout: 0.1
-DECISIONS:
-	Perfect Decision: 0.384
-	Acceptable Decision: 0.384
-	Signal Should Have Been Hodl: 0.184
-	Signal and Answer Exact Opposite: 0.016
-
-MODEL: 26
-Last Training Loss: 0.9765015683951788 | Last Valid Loss: 1.821462972296609
-PARAMETERS:
-	Laptop_0
-	eta: 0.001 | decay: 0.99991 | dropout: 0.55
-DECISIONS:
-	Perfect Decision: 0.32
-	Acceptable Decision: 0.32
+	Perfect Decision: 0.352
+	Told to Hodl, though Should Have Bought/Sold: 0.264
 	Signal Should Have Been Hodl: 0.192
+	Signal and Answer Exact Opposite: 0.192
+
+MODEL: 46
+Last Training Loss: 1.0706880080979317 | Last Valid Loss: 1.3174738704212128
+PARAMETERS:
+	PC_0
+	eta: 0.001 | decay: 0.9999199999999999 | dropout: 0.7500000000000001
+DECISIONS:
+	Perfect Decision: 0.344
+	Told to Hodl, though Should Have Bought/Sold: 0.184
+	Signal Should Have Been Hodl: 0.28
+	Signal and Answer Exact Opposite: 0.192
+
+MODEL: 53
+Last Training Loss: 0.9811727746855468 | Last Valid Loss: 1.6159087036337172
+PARAMETERS:
+	PC_0
+	eta: 0.001 | decay: 0.9999299999999999 | dropout: 0.3
+DECISIONS:
+	Perfect Decision: 0.352
+	Told to Hodl, though Should Have Bought/Sold: 0.296
+	Signal Should Have Been Hodl: 0.24
+	Signal and Answer Exact Opposite: 0.112
+
+MODEL: 54
+Last Training Loss: 0.9858405812992714 | Last Valid Loss: 1.9408708517513578
+PARAMETERS:
+	PC_0
+	eta: 0.001 | decay: 0.9999299999999999 | dropout: 0.35000000000000003
+DECISIONS:
+	Perfect Decision: 0.344
+	Told to Hodl, though Should Have Bought/Sold: 0.184
+	Signal Should Have Been Hodl: 0.344
 	Signal and Answer Exact Opposite: 0.128
 
-MODEL: 37
-Last Training Loss: 0.9471731584053487 | Last Valid Loss: 1.8952273338560075
+MODEL: 82
+Last Training Loss: 0.935674159321934 | Last Valid Loss: 2.191274578136111
 PARAMETERS:
-	Laptop_0
-	eta: 0.001 | decay: 0.9999199999999999 | dropout: 0.3
-DECISIONS:
-	Perfect Decision: 0.392
-	Acceptable Decision: 0.392
-	Signal Should Have Been Hodl: 0.304
-	Signal and Answer Exact Opposite: 0.288
-
-MODEL: 77
-Last Training Loss: 1.004231903818436 | Last Valid Loss: 1.8780828610299125
-PARAMETERS:
-	Laptop_0
-	eta: 0.001 | decay: 0.9999399999999998 | dropout: 0.7000000000000001
+	PC_0
+	eta: 0.001 | decay: 0.9999499999999998 | dropout: 0.15000000000000002
 DECISIONS:
 	Perfect Decision: 0.384
-	Acceptable Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.016
+	Signal Should Have Been Hodl: 0.312
+	Signal and Answer Exact Opposite: 0.288
+
+MODEL: 88
+Last Training Loss: 0.9985869021038525 | Last Valid Loss: 1.8768084697307101
+PARAMETERS:
+	PC_0
+	eta: 0.001 | decay: 0.9999499999999998 | dropout: 0.45
+DECISIONS:
+	Perfect Decision: 0.36
+	Told to Hodl, though Should Have Bought/Sold: 0.32
+	Signal Should Have Been Hodl: 0.216
+	Signal and Answer Exact Opposite: 0.104
+
+MODEL: 99
+Last Training Loss: 0.96190093702171 | Last Valid Loss: 1.9928972498765067
+PARAMETERS:
+	PC_0
+	eta: 0.001 | decay: 0.9999599999999997 | dropout: 0.2
+DECISIONS:
+	Perfect Decision: 0.304
+	Told to Hodl, though Should Have Bought/Sold: 0.368
+	Signal Should Have Been Hodl: 0.232
+	Signal and Answer Exact Opposite: 0.096
+
+MODEL: 118
+Last Training Loss: 0.9595544287003577 | Last Valid Loss: 1.5647489660316043
+PARAMETERS:
+	PC_0
+	eta: 0.001 | decay: 0.9999699999999997 | dropout: 0.35000000000000003
+DECISIONS:
+	Perfect Decision: 0.336
+	Told to Hodl, though Should Have Bought/Sold: 0.536
+	Signal Should Have Been Hodl: 0.088
+	Signal and Answer Exact Opposite: 0.04
+
+MODEL: 142
+Last Training Loss: 1.0697165200836025 | Last Valid Loss: 1.3216864376787156
+PARAMETERS:
+	PC_0
+	eta: 0.001 | decay: 0.9999799999999996 | dropout: 0.7500000000000001
+DECISIONS:
+	Perfect Decision: 0.376
+	Told to Hodl, though Should Have Bought/Sold: 0.4
+	Signal Should Have Been Hodl: 0.168
+	Signal and Answer Exact Opposite: 0.056
+
+MODEL: 144
+Last Training Loss: 0.9114872436621226 | Last Valid Loss: 1.9695463871198988
+PARAMETERS:
+	PC_0
+	eta: 0.001 | decay: 0.9999899999999996 | dropout: 0.05
+DECISIONS:
+	Perfect Decision: 0.336
+	Told to Hodl, though Should Have Bought/Sold: 0.056
+	Signal Should Have Been Hodl: 0.368
+	Signal and Answer Exact Opposite: 0.24
+
+MODEL: 230
+Last Training Loss: 0.9522318540257402 | Last Valid Loss: 1.995737601367254
+PARAMETERS:
+	PC_0
+	eta: 0.0015 | decay: 0.9999399999999998 | dropout: 0.35000000000000003
+DECISIONS:
+	Perfect Decision: 0.368
+	Told to Hodl, though Should Have Bought/Sold: 0.224
+	Signal Should Have Been Hodl: 0.216
+	Signal and Answer Exact Opposite: 0.192
+
+MODEL: 249
+Last Training Loss: 0.9559662591782399 | Last Valid Loss: 2.1056243602245575
+PARAMETERS:
+	PC_0
+	eta: 0.0015 | decay: 0.9999499999999998 | dropout: 0.5
+DECISIONS:
+	Perfect Decision: 0.424
+	Told to Hodl, though Should Have Bought/Sold: 0.384
+	Signal Should Have Been Hodl: 0.152
+	Signal and Answer Exact Opposite: 0.04
+
+MODEL: 264
+Last Training Loss: 0.9631053247721866 | Last Valid Loss: 2.164158973901991
+PARAMETERS:
+	PC_0
+	eta: 0.0015 | decay: 0.9999599999999997 | dropout: 0.45
+DECISIONS:
+	Perfect Decision: 0.376
+	Told to Hodl, though Should Have Bought/Sold: 0.28
+	Signal Should Have Been Hodl: 0.176
+	Signal and Answer Exact Opposite: 0.168
+
+MODEL: 289
+Last Training Loss: 0.9548276590649039 | Last Valid Loss: 2.676193054706331
+PARAMETERS:
+	PC_0
+	eta: 0.0015 | decay: 0.9999799999999996 | dropout: 0.1
+DECISIONS:
+	Perfect Decision: 0.352
+	Told to Hodl, though Should Have Bought/Sold: 0.224
+	Signal Should Have Been Hodl: 0.264
+	Signal and Answer Exact Opposite: 0.16
+
+MODEL: 290
+Last Training Loss: 0.9077756438928191 | Last Valid Loss: 2.400061601211154
+PARAMETERS:
+	PC_0
+	eta: 0.0015 | decay: 0.9999799999999996 | dropout: 0.15000000000000002
+DECISIONS:
+	Perfect Decision: 0.36
+	Told to Hodl, though Should Have Bought/Sold: 0.136
+	Signal Should Have Been Hodl: 0.328
+	Signal and Answer Exact Opposite: 0.176
+
+MODEL: 304
+Last Training Loss: 0.8408303202595562 | Last Valid Loss: 2.3302775479498363
+PARAMETERS:
+	PC_0
+	eta: 0.0015 | decay: 0.9999899999999996 | dropout: 0.05
+DECISIONS:
+	Perfect Decision: 0.4
+	Told to Hodl, though Should Have Bought/Sold: 0.032
+	Signal Should Have Been Hodl: 0.304
+	Signal and Answer Exact Opposite: 0.264
+
+MODEL: 312
+Last Training Loss: 0.9403095587622374 | Last Valid Loss: 2.26406629123385
+PARAMETERS:
+	PC_0
+	eta: 0.0015 | decay: 0.9999899999999996 | dropout: 0.45
+DECISIONS:
+	Perfect Decision: 0.352
+	Told to Hodl, though Should Have Bought/Sold: 0.232
+	Signal Should Have Been Hodl: 0.248
+	Signal and Answer Exact Opposite: 0.168
+
+MODEL: 319
+Last Training Loss: 1.0594736753846519 | Last Valid Loss: 1.4099174510864985
+PARAMETERS:
+	PC_0
+	eta: 0.0015 | decay: 0.9999899999999996 | dropout: 0.8
+DECISIONS:
+	Perfect Decision: 0.352
+	Told to Hodl, though Should Have Bought/Sold: 0.304
+	Signal Should Have Been Hodl: 0.216
+	Signal and Answer Exact Opposite: 0.128
+
+MODEL: 412
+Last Training Loss: 1.0181343266740441 | Last Valid Loss: 1.7963660283694192
+PARAMETERS:
+	PC_0
+	eta: 0.002 | decay: 0.9999499999999998 | dropout: 0.6500000000000001
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
 	Signal Should Have Been Hodl: 0.0
 	Signal and Answer Exact Opposite: 0.0
 
-MODEL: 83
-Last Training Loss: 0.8997657050495036 | Last Valid Loss: 2.3802155970580996
+MODEL: 426
+Last Training Loss: 1.0067023330775555 | Last Valid Loss: 1.4600017510709309
 PARAMETERS:
-	Laptop_0
-	eta: 0.001 | decay: 0.9999499999999998 | dropout: 0.2
+	PC_0
+	eta: 0.002 | decay: 0.9999599999999997 | dropout: 0.55
 DECISIONS:
-	Perfect Decision: 0.328
-	Acceptable Decision: 0.328
-	Signal Should Have Been Hodl: 0.112
+	Perfect Decision: 0.376
+	Told to Hodl, though Should Have Bought/Sold: 0.432
+	Signal Should Have Been Hodl: 0.152
+	Signal and Answer Exact Opposite: 0.04
+
+MODEL: 436
+Last Training Loss: 0.9065125088527566 | Last Valid Loss: 1.5052279839439997
+PARAMETERS:
+	PC_0
+	eta: 0.002 | decay: 0.9999699999999997 | dropout: 0.25
+DECISIONS:
+	Perfect Decision: 0.408
+	Told to Hodl, though Should Have Bought/Sold: 0.256
+	Signal Should Have Been Hodl: 0.264
+	Signal and Answer Exact Opposite: 0.072
+
+MODEL: 483
+Last Training Loss: 0.9323354472289793 | Last Valid Loss: 3.2284133973575773
+PARAMETERS:
+	PC_0
+	eta: 0.0025 | decay: 0.9999 | dropout: 0.2
+DECISIONS:
+	Perfect Decision: 0.36
+	Told to Hodl, though Should Have Bought/Sold: 0.352
+	Signal Should Have Been Hodl: 0.2
+	Signal and Answer Exact Opposite: 0.088
+
+MODEL: 486
+Last Training Loss: 0.9183456493483391 | Last Valid Loss: 1.9915663491165827
+PARAMETERS:
+	PC_0
+	eta: 0.0025 | decay: 0.9999 | dropout: 0.35000000000000003
+DECISIONS:
+	Perfect Decision: 0.408
+	Told to Hodl, though Should Have Bought/Sold: 0.096
+	Signal Should Have Been Hodl: 0.288
+	Signal and Answer Exact Opposite: 0.208
+
+MODEL: 557
+Last Training Loss: 1.0298311587248463 | Last Valid Loss: 1.1830501220529042
+PARAMETERS:
+	PC_0
+	eta: 0.0025 | decay: 0.9999399999999998 | dropout: 0.7000000000000001
+DECISIONS:
+	Perfect Decision: 0.424
+	Told to Hodl, though Should Have Bought/Sold: 0.072
+	Signal Should Have Been Hodl: 0.336
+	Signal and Answer Exact Opposite: 0.168
+
+MODEL: 589
+Last Training Loss: 1.055894641962368 | Last Valid Loss: 1.4985970310748569
+PARAMETERS:
+	PC_0
+	eta: 0.0025 | decay: 0.9999599999999997 | dropout: 0.7000000000000001
+DECISIONS:
+	Perfect Decision: 0.392
+	Told to Hodl, though Should Have Bought/Sold: 0.568
+	Signal Should Have Been Hodl: 0.024
+	Signal and Answer Exact Opposite: 0.016
+
+MODEL: 660
+Last Training Loss: 0.9072207026038086 | Last Valid Loss: 2.406548216702446
+PARAMETERS:
+	PC_0
+	eta: 0.003 | decay: 0.99991 | dropout: 0.25
+DECISIONS:
+	Perfect Decision: 0.424
+	Told to Hodl, though Should Have Bought/Sold: 0.176
+	Signal Should Have Been Hodl: 0.28
+	Signal and Answer Exact Opposite: 0.12
+
+MODEL: 678
+Last Training Loss: 0.9380334596789908 | Last Valid Loss: 2.335946164906971
+PARAMETERS:
+	PC_0
+	eta: 0.003 | decay: 0.9999199999999999 | dropout: 0.35000000000000003
+DECISIONS:
+	Perfect Decision: 0.368
+	Told to Hodl, though Should Have Bought/Sold: 0.32
+	Signal Should Have Been Hodl: 0.176
+	Signal and Answer Exact Opposite: 0.136
+
+MODEL: 724
+Last Training Loss: 0.9039697958796751 | Last Valid Loss: 1.8926979426353696
+PARAMETERS:
+	PC_0
+	eta: 0.003 | decay: 0.9999499999999998 | dropout: 0.25
+DECISIONS:
+	Perfect Decision: 0.376
+	Told to Hodl, though Should Have Bought/Sold: 0.104
+	Signal Should Have Been Hodl: 0.328
+	Signal and Answer Exact Opposite: 0.192
+
+MODEL: 796
+Last Training Loss: 1.0447887215414084 | Last Valid Loss: 1.4515432308590601
+PARAMETERS:
+	PC_0
+	eta: 0.003 | decay: 0.9999899999999996 | dropout: 0.6500000000000001
+DECISIONS:
+	Perfect Decision: 0.32
+	Told to Hodl, though Should Have Bought/Sold: 0.376
+	Signal Should Have Been Hodl: 0.216
+	Signal and Answer Exact Opposite: 0.088
+
+MODEL: 891
+Last Training Loss: 1.0287285618833266 | Last Valid Loss: 2.096724142630895
+PARAMETERS:
+	PC_0
+	eta: 0.0035 | decay: 0.9999499999999998 | dropout: 0.6000000000000001
+DECISIONS:
+	Perfect Decision: 0.344
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.04
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 892
+Last Training Loss: 1.0666135696228594 | Last Valid Loss: 2.1530224548445807
+PARAMETERS:
+	PC_0
+	eta: 0.0035 | decay: 0.9999499999999998 | dropout: 0.6500000000000001
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 939
+Last Training Loss: 1.085407404229045 | Last Valid Loss: 1.287617471009966
+PARAMETERS:
+	PC_0
+	eta: 0.0035 | decay: 0.9999799999999996 | dropout: 0.6000000000000001
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 950
+Last Training Loss: 0.9681843561120331 | Last Valid Loss: 2.8812172327722823
+PARAMETERS:
+	PC_0
+	eta: 0.0035 | decay: 0.9999899999999996 | dropout: 0.35000000000000003
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.608
+	Signal Should Have Been Hodl: 0.008
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 1006
+Last Training Loss: 1.0558522538049147 | Last Valid Loss: 1.3680512801049247
+PARAMETERS:
+	PC_0
+	eta: 0.004 | decay: 0.9999199999999999 | dropout: 0.7500000000000001
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 1021
+Last Training Loss: 1.0356658807140775 | Last Valid Loss: 1.6554318273824358
+PARAMETERS:
+	PC_0
+	eta: 0.004 | decay: 0.9999299999999999 | dropout: 0.7000000000000001
+DECISIONS:
+	Perfect Decision: 0.376
+	Told to Hodl, though Should Have Bought/Sold: 0.544
+	Signal Should Have Been Hodl: 0.08
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 1088
+Last Training Loss: 0.8567310985527001 | Last Valid Loss: 3.6159097736790065
+PARAMETERS:
+	PC_0
+	eta: 0.004 | decay: 0.9999799999999996 | dropout: 0.05
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 1097
+Last Training Loss: 0.9787663797615096 | Last Valid Loss: 3.647432755383234
+PARAMETERS:
+	PC_0
+	eta: 0.004 | decay: 0.9999799999999996 | dropout: 0.5
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 1112
+Last Training Loss: 1.0302844885736704 | Last Valid Loss: 2.646265267852753
+PARAMETERS:
+	PC_0
+	eta: 0.004 | decay: 0.9999899999999996 | dropout: 0.45
+DECISIONS:
+	Perfect Decision: 0.32
+	Told to Hodl, though Should Have Bought/Sold: 0.448
+	Signal Should Have Been Hodl: 0.128
+	Signal and Answer Exact Opposite: 0.104
+
+MODEL: 1114
+Last Training Loss: 1.0399356236448511 | Last Valid Loss: 2.026365192163558
+PARAMETERS:
+	PC_0
+	eta: 0.004 | decay: 0.9999899999999996 | dropout: 0.55
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 1123
+Last Training Loss: 0.9642950629349798 | Last Valid Loss: 3.967719450829521
+PARAMETERS:
+	PC_0
+	eta: 0.0045000000000000005 | decay: 0.9999 | dropout: 0.2
+DECISIONS:
+	Perfect Decision: 0.304
+	Told to Hodl, though Should Have Bought/Sold: 0.464
+	Signal Should Have Been Hodl: 0.168
+	Signal and Answer Exact Opposite: 0.064
+
+MODEL: 1210
+Last Training Loss: 1.023647036170587 | Last Valid Loss: 1.8817027386218783
+PARAMETERS:
+	PC_0
+	eta: 0.0045000000000000005 | decay: 0.9999499999999998 | dropout: 0.55
+DECISIONS:
+	Perfect Decision: 0.376
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.008
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 1221
+Last Training Loss: 0.9492004228523001 | Last Valid Loss: 2.8756610495703563
+PARAMETERS:
+	PC_0
+	eta: 0.0045000000000000005 | decay: 0.9999599999999997 | dropout: 0.3
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 1257
+Last Training Loss: 1.0349830449558794 | Last Valid Loss: 2.5300932029883065
+PARAMETERS:
+	PC_0
+	eta: 0.0045000000000000005 | decay: 0.9999799999999996 | dropout: 0.5
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 1270
+Last Training Loss: 1.0911095128062047 | Last Valid Loss: 1.233951526569401
+PARAMETERS:
+	PC_0
+	eta: 0.0045000000000000005 | decay: 0.9999899999999996 | dropout: 0.35000000000000003
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 1391
+Last Training Loss: 1.094259139848873 | Last Valid Loss: 1.2298804010663713
+PARAMETERS:
+	PC_0
+	eta: 0.005 | decay: 0.9999599999999997 | dropout: 0.8
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 1393
+Last Training Loss: 0.9017553387675434 | Last Valid Loss: 4.2211036876080525
+PARAMETERS:
+	PC_0
+	eta: 0.005 | decay: 0.9999699999999997 | dropout: 0.1
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 1397
+Last Training Loss: 1.0102946925617289 | Last Valid Loss: 2.5471267657620564
+PARAMETERS:
+	PC_0
+	eta: 0.005 | decay: 0.9999699999999997 | dropout: 0.3
+DECISIONS:
+	Perfect Decision: 0.296
+	Told to Hodl, though Should Have Bought/Sold: 0.512
+	Signal Should Have Been Hodl: 0.144
+	Signal and Answer Exact Opposite: 0.048
+
+MODEL: 1427
+Last Training Loss: 0.856228920747526 | Last Valid Loss: 4.399522176810673
+PARAMETERS:
+	PC_0
+	eta: 0.005 | decay: 0.9999899999999996 | dropout: 0.2
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 1462
+Last Training Loss: 1.0290232081897557 | Last Valid Loss: 2.6009046908408875
+PARAMETERS:
+	PC_0
+	eta: 0.0055 | decay: 0.99991 | dropout: 0.35000000000000003
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 1488
+Last Training Loss: 0.9050435880199075 | Last Valid Loss: 4.042339315490117
+PARAMETERS:
+	PC_0
+	eta: 0.0055 | decay: 0.9999299999999999 | dropout: 0.05
+DECISIONS:
+	Perfect Decision: 0.312
+	Told to Hodl, though Should Have Bought/Sold: 0.48
+	Signal Should Have Been Hodl: 0.152
 	Signal and Answer Exact Opposite: 0.056
 
-MODEL: 142
-Last Training Loss: 1.0701122307218611 | Last Valid Loss: 1.2269753539373005
+MODEL: 1504
+Last Training Loss: 0.8847299205663148 | Last Valid Loss: 2.6862131562970935
 PARAMETERS:
-	Laptop_0
-	eta: 0.001 | decay: 0.9999799999999996 | dropout: 0.7500000000000001
+	PC_0
+	eta: 0.0055 | decay: 0.9999399999999998 | dropout: 0.05
+DECISIONS:
+	Perfect Decision: 0.408
+	Told to Hodl, though Should Have Bought/Sold: 0.12
+	Signal Should Have Been Hodl: 0.288
+	Signal and Answer Exact Opposite: 0.184
+
+MODEL: 1513
+Last Training Loss: 0.9907655583765518 | Last Valid Loss: 2.100562841646255
+PARAMETERS:
+	PC_0
+	eta: 0.0055 | decay: 0.9999399999999998 | dropout: 0.5
+DECISIONS:
+	Perfect Decision: 0.344
+	Told to Hodl, though Should Have Bought/Sold: 0.56
+	Signal Should Have Been Hodl: 0.08
+	Signal and Answer Exact Opposite: 0.016
+
+MODEL: 1524
+Last Training Loss: 0.9660151001007762 | Last Valid Loss: 2.575744958624007
+PARAMETERS:
+	PC_0
+	eta: 0.0055 | decay: 0.9999499999999998 | dropout: 0.25
 DECISIONS:
 	Perfect Decision: 0.352
-	Acceptable Decision: 0.352
+	Told to Hodl, though Should Have Bought/Sold: 0.616
 	Signal Should Have Been Hodl: 0.032
 	Signal and Answer Exact Opposite: 0.0
 
-MODEL: 143
-Last Training Loss: 1.0299403306562454 | Last Valid Loss: 1.4967088533772364
+MODEL: 1532
+Last Training Loss: 1.0800599534995854 | Last Valid Loss: 1.4660542025452568
 PARAMETERS:
-	Laptop_0
-	eta: 0.001 | decay: 0.9999799999999996 | dropout: 0.8
+	PC_0
+	eta: 0.0055 | decay: 0.9999499999999998 | dropout: 0.6500000000000001
 DECISIONS:
 	Perfect Decision: 0.384
-	Acceptable Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
 	Signal Should Have Been Hodl: 0.0
 	Signal and Answer Exact Opposite: 0.0
 
-MODEL: 148
-Last Training Loss: 0.9489453861606307 | Last Valid Loss: 2.053628503803223
+MODEL: 1545
+Last Training Loss: 1.0947802871465684 | Last Valid Loss: 1.2225273780406467
 PARAMETERS:
-	Laptop_0
-	eta: 0.001 | decay: 0.9999899999999996 | dropout: 0.25
-DECISIONS:
-	Perfect Decision: 0.4
-	Acceptable Decision: 0.4
-	Signal Should Have Been Hodl: 0.024
-	Signal and Answer Exact Opposite: 0.016
-
-MODEL: 157
-Last Training Loss: 1.0704143051989377 | Last Valid Loss: 1.346827555270422
-PARAMETERS:
-	Laptop_0
-	eta: 0.001 | decay: 0.9999899999999996 | dropout: 0.7000000000000001
+	PC_0
+	eta: 0.0055 | decay: 0.9999599999999997 | dropout: 0.5
 DECISIONS:
 	Perfect Decision: 0.384
-	Acceptable Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
 	Signal Should Have Been Hodl: 0.0
 	Signal and Answer Exact Opposite: 0.0
 
-MODEL: 158
-Last Training Loss: 1.0567415679688565 | Last Valid Loss: 1.5645270418553126
+MODEL: 1557
+Last Training Loss: 1.0069243119796738 | Last Valid Loss: 1.9373058340852223
 PARAMETERS:
-	Laptop_0
-	eta: 0.001 | decay: 0.9999899999999996 | dropout: 0.7500000000000001
+	PC_0
+	eta: 0.0055 | decay: 0.9999699999999997 | dropout: 0.3
 DECISIONS:
-	Perfect Decision: 0.368
-	Acceptable Decision: 0.368
-	Signal Should Have Been Hodl: 0.024
-	Signal and Answer Exact Opposite: 0.008
-
-_____________________________________________
-_____________________________________________
-_____________________________________________
-_____________________________________________
-_____________________________________________
-
-MODEL: 6
-Last Training Loss: 0.9766739709302783 | Last Valid Loss: 2.134074409802755
-PARAMETERS:
-	Laptop_0
-	eta: 0.001 | decay: 0.9999 | dropout: 0.35000000000000003
-DECISIONS:
-	Perfect Decision: 0.392
-	Told to Hodl, though Should Have Bought/Sold: 0.488
-	Signal Should Have Been Hodl: 0.12
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
 	Signal and Answer Exact Opposite: 0.0
 
-MODEL: 7
-Last Training Loss: 0.9867579644196667 | Last Valid Loss: 1.6595821919895353
+MODEL: 1570
+Last Training Loss: 0.8762981041218154 | Last Valid Loss: 3.9870202094316483
 PARAMETERS:
-	Laptop_0
-	eta: 0.001 | decay: 0.9999 | dropout: 0.4
+	PC_0
+	eta: 0.0055 | decay: 0.9999799999999996 | dropout: 0.15000000000000002
+DECISIONS:
+	Perfect Decision: 0.344
+	Told to Hodl, though Should Have Bought/Sold: 0.12
+	Signal Should Have Been Hodl: 0.36
+	Signal and Answer Exact Opposite: 0.176
+
+MODEL: 1583
+Last Training Loss: 1.0858216169290245 | Last Valid Loss: 1.370160026209695
+PARAMETERS:
+	PC_0
+	eta: 0.0055 | decay: 0.9999799999999996 | dropout: 0.8
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 1601
+Last Training Loss: 0.8685529336507898 | Last Valid Loss: 3.66831085204132
+PARAMETERS:
+	PC_0
+	eta: 0.006 | decay: 0.9999 | dropout: 0.1
+DECISIONS:
+	Perfect Decision: 0.432
+	Told to Hodl, though Should Have Bought/Sold: 0.128
+	Signal Should Have Been Hodl: 0.24
+	Signal and Answer Exact Opposite: 0.2
+
+MODEL: 1611
+Last Training Loss: 1.069202198414132 | Last Valid Loss: 1.7539644946181585
+PARAMETERS:
+	PC_0
+	eta: 0.006 | decay: 0.9999 | dropout: 0.6000000000000001
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 1613
+Last Training Loss: 1.0846343063749373 | Last Valid Loss: 1.5307860048044295
+PARAMETERS:
+	PC_0
+	eta: 0.006 | decay: 0.9999 | dropout: 0.7000000000000001
+DECISIONS:
+	Perfect Decision: 0.376
+	Told to Hodl, though Should Have Bought/Sold: 0.272
+	Signal Should Have Been Hodl: 0.232
+	Signal and Answer Exact Opposite: 0.12
+
+MODEL: 1614
+Last Training Loss: 1.1093398614320904 | Last Valid Loss: 1.2744388239724296
+PARAMETERS:
+	PC_0
+	eta: 0.006 | decay: 0.9999 | dropout: 0.7500000000000001
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 1618
+Last Training Loss: 0.9541770971845835 | Last Valid Loss: 1.9960261725244068
+PARAMETERS:
+	PC_0
+	eta: 0.006 | decay: 0.99991 | dropout: 0.15000000000000002
+DECISIONS:
+	Perfect Decision: 0.32
+	Told to Hodl, though Should Have Bought/Sold: 0.496
+	Signal Should Have Been Hodl: 0.144
+	Signal and Answer Exact Opposite: 0.04
+
+MODEL: 1682
+Last Training Loss: 0.9148632388096303 | Last Valid Loss: 4.480045164861377
+PARAMETERS:
+	PC_0
+	eta: 0.006 | decay: 0.9999499999999998 | dropout: 0.15000000000000002
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 1699
+Last Training Loss: 0.9627389386296272 | Last Valid Loss: 2.263663059189206
+PARAMETERS:
+	PC_0
+	eta: 0.006 | decay: 0.9999599999999997 | dropout: 0.2
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 1703
+Last Training Loss: 1.0015157570305746 | Last Valid Loss: 3.3044558266798654
+PARAMETERS:
+	PC_0
+	eta: 0.006 | decay: 0.9999599999999997 | dropout: 0.4
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 1708
+Last Training Loss: 1.0952588813379407 | Last Valid Loss: 1.2345875416483199
+PARAMETERS:
+	PC_0
+	eta: 0.006 | decay: 0.9999599999999997 | dropout: 0.6500000000000001
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 1713
+Last Training Loss: 0.8960327965614852 | Last Valid Loss: 3.0537847902566666
+PARAMETERS:
+	PC_0
+	eta: 0.006 | decay: 0.9999699999999997 | dropout: 0.1
 DECISIONS:
 	Perfect Decision: 0.376
 	Told to Hodl, though Should Have Bought/Sold: 0.224
-	Signal Should Have Been Hodl: 0.208
-	Signal and Answer Exact Opposite: 0.192
+	Signal Should Have Been Hodl: 0.32
+	Signal and Answer Exact Opposite: 0.08
 
-MODEL: 26
-Last Training Loss: 0.9850499054882675 | Last Valid Loss: 1.9804380569193099
+MODEL: 1719
+Last Training Loss: 1.0168168829986826 | Last Valid Loss: 2.6870243222940537
 PARAMETERS:
-	Laptop_0
-	eta: 0.001 | decay: 0.99991 | dropout: 0.55
+	PC_0
+	eta: 0.006 | decay: 0.9999699999999997 | dropout: 0.4
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 1802
+Last Training Loss: 1.0362480758922175 | Last Valid Loss: 1.9819468113165053
+PARAMETERS:
+	PC_0
+	eta: 0.006500000000000001 | decay: 0.9999199999999999 | dropout: 0.55
+DECISIONS:
+	Perfect Decision: 0.336
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.048
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 1813
+Last Training Loss: 1.0515845129266381 | Last Valid Loss: 2.3782596488793692
+PARAMETERS:
+	PC_0
+	eta: 0.006500000000000001 | decay: 0.9999299999999999 | dropout: 0.3
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 1841
+Last Training Loss: 1.0699684261344373 | Last Valid Loss: 1.4372891443116325
+PARAMETERS:
+	PC_0
+	eta: 0.006500000000000001 | decay: 0.9999499999999998 | dropout: 0.1
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 1863
+Last Training Loss: 0.9802037928602658 | Last Valid Loss: 2.1907244511539976
+PARAMETERS:
+	PC_0
+	eta: 0.006500000000000001 | decay: 0.9999599999999997 | dropout: 0.4
+DECISIONS:
+	Perfect Decision: 0.336
+	Told to Hodl, though Should Have Bought/Sold: 0.592
+	Signal Should Have Been Hodl: 0.072
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 1884
+Last Training Loss: 1.0915757549228147 | Last Valid Loss: 1.5557547575897641
+PARAMETERS:
+	PC_0
+	eta: 0.006500000000000001 | decay: 0.9999699999999997 | dropout: 0.6500000000000001
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 1907
+Last Training Loss: 0.8909562175977044 | Last Valid Loss: 4.620145452400995
+PARAMETERS:
+	PC_0
+	eta: 0.006500000000000001 | decay: 0.9999899999999996 | dropout: 0.2
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 1926
+Last Training Loss: 0.9644304632674903 | Last Valid Loss: 4.172317018584599
+PARAMETERS:
+	PC_0
+	eta: 0.006999999999999999 | decay: 0.9999 | dropout: 0.35000000000000003
+DECISIONS:
+	Perfect Decision: 0.344
+	Told to Hodl, though Should Have Bought/Sold: 0.496
+	Signal Should Have Been Hodl: 0.12
+	Signal and Answer Exact Opposite: 0.04
+
+MODEL: 1955
+Last Training Loss: 0.926875636796467 | Last Valid Loss: 2.677273075258921
+PARAMETERS:
+	PC_0
+	eta: 0.006999999999999999 | decay: 0.9999199999999999 | dropout: 0.2
 DECISIONS:
 	Perfect Decision: 0.4
-	Told to Hodl, though Should Have Bought/Sold: 0.112
+	Told to Hodl, though Should Have Bought/Sold: 0.152
 	Signal Should Have Been Hodl: 0.304
-	Signal and Answer Exact Opposite: 0.184
-
-MODEL: 37
-Last Training Loss: 0.8775071669078898 | Last Valid Loss: 2.0662841200828552
-PARAMETERS:
-	Laptop_0
-	eta: 0.001 | decay: 0.9999199999999999 | dropout: 0.3
-DECISIONS:
-	Perfect Decision: 0.368
-	Told to Hodl, though Should Have Bought/Sold: 0.352
-	Signal Should Have Been Hodl: 0.144
-	Signal and Answer Exact Opposite: 0.136
-
-MODEL: 69
-Last Training Loss: 0.9154773237532936 | Last Valid Loss: 1.9237989650832281
-PARAMETERS:
-	Laptop_0
-	eta: 0.001 | decay: 0.9999399999999998 | dropout: 0.3
-DECISIONS:
-	Perfect Decision: 0.368
-	Told to Hodl, though Should Have Bought/Sold: 0.288
-	Signal Should Have Been Hodl: 0.2
 	Signal and Answer Exact Opposite: 0.144
 
-MODEL: 74
-Last Training Loss: 0.9659540862776339 | Last Valid Loss: 2.1271457435592773
+MODEL: 1964
+Last Training Loss: 1.1012312835082412 | Last Valid Loss: 1.2327437911714827
 PARAMETERS:
-	Laptop_0
-	eta: 0.001 | decay: 0.9999399999999998 | dropout: 0.55
+	PC_0
+	eta: 0.006999999999999999 | decay: 0.9999199999999999 | dropout: 0.6500000000000001
 DECISIONS:
 	Perfect Decision: 0.384
 	Told to Hodl, though Should Have Bought/Sold: 0.616
 	Signal Should Have Been Hodl: 0.0
 	Signal and Answer Exact Opposite: 0.0
 
-MODEL: 86
-Last Training Loss: 0.9691318387631327 | Last Valid Loss: 2.3803749784590704
+MODEL: 1975
+Last Training Loss: 1.0942984172143042 | Last Valid Loss: 1.3069673819201333
 PARAMETERS:
-	Laptop_0
-	eta: 0.001 | decay: 0.9999499999999998 | dropout: 0.35000000000000003
+	PC_0
+	eta: 0.006999999999999999 | decay: 0.9999299999999999 | dropout: 0.4
 DECISIONS:
-	Perfect Decision: 0.4
-	Told to Hodl, though Should Have Bought/Sold: 0.488
-	Signal Should Have Been Hodl: 0.064
-	Signal and Answer Exact Opposite: 0.048
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.608
+	Signal Should Have Been Hodl: 0.008
+	Signal and Answer Exact Opposite: 0.0
 
-MODEL: 137
-Last Training Loss: 0.9665158317657188 | Last Valid Loss: 1.6935172757459065
+MODEL: 1982
+Last Training Loss: 1.0919033151585609 | Last Valid Loss: 1.2918512225151062
 PARAMETERS:
-	Laptop_0
-	eta: 0.001 | decay: 0.9999799999999996 | dropout: 0.5
+	PC_0
+	eta: 0.006999999999999999 | decay: 0.9999299999999999 | dropout: 0.7500000000000001
 DECISIONS:
 	Perfect Decision: 0.384
 	Told to Hodl, though Should Have Bought/Sold: 0.616
 	Signal Should Have Been Hodl: 0.0
 	Signal and Answer Exact Opposite: 0.0
 
-MODEL: 155
-Last Training Loss: 0.9843937822734006 | Last Valid Loss: 1.7550944501445407
+MODEL: 1999
+Last Training Loss: 1.098223808221519 | Last Valid Loss: 1.2175321919577462
 PARAMETERS:
-	Laptop_0
-	eta: 0.001 | decay: 0.9999899999999996 | dropout: 0.6000000000000001
+	PC_0
+	eta: 0.006999999999999999 | decay: 0.9999399999999998 | dropout: 0.8
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2027
+Last Training Loss: 1.0916372118517756 | Last Valid Loss: 1.9893589024505918
+PARAMETERS:
+	PC_0
+	eta: 0.006999999999999999 | decay: 0.9999599999999997 | dropout: 0.6000000000000001
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2044
+Last Training Loss: 1.0967002813704312 | Last Valid Loss: 1.2202075208936418
+PARAMETERS:
+	PC_0
+	eta: 0.006999999999999999 | decay: 0.9999699999999997 | dropout: 0.6500000000000001
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2045
+Last Training Loss: 1.0934039553394541 | Last Valid Loss: 1.2656242932592119
+PARAMETERS:
+	PC_0
+	eta: 0.006999999999999999 | decay: 0.9999699999999997 | dropout: 0.7000000000000001
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2049
+Last Training Loss: 0.8662515163014177 | Last Valid Loss: 3.532761161289518
+PARAMETERS:
+	PC_0
+	eta: 0.006999999999999999 | decay: 0.9999799999999996 | dropout: 0.1
+DECISIONS:
+	Perfect Decision: 0.464
+	Told to Hodl, though Should Have Bought/Sold: 0.216
+	Signal Should Have Been Hodl: 0.232
+	Signal and Answer Exact Opposite: 0.088
+
+MODEL: 2058
+Last Training Loss: 1.0913092538248748 | Last Valid Loss: 1.2702698154108865
+PARAMETERS:
+	PC_0
+	eta: 0.006999999999999999 | decay: 0.9999799999999996 | dropout: 0.55
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2059
+Last Training Loss: 1.0392146940648672 | Last Valid Loss: 1.4172456221921104
+PARAMETERS:
+	PC_0
+	eta: 0.006999999999999999 | decay: 0.9999799999999996 | dropout: 0.6000000000000001
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2107
+Last Training Loss: 1.0502892843796872 | Last Valid Loss: 1.3901896221297128
+PARAMETERS:
+	PC_0
+	eta: 0.0075 | decay: 0.99991 | dropout: 0.6000000000000001
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2177
+Last Training Loss: 0.9045514669560362 | Last Valid Loss: 4.514531980431269
+PARAMETERS:
+	PC_0
+	eta: 0.0075 | decay: 0.9999599999999997 | dropout: 0.1
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2183
+Last Training Loss: 1.0152728111715987 | Last Valid Loss: 2.7099641514202903
+PARAMETERS:
+	PC_0
+	eta: 0.0075 | decay: 0.9999599999999997 | dropout: 0.4
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2185
+Last Training Loss: 1.0377104037906975 | Last Valid Loss: 2.613364191282363
+PARAMETERS:
+	PC_0
+	eta: 0.0075 | decay: 0.9999599999999997 | dropout: 0.5
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2216
+Last Training Loss: 1.0968912986572832 | Last Valid Loss: 1.2141470559059628
+PARAMETERS:
+	PC_0
+	eta: 0.0075 | decay: 0.9999799999999996 | dropout: 0.45
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2219
+Last Training Loss: 1.103542561409995 | Last Valid Loss: 1.191242984363011
+PARAMETERS:
+	PC_0
+	eta: 0.0075 | decay: 0.9999799999999996 | dropout: 0.6000000000000001
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2251
+Last Training Loss: 1.0825978253269568 | Last Valid Loss: 1.533921602226439
+PARAMETERS:
+	PC_0
+	eta: 0.008 | decay: 0.9999 | dropout: 0.6000000000000001
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2270
+Last Training Loss: 1.0932939557824284 | Last Valid Loss: 1.259695440530777
+PARAMETERS:
+	PC_0
+	eta: 0.008 | decay: 0.99991 | dropout: 0.7500000000000001
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2278
+Last Training Loss: 1.0997422838117927 | Last Valid Loss: 1.2567191421985626
+PARAMETERS:
+	PC_0
+	eta: 0.008 | decay: 0.9999199999999999 | dropout: 0.35000000000000003
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2301
+Last Training Loss: 1.081969563383609 | Last Valid Loss: 1.3732050761343941
+PARAMETERS:
+	PC_0
+	eta: 0.008 | decay: 0.9999299999999999 | dropout: 0.7000000000000001
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2302
+Last Training Loss: 1.0969500476494431 | Last Valid Loss: 1.273273025240217
+PARAMETERS:
+	PC_0
+	eta: 0.008 | decay: 0.9999299999999999 | dropout: 0.7500000000000001
+DECISIONS:
+	Perfect Decision: 0.32
+	Told to Hodl, though Should Have Bought/Sold: 0.0
+	Signal Should Have Been Hodl: 0.384
+	Signal and Answer Exact Opposite: 0.296
+
+MODEL: 2310
+Last Training Loss: 1.0772913773544133 | Last Valid Loss: 1.368372597864696
+PARAMETERS:
+	PC_0
+	eta: 0.008 | decay: 0.9999399999999998 | dropout: 0.35000000000000003
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2326
+Last Training Loss: 1.026978257636074 | Last Valid Loss: 1.6897909991324893
+PARAMETERS:
+	PC_0
+	eta: 0.008 | decay: 0.9999499999999998 | dropout: 0.35000000000000003
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2335
+Last Training Loss: 1.090186718851328 | Last Valid Loss: 1.29961439541408
+PARAMETERS:
+	PC_0
+	eta: 0.008 | decay: 0.9999499999999998 | dropout: 0.8
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2355
+Last Training Loss: 0.9490542386192828 | Last Valid Loss: 4.602698988857723
+PARAMETERS:
+	PC_0
+	eta: 0.008 | decay: 0.9999699999999997 | dropout: 0.2
+DECISIONS:
+	Perfect Decision: 0.344
+	Told to Hodl, though Should Have Bought/Sold: 0.096
+	Signal Should Have Been Hodl: 0.36
+	Signal and Answer Exact Opposite: 0.2
+
+MODEL: 2374
+Last Training Loss: 1.0175417612772435 | Last Valid Loss: 2.0734215563251857
+PARAMETERS:
+	PC_0
+	eta: 0.008 | decay: 0.9999799999999996 | dropout: 0.35000000000000003
 DECISIONS:
 	Perfect Decision: 0.392
-	Told to Hodl, though Should Have Bought/Sold: 0.448
-	Signal Should Have Been Hodl: 0.08
-	Signal and Answer Exact Opposite: 0.08
+	Told to Hodl, though Should Have Bought/Sold: 0.352
+	Signal Should Have Been Hodl: 0.128
+	Signal and Answer Exact Opposite: 0.128
+
+MODEL: 2383
+Last Training Loss: 1.0996955975424498 | Last Valid Loss: 1.2223894894123077
+PARAMETERS:
+	PC_0
+	eta: 0.008 | decay: 0.9999799999999996 | dropout: 0.8
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2389
+Last Training Loss: 1.0087258563144132 | Last Valid Loss: 2.422195941209793
+PARAMETERS:
+	PC_0
+	eta: 0.008 | decay: 0.9999899999999996 | dropout: 0.3
+DECISIONS:
+	Perfect Decision: 0.36
+	Told to Hodl, though Should Have Bought/Sold: 0.52
+	Signal Should Have Been Hodl: 0.072
+	Signal and Answer Exact Opposite: 0.048
+
+MODEL: 2392
+Last Training Loss: 1.0934811017941684 | Last Valid Loss: 1.2885426836354392
+PARAMETERS:
+	PC_0
+	eta: 0.008 | decay: 0.9999899999999996 | dropout: 0.45
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2396
+Last Training Loss: 1.089573540026322 | Last Valid Loss: 1.3166798480919428
+PARAMETERS:
+	PC_0
+	eta: 0.008 | decay: 0.9999899999999996 | dropout: 0.6500000000000001
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2398
+Last Training Loss: 1.104544488247484 | Last Valid Loss: 1.1518508791923523
+PARAMETERS:
+	PC_0
+	eta: 0.008 | decay: 0.9999899999999996 | dropout: 0.7500000000000001
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2439
+Last Training Loss: 1.046953764744103 | Last Valid Loss: 2.092074993110838
+PARAMETERS:
+	PC_0
+	eta: 0.0085 | decay: 0.9999199999999999 | dropout: 0.4
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2443
+Last Training Loss: 1.0964600583538413 | Last Valid Loss: 1.2186302287237984
+PARAMETERS:
+	PC_0
+	eta: 0.0085 | decay: 0.9999199999999999 | dropout: 0.6000000000000001
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2458
+Last Training Loss: 1.0995404528221115 | Last Valid Loss: 1.2021521244730269
+PARAMETERS:
+	PC_0
+	eta: 0.0085 | decay: 0.9999299999999999 | dropout: 0.55
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2476
+Last Training Loss: 1.0951281937304884 | Last Valid Loss: 1.262666595833642
+PARAMETERS:
+	PC_0
+	eta: 0.0085 | decay: 0.9999399999999998 | dropout: 0.6500000000000001
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2478
+Last Training Loss: 1.0908374656767894 | Last Valid Loss: 1.2821110486984253
+PARAMETERS:
+	PC_0
+	eta: 0.0085 | decay: 0.9999399999999998 | dropout: 0.7500000000000001
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2485
+Last Training Loss: 0.915352615294978 | Last Valid Loss: 2.7540407336893535
+PARAMETERS:
+	PC_0
+	eta: 0.0085 | decay: 0.9999499999999998 | dropout: 0.3
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2487
+Last Training Loss: 1.0934405461885035 | Last Valid Loss: 1.311557697398322
+PARAMETERS:
+	PC_0
+	eta: 0.0085 | decay: 0.9999499999999998 | dropout: 0.4
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2492
+Last Training Loss: 1.0982425624970347 | Last Valid Loss: 1.1934698224067688
+PARAMETERS:
+	PC_0
+	eta: 0.0085 | decay: 0.9999499999999998 | dropout: 0.6500000000000001
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2542
+Last Training Loss: 1.0961909707984887 | Last Valid Loss: 1.2413448372057505
+PARAMETERS:
+	PC_0
+	eta: 0.0085 | decay: 0.9999799999999996 | dropout: 0.7500000000000001
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2584
+Last Training Loss: 1.0591646226821467 | Last Valid Loss: 1.443581910360427
+PARAMETERS:
+	PC_0
+	eta: 0.009 | decay: 0.99991 | dropout: 0.45
+DECISIONS:
+	Perfect Decision: 0.304
+	Told to Hodl, though Should Have Bought/Sold: 0.248
+	Signal Should Have Been Hodl: 0.272
+	Signal and Answer Exact Opposite: 0.176
+
+MODEL: 2621
+Last Training Loss: 1.0857852085027844 | Last Valid Loss: 1.299925548689706
+PARAMETERS:
+	PC_0
+	eta: 0.009 | decay: 0.9999299999999999 | dropout: 0.7000000000000001
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2626
+Last Training Loss: 0.934950216091238 | Last Valid Loss: 4.2264814793117464
+PARAMETERS:
+	PC_0
+	eta: 0.009 | decay: 0.9999399999999998 | dropout: 0.15000000000000002
+DECISIONS:
+	Perfect Decision: 0.312
+	Told to Hodl, though Should Have Bought/Sold: 0.592
+	Signal Should Have Been Hodl: 0.088
+	Signal and Answer Exact Opposite: 0.008
+
+MODEL: 2639
+Last Training Loss: 1.1000024029053748 | Last Valid Loss: 1.2181638819830758
+PARAMETERS:
+	PC_0
+	eta: 0.009 | decay: 0.9999399999999998 | dropout: 0.8
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2642
+Last Training Loss: 0.9595233050640672 | Last Valid Loss: 3.4417396892630863
+PARAMETERS:
+	PC_0
+	eta: 0.009 | decay: 0.9999499999999998 | dropout: 0.15000000000000002
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2643
+Last Training Loss: 1.0135965498629957 | Last Valid Loss: 3.20722340402149
+PARAMETERS:
+	PC_0
+	eta: 0.009 | decay: 0.9999499999999998 | dropout: 0.2
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2647
+Last Training Loss: 1.0619273239281029 | Last Valid Loss: 1.5238797196320124
+PARAMETERS:
+	PC_0
+	eta: 0.009 | decay: 0.9999499999999998 | dropout: 0.4
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2662
+Last Training Loss: 0.9867102021817118 | Last Valid Loss: 3.159731318080236
+PARAMETERS:
+	PC_0
+	eta: 0.009 | decay: 0.9999599999999997 | dropout: 0.35000000000000003
+DECISIONS:
+	Perfect Decision: 0.32
+	Told to Hodl, though Should Have Bought/Sold: 0.48
+	Signal Should Have Been Hodl: 0.136
+	Signal and Answer Exact Opposite: 0.064
+
+MODEL: 2665
+Last Training Loss: 1.083136360393837 | Last Valid Loss: 1.3886843195983343
+PARAMETERS:
+	PC_0
+	eta: 0.009 | decay: 0.9999599999999997 | dropout: 0.5
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2690
+Last Training Loss: 0.998064536601305 | Last Valid Loss: 3.7922553505216325
+PARAMETERS:
+	PC_0
+	eta: 0.009 | decay: 0.9999799999999996 | dropout: 0.15000000000000002
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2698
+Last Training Loss: 1.096746491966769 | Last Valid Loss: 1.246117914322192
+PARAMETERS:
+	PC_0
+	eta: 0.009 | decay: 0.9999799999999996 | dropout: 0.55
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2702
+Last Training Loss: 1.0983534485567361 | Last Valid Loss: 1.3037417786461967
+PARAMETERS:
+	PC_0
+	eta: 0.009 | decay: 0.9999799999999996 | dropout: 0.7500000000000001
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2706
+Last Training Loss: 0.9813921978930011 | Last Valid Loss: 3.800028369067207
+PARAMETERS:
+	PC_0
+	eta: 0.009 | decay: 0.9999899999999996 | dropout: 0.15000000000000002
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2708
+Last Training Loss: 0.9968634088290855 | Last Valid Loss: 2.8149477579290907
+PARAMETERS:
+	PC_0
+	eta: 0.009 | decay: 0.9999899999999996 | dropout: 0.25
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2716
+Last Training Loss: 1.098466430627741 | Last Valid Loss: 1.212399300932884
+PARAMETERS:
+	PC_0
+	eta: 0.009 | decay: 0.9999899999999996 | dropout: 0.6500000000000001
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2726
+Last Training Loss: 1.097777663730085 | Last Valid Loss: 1.2514670618942805
+PARAMETERS:
+	PC_0
+	eta: 0.0095 | decay: 0.9999 | dropout: 0.35000000000000003
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2727
+Last Training Loss: 1.1034625752363354 | Last Valid Loss: 1.2142596585409982
+PARAMETERS:
+	PC_0
+	eta: 0.0095 | decay: 0.9999 | dropout: 0.4
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2765
+Last Training Loss: 1.100682549411431 | Last Valid Loss: 1.2255367040634155
+PARAMETERS:
+	PC_0
+	eta: 0.0095 | decay: 0.9999199999999999 | dropout: 0.7000000000000001
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2774
+Last Training Loss: 0.98747871008527 | Last Valid Loss: 4.127307478870664
+PARAMETERS:
+	PC_0
+	eta: 0.0095 | decay: 0.9999299999999999 | dropout: 0.35000000000000003
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2797
+Last Training Loss: 1.0938202964607626 | Last Valid Loss: 1.2531656324863434
+PARAMETERS:
+	PC_0
+	eta: 0.0095 | decay: 0.9999399999999998 | dropout: 0.7000000000000001
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2803
+Last Training Loss: 0.9847711153561249 | Last Valid Loss: 2.897127735709387
+PARAMETERS:
+	PC_0
+	eta: 0.0095 | decay: 0.9999499999999998 | dropout: 0.2
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2810
+Last Training Loss: 1.0924495041836053 | Last Valid Loss: 1.2737756733383452
+PARAMETERS:
+	PC_0
+	eta: 0.0095 | decay: 0.9999499999999998 | dropout: 0.55
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2815
+Last Training Loss: 1.089605323271826 | Last Valid Loss: 1.3392645163195473
+PARAMETERS:
+	PC_0
+	eta: 0.0095 | decay: 0.9999499999999998 | dropout: 0.8
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2819
+Last Training Loss: 0.9270167254726402 | Last Valid Loss: 3.0195386674669056
+PARAMETERS:
+	PC_0
+	eta: 0.0095 | decay: 0.9999599999999997 | dropout: 0.2
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2820
+Last Training Loss: 0.9979287429014221 | Last Valid Loss: 3.261813115978998
+PARAMETERS:
+	PC_0
+	eta: 0.0095 | decay: 0.9999599999999997 | dropout: 0.25
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2832
+Last Training Loss: 0.9238330793450586 | Last Valid Loss: 3.5380321627571467
+PARAMETERS:
+	PC_0
+	eta: 0.0095 | decay: 0.9999699999999997 | dropout: 0.05
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2849
+Last Training Loss: 0.9246785192517564 | Last Valid Loss: 3.469834944558522
+PARAMETERS:
+	PC_0
+	eta: 0.0095 | decay: 0.9999799999999996 | dropout: 0.1
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2861
+Last Training Loss: 1.09609638270922 | Last Valid Loss: 1.264914550951549
+PARAMETERS:
+	PC_0
+	eta: 0.0095 | decay: 0.9999799999999996 | dropout: 0.7000000000000001
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2871
+Last Training Loss: 1.1002237581415102 | Last Valid Loss: 1.1899371381316866
+PARAMETERS:
+	PC_0
+	eta: 0.0095 | decay: 0.9999899999999996 | dropout: 0.4
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+
+MODEL: 2878
+Last Training Loss: 1.0862213652580976 | Last Valid Loss: 1.3330343323094505
+PARAMETERS:
+	PC_0
+	eta: 0.0095 | decay: 0.9999899999999996 | dropout: 0.7500000000000001
+DECISIONS:
+	Perfect Decision: 0.384
+	Told to Hodl, though Should Have Bought/Sold: 0.616
+	Signal Should Have Been Hodl: 0.0
+	Signal and Answer Exact Opposite: 0.0
+

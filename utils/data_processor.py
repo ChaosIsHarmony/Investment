@@ -332,9 +332,9 @@ def parameter_tuner():
 	global COIN, BATCH_SIZE, EPOCHS
 
 	train_data, valid_data, test_data = get_datasets(COIN, 32)
-	model_counter = 0
+	model_counter = 160
 
-	for eta in np.arange(0.001, 0.0015, 0.0005):
+	for eta in np.arange(0.0015, 0.01, 0.0005):
 		for decay in np.arange(0.9999, 0.99999, 0.00001):	
 			for dropout in np.arange(0.05, 0.85, 0.05):
 				print("Start of new Experiment\n__________________________")
