@@ -1,0 +1,2 @@
+1.) Add in best validation save during continue training
+2.) Transfer learning for other assets' datasets

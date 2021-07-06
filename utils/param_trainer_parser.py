@@ -60,3 +60,5 @@ def list_promising_model_details():
 		print(f"Model num: {model['model_num']}")
 		print(f"Model acc: {model['accuracy']}")
 		print(f"Model bad: {model['inaccuracy']}")
+		print()
+

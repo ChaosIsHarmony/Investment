@@ -204,7 +204,7 @@ def terminate_early(prev_valid_losses):
 		ind = len(prev_valid_losses) - 1
 		valid_loss_trend = 0
 
-		while ind > 0:
+		while (len(prev_valid_losses) - ind) < 10:
 			valid_loss_trend += prev_valid_losses[ind] - prev_valid_losses[ind-1]
 			ind -= 1
 		
@@ -390,7 +390,7 @@ def parameter_tuner():
 
 				model_counter += 1
 
-#parameter_tuner()
+parameter_tuner()
 
 
 
@@ -404,7 +404,7 @@ def continue_training():
 	# ------------ DATA GENERATION ----------
 	#
 	start_time = time.time()
-	data_aug_factor = 1024
+	data_aug_factor = 512
 	print("Creating datasets...")
 	train_data, valid_data, test_data = get_datasets(COIN, data_aug_factor)
 	print(f"Datasets created in {(time.time()-start_time)/60:.1f} mins")
@@ -450,4 +450,4 @@ def continue_training():
 	
 
 
-continue_training()
+#continue_training()
