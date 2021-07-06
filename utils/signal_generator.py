@@ -361,6 +361,7 @@ def generate_signals(full_report=False):
 		report.append(f"\tWeights:\t{formatted_w_list}")
 		report.append(f"\tDiff 1st and 2nd:\t{best_w - second_best_w:>9.4f}")
 		report.append(f"\tDiff 1st and last:\t{best_w - worst_w:>9.4f}")
+		report.append(f"\tDiff BUY and SELL:\t{abs(buy_signal - sell_signal):>9.4f}")
 
 
 	return report

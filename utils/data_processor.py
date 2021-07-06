@@ -204,7 +204,7 @@ def terminate_early(prev_valid_losses):
 		ind = len(prev_valid_losses) - 1
 		valid_loss_trend = 0
 
-		while ind > 0:
+		while (len(prev_valid_losses) - ind) < 10:
 			valid_loss_trend += prev_valid_losses[ind] - prev_valid_losses[ind-1]
 			ind -= 1
 		
@@ -333,16 +333,16 @@ def parameter_tuner():
 	global COIN, BATCH_SIZE, EPOCHS
 
 	train_data, valid_data, test_data = get_datasets(COIN, 32)
-	model_counter = 160
+	model_counter = 0
 
-	for eta in np.arange(0.0015, 0.01, 0.0005):
+	for eta in np.arange(0.001, 0.01, 0.0005):
 		for decay in np.arange(0.9999, 0.99999, 0.00001):	
 			for dropout in np.arange(0.05, 0.85, 0.05):
 				print("Start of new Experiment\n__________________________")
 				print(f"Eta: {eta} | Decay: {decay} | Dropout: {dropout}")
 				report = "" 
 				
-				model_architecture = "Laptop_0"
+				model_architecture = "Laptop_1"
 				nn.set_model_parameters(dropout, eta, decay)
 				nn.set_model(model_architecture) 
 				nn.set_model_props(nn.get_model())
@@ -390,7 +390,7 @@ def parameter_tuner():
 
 				model_counter += 1
 
-#parameter_tuner()
+parameter_tuner()
 
 
 
@@ -450,4 +450,4 @@ def continue_training():
 	
 
 
-continue_training()
+#continue_training()

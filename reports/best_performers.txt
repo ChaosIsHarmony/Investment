@@ -1,5 +1,4 @@
-models/best/CS_Laptop_0_155_42-80_512xaug.pt
-models/best/CS_Laptop_0_86_45-78_512xaug.pt
-models/best/CS_Laptop_0_86_44-76_512xaug.pt
-models/best/CS_Laptop_0_137_48-71_512xaug.pt
-models/best/CS_Laptop_0_155_46-64_512xaug.pt
+models/best/CS_PC_0_118_51-0_512xaug.pt
+models/best/CS_PC_0_436_50-0_1024xaug.pt
+models/best/CS_Laptop_0_1952_49_512xaug.pt
+models/best/CS_PC_0_290_48-0_512xaug.pt
