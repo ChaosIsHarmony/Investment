@@ -1,3 +1,6 @@
+#
+# ------------- PC 0 ----------------
+#
 MODEL: 0
 Last Training Loss: 0.9386913269991055 | Last Valid Loss: 2.0930633507077654
 PARAMETERS:
@@ -1614,4 +1617,8 @@ DECISIONS:
 	Told to Hodl, though Should Have Bought/Sold: 0.616
 	Signal Should Have Been Hodl: 0.0
 	Signal and Answer Exact Opposite: 0.0
+
+#
+# ------------- PC 1 ----------------
+#
 
