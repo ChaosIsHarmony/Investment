@@ -16,9 +16,10 @@ import numpy as np
 import param_trainer_parser
 import neural_nets as nn
 '''
-WHEN testing need this version instead
+WHEN testing need these versions instead
 '''
 #from utils import neural_nets as nn
+#from utils import param_trainer_parser
 
 BATCH_SIZE = 256 
 EPOCHS = 20
@@ -61,7 +62,7 @@ def generate_dataset(data, limit, offset, data_aug_per_sample=0):
 		target = data.iloc[row, -1]
 		row_features = []
 
-		for feature in range(nn.N_FEATURES):
+		for feature in range(data.shape[1]):
 			row_features.append(data.iloc[row, feature])
 		datapoint_tuple = (row_features, target)
 		dataset.append(datapoint_tuple)
@@ -69,7 +70,7 @@ def generate_dataset(data, limit, offset, data_aug_per_sample=0):
 		# this evens out the datapoints per category
 		for i in range(data_aug_per_sample * round(signal_ratios[target])):
 			row_features_aug = []
-			for feature in range(nn.N_FEATURES):
+			for feature in range(data.shape[1]):
 				rand_factor = 1 + random.uniform(-0.000001, 0.000001)
 				row_features_aug.append(data.iloc[row, feature] * rand_factor)
 			datapoint_tuple_aug = (row_features_aug, target)
@@ -402,7 +403,7 @@ def parameter_tuner():
 
 				model_counter += 1
 
-parameter_tuner()
+#parameter_tuner()
 
 
 
@@ -453,8 +454,8 @@ def continue_training():
 		print(report)
 		model_acc = evaluate_model(model, test_data)
 
-		# if accuracy is higher than 0.4 and inaccuracy is lower than 0.15
-		if model_acc[0] > 0.4 and model_acc[3] < 0.15:
+		# save iff accuracy is higher/lower than threshholds
+		if model_acc[0] > 0.48 and model_acc[3] < 0.1:
 			save_model(model, f"models/{COIN}_{model_architecture}_{model_number}_{int(round(model_acc[0], 2) * 100)}-{int(round(model_acc[3], 2))}_{data_aug_factor}xaug.pt")
 
 			#
@@ -465,3 +466,16 @@ def continue_training():
 
 
 #continue_training()
+
+
+def transfer_learner():
+	# load data
+
+	# load previously trained model
+
+	# train on novel data
+
+	# evaluate
+	pass
+
+
