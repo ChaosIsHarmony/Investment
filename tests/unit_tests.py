@@ -1,7 +1,6 @@
 '''
 RUN WITH: $ python3 -m unittest tests.unit_tests
 '''
-import utils
 from utils import data_aggregator as da
 from utils import data_preprocessor as dpp
 from utils import data_processor as dp
@@ -352,9 +351,7 @@ def test_calculate_signals():
 	# 7 -> 8 : ((8-7) / 7) * weight_const * 1 = 0.005
 	# avg = 0.714
 	assert data["signal"][6] == 0, f"WRONG VALUE: {data['signal'][6]:.4f} != 0 | Failed BUY 3X signal in test_calculate_signals test."  
-	assert data["signal"][9] == 1, f"WRONG VALUE: {data['signal'][9]:.4f} != 1 | Failed BUY 2X signal in test_calculate_signals test."  
-	assert data["signal"][16] == 2, f"WRONG VALUE: {data['signal'][16]:.4f} != 2 | Failed BUY X signal in test_calculate_signals test."  
-	assert data["signal"][33] == 3, f"WRONG VALUE: {data['signal'][33]:.4f} != 3 | Failed positive HODL signal in test_calculate_signals test."  
+	assert data["signal"][49] == 1, f"WRONG VALUE: {data['signal'][33]:.4f} != 3 | Failed positive HODL signal in test_calculate_signals test."  
 	
 	# descending
 	data = []
@@ -364,10 +361,8 @@ def test_calculate_signals():
 	data = pd.DataFrame(data, columns=["price"])
 	data = dpp.calculate_signals(data, 7)
 
-	assert data["signal"][3] == 6, f"WRONG VALUE: {data['signal'][3]:.4f} != 6 | Failed SELL 3Y signal in test_calculate_signals test."  
-	assert data["signal"][4] == 5, f"WRONG VALUE: {data['signal'][4]:.4f} != 5 | Failed SELL 2Y signal in test_calculate_signals test."  
-	assert data["signal"][11] == 4, f"WRONG VALUE: {data['signal'][11]:.4f} != 4 | Failed SELL Y signal in test_calculate_signals test."  
-	assert data["signal"][27] == 3, f"WRONG VALUE: {data['signal'][27]:.4f} != 3 | Failed HODL signal in test_calculate_signals test."  
+	assert data["signal"][11] == 2, f"WRONG VALUE: {data['signal'][11]:.4f} != 4 | Failed SELL Y signal in test_calculate_signals test."  
+	assert data["signal"][45] == 1, f"WRONG VALUE: {data['signal'][27]:.4f} != 3 | Failed HODL signal in test_calculate_signals test."  
 
 
 
@@ -393,7 +388,7 @@ def test_generate_dataset():
 	altered_data = dp.generate_dataset(data, len(data), 0)
 	assert len(altered_data) == 7, "No augmentation dataset length test failed"
 	assert len(altered_data[0]) == 2, "No augmentation feature/target tuple length test failed"
-	assert len(altered_data[0][0]) == nn.N_FEATURES, "No augmentation feature vector length test failed."
+	assert len(altered_data[0][0]) == nn.N_FEATURES+1, "No augmentation feature vector length test failed."
 
 	# 10x augmentation
 	# 10*3 for signal 0
@@ -407,19 +402,19 @@ def test_generate_dataset():
 	altered_data = dp.generate_dataset(data, len(data), 0, 10)
 	assert len(altered_data) == (10*3)+(10*3)+(10*2)+(10*2)+(10*1)+(10*1)+(10*1)+7, "10x augmentation dataset length test failed"
 	assert len(altered_data[0]) == 2, "10x augmentation feature/target tuple length test failed" 
-	assert len(altered_data[0][0]) == nn.N_FEATURES, "10x augmentation feature vector length test failed."
+	assert len(altered_data[0][0]) == nn.N_FEATURES+1, "10x augmentation feature vector length test failed."
 
 	# Testing offset
 	altered_data = dp.generate_dataset(data, len(data), 2, 10)
 	assert len(altered_data) == (10*2)+(10*2)+(10*1)+(10*1)+(10*1)+5, "2 offset dataset length test failed"
 	assert len(altered_data[0]) == 2, "2 offset feature/target tuple length test failed"  
-	assert len(altered_data[0][0]) == nn.N_FEATURES, "2 offset feature vector length test failed."
+	assert len(altered_data[0][0]) == nn.N_FEATURES+1, "2 offset feature vector length test failed."
 	
 	# Testing limit
 	altered_data = dp.generate_dataset(data, len(data)-2, 0, 10)
 	assert len(altered_data) == (10*2)+(10*2)+(10*1)+(10*1)+(10*2)+5, "2 limit dataset length test failed"
 	assert len(altered_data[0]) == 2, "2 limit feature/target tuple length test failed"  
-	assert len(altered_data[0][0]) == nn.N_FEATURES, "2 limit feature vector length test failed."
+	assert len(altered_data[0][0]) == nn.N_FEATURES+1, "2 limit feature vector length test failed."
 
 
 
@@ -427,17 +422,19 @@ def create_fake_csv():
 	data = []
 	for i in range(100):
 		dt_list = []
-		for j in range(nn.N_FEATURES):
+		# +2 is for date and signal
+		for j in range(nn.N_FEATURES+2):
 			dt_list.append(i)
 		data.append(dt_list)
 
 	col_labels = ["date"]
-	for i in range(nn.N_FEATURES-2):
+	for i in range(nn.N_FEATURES):
 		col_labels.append(i)
 	col_labels.append("signal")
 	
 	data = pd.DataFrame(data, columns=col_labels)
-	data.to_csv("datasets/complete/fakecoin_historical_data_complete.csv")
+	data = dpp.normalize_data(data)
+	data.to_csv("datasets/complete/fakecoin_historical_data_complete.csv", index=False)
 	
 	return data
 
@@ -459,9 +456,9 @@ def test_get_datasets():
 	assert len(train_data) == (len(data)*0.7*16) + (len(data)*0.7), "Failed train_data size test in get_datasets test."
 	assert len(valid_data) == len(data)*0.15, "Failed valid_data size test in get_datasets test."
 	assert len(test_data) == len(data)*0.15, "Failed test_data size test in get_datasets test."
-	assert 68.9 < train_data[int(len(data)*0.7*16)+69][0][0] < 69.1, "Failed train_data value test in get_datasets test."
-	assert valid_data[int(len(data)*0.15)-1][0][0] == 84, "Failed valid_data value test in get_datasets test."
-	assert test_data[int(len(data)*0.15)-1][0][0] == 99, "Failed test_data value test in get_datasets test."
+	assert 0.999 < train_data[int(len(data)*0.7*16)+69][0][0] < 1.001, "Failed train_data value test in get_datasets test."
+	assert valid_data[int(len(data)*0.15)-1][0][0] == 1.0, "Failed valid_data value test in get_datasets test."
+	assert test_data[int(len(data)*0.15)-1][0][0] == 1.0, "Failed test_data value test in get_datasets test."
 
 	# test with 0 augmentation
 	train_data, valid_data, test_data = dp.get_datasets(coin)
@@ -469,9 +466,9 @@ def test_get_datasets():
 	assert len(train_data) == len(data)*0.7, "Failed train_data size test in get_datasets test."
 	assert len(valid_data) == len(data)*0.15, "Failed valid_data size test in get_datasets test."
 	assert len(test_data) == len(data)*0.15, "Failed test_data size test in get_datasets test."
-	assert train_data[int(len(data)*0.7)-1][0][0] == 69, "Failed train_data value test in get_datasets test."
-	assert valid_data[int(len(data)*0.15)-1][0][0] == 84, "Failed valid_data value test in get_datasets test."
-	assert test_data[int(len(data)*0.15)-1][0][0] == 99, "Failed test_data value test in get_datasets test."
+	assert train_data[int(len(data)*0.7)-1][0][0] == 1.0, "Failed train_data value test in get_datasets test."
+	assert valid_data[int(len(data)*0.15)-1][0][0] == 1.0, "Failed valid_data value test in get_datasets test."
+	assert test_data[int(len(data)*0.15)-1][0][0] == 1.0, "Failed test_data value test in get_datasets test."
 
 	destroy_fake_coin()
 

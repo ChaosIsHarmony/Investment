@@ -209,7 +209,7 @@ def calculate_signals(data, limit=28):
 
 	data["signal"] = pd.Series(signals)
 
-	print(data["signal"].value_counts())
+	print("Value counts for signals in dataset:\n", data["signal"].value_counts())
 
 	data = data.fillna(0)
 
