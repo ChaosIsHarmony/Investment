@@ -13,7 +13,7 @@ from datetime import datetime
 import time
 import random
 import numpy as np
-import param_trainer_parser
+import param_trainer_parser as ptp
 import neural_nets as nn
 '''
 WHEN testing need these versions instead
@@ -353,7 +353,7 @@ def parameter_tuner():
 				print(f"Eta: {eta} | Decay: {decay} | Dropout: {dropout}")
 				report = "" 
 				
-				model_architecture = "Laptop_0"
+				model_architecture = "Laptop_1"
 				nn.set_model_parameters(dropout, eta, decay)
 				nn.set_model(model_architecture) 
 				nn.set_model_props(nn.get_model())
@@ -407,7 +407,7 @@ def parameter_tuner():
 
 				model_counter += 1
 
-parameter_tuner()
+#parameter_tuner()
 
 
 
@@ -421,7 +421,7 @@ def continue_training():
 	# ------------ DATA GENERATION ----------
 	#
 	start_time = time.time()
-	data_aug_factor = 512
+	data_aug_factor = 64
 	print("Creating datasets...")
 	train_data, valid_data, test_data = get_datasets(COIN, data_aug_factor)
 	print(f"Datasets created in {(time.time()-start_time)/60:.1f} mins")
@@ -429,7 +429,7 @@ def continue_training():
 	#
 	# ------------ MODEL TRAINING -----------
 	#
-	promising_models = param_trainer_parser.parse_reports("Laptop_1")
+	promising_models = ptp.parse_reports("Laptop_0")
 	for model_params in promising_models:
 		model_architecture = model_params["architecture"]
 		model_number = model_params["model_num"]
@@ -459,7 +459,7 @@ def continue_training():
 		model_acc = evaluate_model(model, test_data)
 
 		# save iff accuracy is higher/lower than threshholds
-		if model_acc[0] > 0.48 and model_acc[3] < 0.1:
+		if model_acc[0] > ptp.ACCURACY_THRESHOLD and model_acc[3] < ptp.INACCURACY_THRESHOLD:
 			save_model(model, f"models/{COIN}_{model_architecture}_{model_number}_{int(round(model_acc[0], 2) * 100)}-{int(round(model_acc[3], 2))}_{data_aug_factor}xaug.pt")
 
 			#
@@ -468,8 +468,15 @@ def continue_training():
 			generate_report()
 	
 
+continue_training()
 
-#continue_training()
+def try_model():
+		model_number = 2817
+		train_data, valid_data, test_data = get_datasets("bitcoin", 0)
+		nn.set_model_parameters(dropout=0 , eta=0, eta_decay=0)
+		model = load_model(nn.CryptoSoothsayer_Laptop_0(nn.N_FEATURES, nn.N_SIGNALS), f"models/bitcoin_Laptop_0_{model_number}_lowest_val_loss.pt")
+		model_acc = evaluate_model(model, test_data)
+	
 
 
 def transfer_learner():
