@@ -1,8 +1,8 @@
 '''
 Parses the Parameter_Tuning_Reports.txt file so that it can automatically set the parameters in the continue_training method of the data_processor file.
 '''
-def parse_reports():
-	with open("reports/Parameter_Tuning_Report.txt", 'r') as f:
+def parse_reports(model_architecture):
+	with open(f"reports/Parameter_Tuning_Report_{model_architecture}.txt", 'r') as f:
 		reports = f.read()
 
 	models = []

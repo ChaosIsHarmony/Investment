@@ -388,7 +388,7 @@ def test_generate_dataset():
 	altered_data = dp.generate_dataset(data, len(data), 0)
 	assert len(altered_data) == 7, "No augmentation dataset length test failed"
 	assert len(altered_data[0]) == 2, "No augmentation feature/target tuple length test failed"
-	assert len(altered_data[0][0]) == nn.N_FEATURES+1, "No augmentation feature vector length test failed."
+	assert len(altered_data[0][0]) == nn.N_FEATURES, "No augmentation feature vector length test failed."
 
 	# 10x augmentation
 	# 10*3 for signal 0
@@ -402,19 +402,19 @@ def test_generate_dataset():
 	altered_data = dp.generate_dataset(data, len(data), 0, 10)
 	assert len(altered_data) == (10*3)+(10*3)+(10*2)+(10*2)+(10*1)+(10*1)+(10*1)+7, "10x augmentation dataset length test failed"
 	assert len(altered_data[0]) == 2, "10x augmentation feature/target tuple length test failed" 
-	assert len(altered_data[0][0]) == nn.N_FEATURES+1, "10x augmentation feature vector length test failed."
+	assert len(altered_data[0][0]) == nn.N_FEATURES, "10x augmentation feature vector length test failed."
 
 	# Testing offset
 	altered_data = dp.generate_dataset(data, len(data), 2, 10)
 	assert len(altered_data) == (10*2)+(10*2)+(10*1)+(10*1)+(10*1)+5, "2 offset dataset length test failed"
 	assert len(altered_data[0]) == 2, "2 offset feature/target tuple length test failed"  
-	assert len(altered_data[0][0]) == nn.N_FEATURES+1, "2 offset feature vector length test failed."
+	assert len(altered_data[0][0]) == nn.N_FEATURES, "2 offset feature vector length test failed."
 	
 	# Testing limit
 	altered_data = dp.generate_dataset(data, len(data)-2, 0, 10)
 	assert len(altered_data) == (10*2)+(10*2)+(10*1)+(10*1)+(10*2)+5, "2 limit dataset length test failed"
 	assert len(altered_data[0]) == 2, "2 limit feature/target tuple length test failed"  
-	assert len(altered_data[0][0]) == nn.N_FEATURES+1, "2 limit feature vector length test failed."
+	assert len(altered_data[0][0]) == nn.N_FEATURES, "2 limit feature vector length test failed."
 
 
 
@@ -493,11 +493,14 @@ def test_shuffle_data():
 
 
 def test_terminate_early():
-	prev_valid_losses = [ 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0 ]
-	assert dp.terminate_early(prev_valid_losses) == True, "Failed should terminate early in terminate_early test."
+	prev_valid_losses = [ 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9 ]
+	assert dp.terminate_early(prev_valid_losses) == True, "Failed should terminate early increasing in terminate_early test."
 
 	prev_valid_losses.reverse()
-	assert dp.terminate_early(prev_valid_losses) == False, "Failed should not terminate early in terminate_early test."
+	assert dp.terminate_early(prev_valid_losses) == False, "Failed should not terminate early decreasing in terminate_early test."
+
+	prev_valid_losses = [ 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 ]
+	assert dp.terminate_early(prev_valid_losses) == True, "Failed should terminate early stagnating in terminate_early test."
 
 
 

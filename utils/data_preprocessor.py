@@ -217,7 +217,7 @@ def calculate_signals(data, limit=28):
 
 
 
-def process_data(data, start_date, end_date):
+def process_data(coin, data, start_date, end_date):
 	'''
 	Processes the basic data provided by coingecko in the following ways:
 		
@@ -238,6 +238,8 @@ def process_data(data, start_date, end_date):
 	days_from_now = 7 * 5 # 7 * n weeks 
 	data = calculate_signals(data, days_from_now)
 	print(f"Signal calculation for {days_from_now} days from now complete.")
+	# save all features raw file for use in signal_generator
+	data.to_csv(f"datasets/raw/{coin}_historical_data_raw_all_features.csv", index=False)
 	# Normalize, must happen after SMA calculation or will skew results
 	data = normalize_data(data)
 	print("Data normalization complete.")
@@ -261,7 +263,7 @@ def run():
 
 		data = pd.read_csv(f"datasets/raw/{coin}_historical_data_raw.csv")
 
-		data = process_data(data, start_date, end_date)
+		data = process_data(coin, data, start_date, end_date)
 
 		data.to_csv(f"datasets/clean/{coin}_historical_data_clean.csv", index=False)
 
