@@ -259,7 +259,7 @@ def fully_train(model, train_data, valid_data, start_time, filepath):
 				avg_valid_loss = total_valid_loss / (steps / BATCH_SIZE)
 				avg_train_loss = total_train_loss / steps
 				print_batch_status(avg_train_loss, avg_valid_loss, start_time)
-				prev_valid_losses.append(round(avg_valid_loss, 6))
+				prev_valid_losses.append(round(avg_valid_loss, 4))
 				if terminate_early(prev_valid_losses):
 					print("\nTerminated epoch early due to stagnating or increasing validation loss.\n\n")
 					break
@@ -346,14 +346,14 @@ def parameter_tuner():
 	train_data, valid_data, test_data = get_datasets(COIN, data_aug_factor)
 	model_counter = 0
 
-	for eta in np.arange(0.00025, 0.0105, 0.00025):
+	for eta in np.arange(0.00025, 0.01025, 0.00025):
 		for decay in np.arange(0.9999, 0.99999, 0.00001):	
 			for dropout in np.arange(0.05, 0.85, 0.05):
 				print("Start of new Experiment\n__________________________")
 				print(f"Eta: {eta} | Decay: {decay} | Dropout: {dropout}")
 				report = "" 
 				
-				model_architecture = "PC_1"
+				model_architecture = "PC_0"
 				nn.set_model_parameters(dropout, eta, decay)
 				nn.set_model(model_architecture) 
 				nn.set_model_props(nn.get_model())
@@ -387,7 +387,7 @@ def parameter_tuner():
 							print_batch_status(avg_train_loss, avg_valid_loss, start_time)
 							
 							prev_train_losses.append(avg_train_loss)
-							prev_valid_losses.append(round(avg_valid_loss, 6))
+							prev_valid_losses.append(round(avg_valid_loss, 4))
 							
 							if terminate_early(prev_valid_losses):
 								print("\nTerminated epoch early due to stagnating or increasing validation loss.\n\n")
@@ -469,7 +469,7 @@ def continue_training():
 	
 
 
-continue_training()
+#continue_training()
 
 
 def transfer_learner():

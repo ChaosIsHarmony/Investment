@@ -9,4 +9,4 @@ for c in range(1, len(data.columns)-1):
 			data.iloc[r, c] = data.iloc[r, c] / 1000
 
 
-data.to_csv("datasets/complete/bitcoin_historical_data_complete.csv", index=False)
+data.to_csv("datasets/complete/bitcoin_historical_data_complete.csv", index=False, float_format="%f")

@@ -6,7 +6,7 @@ import torch.optim.lr_scheduler as lr_scheduler
 
 # Fixed parameters
 N_SIGNALS = 3
-N_FEATURES = 25
+N_FEATURES = 23
 # Tunable Hyperparameters
 DROPOUT = None
 LEARNING_RATE = None
