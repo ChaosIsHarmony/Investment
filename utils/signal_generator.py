@@ -50,7 +50,7 @@ def process_new_data():
 		print(coin)
 
 		data = pd.read_csv(f"datasets/raw/{coin}_historical_data_raw.csv")
-		data = dt_prepro.process_data(data, start_date, end_date)
+		data = dt_prepro.process_data(coin, data, start_date, end_date)
 		data.to_csv(f"datasets/clean/{coin}_historical_data_clean.csv", index=False)
 
 
@@ -69,7 +69,7 @@ def get_fg_indicator(fg_index):
 
 
 
-def populate_stat_report_full(coin, data, report):
+def populate_stat_report_full(coin, data, raw_data, report):
 	basic_stats = ["\n\n\n________________________________________", 
 					f"Report for {coin.upper()}:", 
 					"Basic Stats", 
@@ -81,46 +81,46 @@ def populate_stat_report_full(coin, data, report):
 	
 	price_ratios = ["\nPrice Ratios", 
 					"[>0 means greater risk/overvalued; <0 means less risk/undervalued]", 
-					f"5-day/10-day:\t{data[PRICE_5_SMA]/data[PRICE_10_SMA]:>9.6f}", 
-					f"10-day/25-day:\t{data[PRICE_10_SMA]/data[PRICE_25_SMA]:>9.6f}", 
-					f"25-day/50-day:\t{data[PRICE_25_SMA]/data[PRICE_50_SMA]:>9.6f}"]
+					f"5-day/10-day:\t{raw_data[PRICE_5_SMA]/raw_data[PRICE_10_SMA]:>9.6f}", 
+					f"10-day/25-day:\t{raw_data[PRICE_10_SMA]/raw_data[PRICE_25_SMA]:>9.6f}", 
+					f"25-day/50-day:\t{raw_data[PRICE_25_SMA]/raw_data[PRICE_50_SMA]:>9.6f}"]
 
-	if data[PRICE_200_SMA] > 0:
+	if raw_data[PRICE_200_SMA] > 0:
 		price_ratios.append("x-day/200-day")
-		price_ratios.append(f"\t5-day/200-day:\t\t{data[PRICE_5_SMA]/data[PRICE_200_SMA]:>9.6f}")
-		price_ratios.append(f"\t10-day/200-day:\t\t{data[PRICE_10_SMA]/data[PRICE_200_SMA]:>9.6f}")
-		price_ratios.append(f"\t25-day/200-day:\t\t{data[PRICE_25_SMA]/data[PRICE_200_SMA]:>9.6f}")
-		price_ratios.append(f"\t50-day/200-day:\t\t{data[PRICE_50_SMA]/data[PRICE_200_SMA]:>9.6f}")
-		price_ratios.append(f"\t75-day/200-day:\t\t{data[PRICE_75_SMA]/data[PRICE_200_SMA]:>9.6f}")
-		price_ratios.append(f"\t100-day/200-day:\t{data[PRICE_100_SMA]/data[PRICE_200_SMA]:>9.6f}")
-		price_ratios.append(f"\t150-day/200-day:\t{data[PRICE_150_SMA]/data[PRICE_200_SMA]:>9.6f}")
-	if data[PRICE_250_SMA] > 0:
+		price_ratios.append(f"\t5-day/200-day:\t\t{raw_data[PRICE_5_SMA]/raw_data[PRICE_200_SMA]:>9.6f}")
+		price_ratios.append(f"\t10-day/200-day:\t\t{raw_data[PRICE_10_SMA]/raw_data[PRICE_200_SMA]:>9.6f}")
+		price_ratios.append(f"\t25-day/200-day:\t\t{raw_data[PRICE_25_SMA]/raw_data[PRICE_200_SMA]:>9.6f}")
+		price_ratios.append(f"\t50-day/200-day:\t\t{raw_data[PRICE_50_SMA]/raw_data[PRICE_200_SMA]:>9.6f}")
+		price_ratios.append(f"\t75-day/200-day:\t\t{raw_data[PRICE_75_SMA]/raw_data[PRICE_200_SMA]:>9.6f}")
+		price_ratios.append(f"\t100-day/200-day:\t{raw_data[PRICE_100_SMA]/raw_data[PRICE_200_SMA]:>9.6f}")
+		price_ratios.append(f"\t150-day/200-day:\t{raw_data[PRICE_150_SMA]/raw_data[PRICE_200_SMA]:>9.6f}")
+	if raw_data[PRICE_250_SMA] > 0:
 		price_ratios.append("x-day/250-day")
-		price_ratios.append(f"\t5-day/250-day:\t\t{data[PRICE_5_SMA]/data[PRICE_250_SMA]:>9.6f}")
-		price_ratios.append(f"\t10-day/250-day:\t\t{data[PRICE_10_SMA]/data[PRICE_250_SMA]:>9.6f}")
-		price_ratios.append(f"\t25-day/250-day:\t\t{data[PRICE_25_SMA]/data[PRICE_250_SMA]:>9.6f}")
-		price_ratios.append(f"\t50-day/250-day:\t\t{data[PRICE_50_SMA]/data[PRICE_250_SMA]:>9.6f}")
-		price_ratios.append(f"\t75-day/250-day:\t\t{data[PRICE_75_SMA]/data[PRICE_250_SMA]:>9.6f}")
-		price_ratios.append(f"\t100-day/250-day:\t{data[PRICE_100_SMA]/data[PRICE_250_SMA]:>9.6f}")
-		price_ratios.append(f"\t150-day/250-day:\t{data[PRICE_150_SMA]/data[PRICE_250_SMA]:>9.6f}")
-	if data[PRICE_300_SMA] > 0:
+		price_ratios.append(f"\t5-day/250-day:\t\t{raw_data[PRICE_5_SMA]/raw_data[PRICE_250_SMA]:>9.6f}")
+		price_ratios.append(f"\t10-day/250-day:\t\t{raw_data[PRICE_10_SMA]/raw_data[PRICE_250_SMA]:>9.6f}")
+		price_ratios.append(f"\t25-day/250-day:\t\t{raw_data[PRICE_25_SMA]/raw_data[PRICE_250_SMA]:>9.6f}")
+		price_ratios.append(f"\t50-day/250-day:\t\t{raw_data[PRICE_50_SMA]/raw_data[PRICE_250_SMA]:>9.6f}")
+		price_ratios.append(f"\t75-day/250-day:\t\t{raw_data[PRICE_75_SMA]/raw_data[PRICE_250_SMA]:>9.6f}")
+		price_ratios.append(f"\t100-day/250-day:\t{raw_data[PRICE_100_SMA]/raw_data[PRICE_250_SMA]:>9.6f}")
+		price_ratios.append(f"\t150-day/250-day:\t{raw_data[PRICE_150_SMA]/raw_data[PRICE_250_SMA]:>9.6f}")
+	if raw_data[PRICE_300_SMA] > 0:
 		price_ratios.append("x-day/300-day")
-		price_ratios.append(f"\t5-day/300-day:\t\t{data[PRICE_5_SMA]/data[PRICE_300_SMA]:>9.6f}")
-		price_ratios.append(f"\t10-day/300-day:\t\t{data[PRICE_10_SMA]/data[PRICE_300_SMA]:>9.6f}")
-		price_ratios.append(f"\t25-day/300-day:\t\t{data[PRICE_25_SMA]/data[PRICE_300_SMA]:>9.6f}")
-		price_ratios.append(f"\t50-day/300-day:\t\t{data[PRICE_50_SMA]/data[PRICE_300_SMA]:>9.6f}")
-		price_ratios.append(f"\t75-day/300-day:\t\t{data[PRICE_75_SMA]/data[PRICE_300_SMA]:>9.6f}")
-		price_ratios.append(f"\t100-day/300-day:\t{data[PRICE_100_SMA]/data[PRICE_300_SMA]:>9.6f}")
-		price_ratios.append(f"\t150-day/300-day:\t{data[PRICE_150_SMA]/data[PRICE_300_SMA]:>9.6f}")
-	if data[PRICE_350_SMA] > 0:
+		price_ratios.append(f"\t5-day/300-day:\t\t{raw_data[PRICE_5_SMA]/raw_data[PRICE_300_SMA]:>9.6f}")
+		price_ratios.append(f"\t10-day/300-day:\t\t{raw_data[PRICE_10_SMA]/raw_data[PRICE_300_SMA]:>9.6f}")
+		price_ratios.append(f"\t25-day/300-day:\t\t{raw_data[PRICE_25_SMA]/raw_data[PRICE_300_SMA]:>9.6f}")
+		price_ratios.append(f"\t50-day/300-day:\t\t{raw_data[PRICE_50_SMA]/raw_data[PRICE_300_SMA]:>9.6f}")
+		price_ratios.append(f"\t75-day/300-day:\t\t{raw_data[PRICE_75_SMA]/raw_data[PRICE_300_SMA]:>9.6f}")
+		price_ratios.append(f"\t100-day/300-day:\t{raw_data[PRICE_100_SMA]/raw_data[PRICE_300_SMA]:>9.6f}")
+		price_ratios.append(f"\t150-day/300-day:\t{raw_data[PRICE_150_SMA]/raw_data[PRICE_300_SMA]:>9.6f}")
+	if raw_data[PRICE_350_SMA] > 0:
 		price_ratios.append("x-day/350-day")
-		price_ratios.append(f"\t5-day/350-day:\t\t{data[PRICE_5_SMA]/data[PRICE_350_SMA]:>9.6f}")
-		price_ratios.append(f"\t10-day/350-day:\t\t{data[PRICE_10_SMA]/data[PRICE_350_SMA]:>9.6f}")
-		price_ratios.append(f"\t25-day/350-day:\t\t{data[PRICE_25_SMA]/data[PRICE_350_SMA]:>9.6f}")
-		price_ratios.append(f"\t50-day/350-day:\t\t{data[PRICE_50_SMA]/data[PRICE_350_SMA]:>9.6f}")
-		price_ratios.append(f"\t75-day/350-day:\t\t{data[PRICE_75_SMA]/data[PRICE_350_SMA]:>9.6f}")
-		price_ratios.append(f"\t100-day/350-day:\t{data[PRICE_100_SMA]/data[PRICE_350_SMA]:>9.6f}")
-		price_ratios.append(f"\t150-day/350-day:\t{data[PRICE_150_SMA]/data[PRICE_350_SMA]:>9.6f}")
+		price_ratios.append(f"\t5-day/350-day:\t\t{raw_data[PRICE_5_SMA]/raw_data[PRICE_350_SMA]:>9.6f}")
+		price_ratios.append(f"\t10-day/350-day:\t\t{raw_data[PRICE_10_SMA]/raw_data[PRICE_350_SMA]:>9.6f}")
+		price_ratios.append(f"\t25-day/350-day:\t\t{raw_data[PRICE_25_SMA]/raw_data[PRICE_350_SMA]:>9.6f}")
+		price_ratios.append(f"\t50-day/350-day:\t\t{raw_data[PRICE_50_SMA]/raw_data[PRICE_350_SMA]:>9.6f}")
+		price_ratios.append(f"\t75-day/350-day:\t\t{raw_data[PRICE_75_SMA]/raw_data[PRICE_350_SMA]:>9.6f}")
+		price_ratios.append(f"\t100-day/350-day:\t{raw_data[PRICE_100_SMA]/raw_data[PRICE_350_SMA]:>9.6f}")
+		price_ratios.append(f"\t150-day/350-day:\t{raw_data[PRICE_150_SMA]/raw_data[PRICE_350_SMA]:>9.6f}")
 	else:
 		price_ratios.append("WARNING: DATA MISSING FROM SMAs; MODEL MAY BE UNRELIABLE")
 
@@ -155,7 +155,7 @@ def populate_stat_report_full(coin, data, report):
 
 
 
-def populate_stat_report_essentials(coin, data, report):
+def populate_stat_report_essentials(coin, data, raw_data, report):
 	basic_stats = ["\n\n\n________________________________________", 
 					f"Report for {coin.upper()}:", 
 					"Basic Stats", 
@@ -168,14 +168,16 @@ def populate_stat_report_essentials(coin, data, report):
 	price_ratios = ["\nPrice Ratios", 
 					"[>0 means greater risk/overvalued; <0 means less risk/undervalued]"] 
 
-	if data[PRICE_200_SMA] > 0:
-		price_ratios.append(f"\t50-day/200-day:\t\t{data[PRICE_50_SMA]/data[PRICE_200_SMA]:>9.6f}")
-	if data[PRICE_250_SMA] > 0:
-		price_ratios.append(f"\t50-day/250-day:\t\t{data[PRICE_50_SMA]/data[PRICE_250_SMA]:>9.6f}")
-	if data[PRICE_300_SMA] > 0:
-		price_ratios.append(f"\t50-day/300-day:\t\t{data[PRICE_50_SMA]/data[PRICE_300_SMA]:>9.6f}")
-	if data[PRICE_350_SMA] > 0:
-		price_ratios.append(f"\t50-day/350-day:\t\t{data[PRICE_50_SMA]/data[PRICE_350_SMA]:>9.6f}")
+	if raw_data[PRICE_150_SMA] > 0:
+		price_ratios.append(f"\t50-day/150-day:\t\t{raw_data[PRICE_50_SMA]/raw_data[PRICE_150_SMA]:>9.6f}")
+	if raw_data[PRICE_200_SMA] > 0:
+		price_ratios.append(f"\t50-day/200-day:\t\t{raw_data[PRICE_50_SMA]/raw_data[PRICE_200_SMA]:>9.6f}")
+	if raw_data[PRICE_250_SMA] > 0:
+		price_ratios.append(f"\t50-day/250-day:\t\t{raw_data[PRICE_50_SMA]/raw_data[PRICE_250_SMA]:>9.6f}")
+	if raw_data[PRICE_300_SMA] > 0:
+		price_ratios.append(f"\t50-day/300-day:\t\t{raw_data[PRICE_50_SMA]/raw_data[PRICE_300_SMA]:>9.6f}")
+	if raw_data[PRICE_350_SMA] > 0:
+		price_ratios.append(f"\t50-day/350-day:\t\t{raw_data[PRICE_50_SMA]/raw_data[PRICE_350_SMA]:>9.6f}")
 	else:
 		price_ratios.append("WARNING: DATA MISSING FROM SMAs; MODEL MAY BE UNRELIABLE")
 
@@ -242,7 +244,7 @@ def get_models(best):
 
 
 
-def get_signal_strength(data, buy_signal, hodl_signal, sell_signal):
+def get_signal_strength(data, raw_data, buy_signal, hodl_signal, sell_signal):
 	# direction of signal
 	buy = buy_signal > sell_signal
 
@@ -258,20 +260,20 @@ def get_signal_strength(data, buy_signal, hodl_signal, sell_signal):
 	# under/overvaluation
 	tot_val = 0
 	tot_metrics = 0
-	if data[PRICE_200_SMA] > 0:
-		tot_val += 1 / (data[PRICE_50_SMA] / data[PRICE_200_SMA]) if buy else (data[PRICE_50_SMA] / data[PRICE_200_SMA])
+	if raw_data[PRICE_200_SMA] > 0:
+		tot_val += 1 / (raw_data[PRICE_50_SMA] / raw_data[PRICE_200_SMA]) if buy else (raw_data[PRICE_50_SMA] / raw_data[PRICE_200_SMA])
 		tot_metrics += 1
 
-	if data[PRICE_250_SMA] > 0:
-		tot_val += 1 / (data[PRICE_50_SMA] / data[PRICE_250_SMA]) if buy else (data[PRICE_50_SMA] / data[PRICE_250_SMA])
+	if raw_data[PRICE_250_SMA] > 0:
+		tot_val += 1 / (raw_data[PRICE_50_SMA] / raw_data[PRICE_250_SMA]) if buy else (raw_data[PRICE_50_SMA] / raw_data[PRICE_250_SMA])
 		tot_metrics += 1
 
-	if data[PRICE_300_SMA] > 0:
-		tot_val += 1 / (data[PRICE_50_SMA] / data[PRICE_300_SMA]) if buy else (data[PRICE_50_SMA] / data[PRICE_300_SMA])
+	if raw_data[PRICE_300_SMA] > 0:
+		tot_val += 1 / (raw_data[PRICE_50_SMA] / raw_data[PRICE_300_SMA]) if buy else (raw_data[PRICE_50_SMA] / raw_data[PRICE_300_SMA])
 		tot_metrics += 1
 
-	if data[PRICE_350_SMA] > 0:
-		tot_val += 1 / (data[PRICE_50_SMA] / data[PRICE_350_SMA]) if buy else (data[PRICE_50_SMA] / data[PRICE_350_SMA])
+	if raw_data[PRICE_350_SMA] > 0:
+		tot_val += 1 / (raw_data[PRICE_50_SMA] / raw_data[PRICE_350_SMA]) if buy else (raw_data[PRICE_50_SMA] / raw_data[PRICE_350_SMA])
 		tot_metrics += 1
 
 	signal_strength += 0 if tot_metrics == 0 else fg_mult * (tot_val / tot_metrics)
@@ -295,14 +297,17 @@ def generate_signals(full_report=False):
 		best_models = f.read().splitlines() 
 
 	for coin in dt_agg.coin_id:
+		# NOTE: raw_data is used for the SMA ratio calculations as the normalized data cannot adequately capture the ratios significances
 		data = pd.read_csv(f"datasets/clean/{coin}_historical_data_clean.csv")
+		raw_data = pd.read_csv(f"datasets/raw/{coin}_historical_data_raw_all_features.csv")
 		# extracts the most recent data as a python list
 		data = data[data["date"] == str(date.today()-timedelta(0))].values.tolist()[0][1:-1]
+		raw_data = raw_data[raw_data["date"] == str(date.today()-timedelta(0))].values.tolist()[0][1:-1]
 		# stat report
 		if full_report:
-			populate_stat_report_full(coin, data, report)
+			populate_stat_report_full(coin, data, raw_data, report)
 		else:
-			populate_stat_report_essentials(coin, data, report)	
+			populate_stat_report_essentials(coin, data, raw_data, report)	
 
 		n_votes = [0, 0, 0] # buy 3x, buy 2x, buy x, hodl, sell y, sell 2y, sell 3y
 		n_weights = [0, 0, 0]
@@ -346,7 +351,7 @@ def generate_signals(full_report=False):
 		sell_signal = formatted_w_list[2]
 		
 		# calculate signal strength
-		signal_strength, buy_or_sell = get_signal_strength(data, buy_signal, hodl_signal, sell_signal)
+		signal_strength, buy_or_sell = get_signal_strength(data, raw_data, buy_signal, hodl_signal, sell_signal)
 
 		for weight in formatted_w_list:
 			if weight > second_best_w and weight < best_w:

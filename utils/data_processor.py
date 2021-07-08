@@ -207,7 +207,7 @@ def terminate_early(prev_valid_losses):
 	'''
 	Sends signal to terminate early if the validation loss is increasing over a 10-batch interval.
 	'''
-	if len(prev_valid_losses) > 10:
+	if len(prev_valid_losses) >= 10:
 		ind = len(prev_valid_losses) - 1
 		valid_loss_trend = 0
 
@@ -259,8 +259,9 @@ def fully_train(model, train_data, valid_data, start_time, filepath):
 				avg_valid_loss = total_valid_loss / (steps / BATCH_SIZE)
 				avg_train_loss = total_train_loss / steps
 				print_batch_status(avg_train_loss, avg_valid_loss, start_time)
-				prev_valid_losses.append(avg_valid_loss)
+				prev_valid_losses.append(round(avg_valid_loss, 6))
 				if terminate_early(prev_valid_losses):
+					print("\nTerminated epoch early due to stagnating or increasing validation loss.\n\n")
 					break
 	
 		epoch += 1
@@ -386,9 +387,10 @@ def parameter_tuner():
 							print_batch_status(avg_train_loss, avg_valid_loss, start_time)
 							
 							prev_train_losses.append(avg_train_loss)
-							prev_valid_losses.append(avg_valid_loss)
+							prev_valid_losses.append(round(avg_valid_loss, 6))
 							
 							if terminate_early(prev_valid_losses):
+								print("\nTerminated epoch early due to stagnating or increasing validation loss.\n\n")
 								break
 
 				
@@ -467,7 +469,7 @@ def continue_training():
 	
 
 
-#continue_training()
+continue_training()
 
 
 def transfer_learner():
