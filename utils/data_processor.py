@@ -62,7 +62,8 @@ def generate_dataset(data, limit, offset, data_aug_per_sample=0):
 		target = data.iloc[row, -1]
 		row_features = []
 
-		for feature in range(data.shape[1]):
+		# -1 excludes the signal column
+		for feature in range(data.shape[1] - 1):
 			row_features.append(data.iloc[row, feature])
 		datapoint_tuple = (row_features, target)
 		dataset.append(datapoint_tuple)
@@ -70,7 +71,8 @@ def generate_dataset(data, limit, offset, data_aug_per_sample=0):
 		# this evens out the datapoints per category
 		for i in range(data_aug_per_sample * round(signal_ratios[target])):
 			row_features_aug = []
-			for feature in range(data.shape[1]):
+			# -1 excludes the signal column
+			for feature in range(data.shape[1] - 1):
 				rand_factor = 1 + random.uniform(-0.000001, 0.000001)
 				row_features_aug.append(data.iloc[row, feature] * rand_factor)
 			datapoint_tuple_aug = (row_features_aug, target)
@@ -209,14 +211,14 @@ def terminate_early(prev_valid_losses):
 		ind = len(prev_valid_losses) - 1
 		valid_loss_trend = 0
 
-		while (len(prev_valid_losses) - ind) < 10:
+		while ind > 0:
 			valid_loss_trend += prev_valid_losses[ind] - prev_valid_losses[ind-1]
 			ind -= 1
 		
 		if valid_loss_trend >= 0:
 			return True
 				
-		prev_valid_losses.pop(0)
+		del prev_valid_losses[0]
 
 	return False
 
@@ -350,7 +352,7 @@ def parameter_tuner():
 				print(f"Eta: {eta} | Decay: {decay} | Dropout: {dropout}")
 				report = "" 
 				
-				model_architecture = "PC_0"
+				model_architecture = "PC_1"
 				nn.set_model_parameters(dropout, eta, decay)
 				nn.set_model(model_architecture) 
 				nn.set_model_props(nn.get_model())
@@ -403,7 +405,7 @@ def parameter_tuner():
 
 				model_counter += 1
 
-#parameter_tuner()
+parameter_tuner()
 
 
 
@@ -425,7 +427,7 @@ def continue_training():
 	#
 	# ------------ MODEL TRAINING -----------
 	#
-	promising_models = param_trainer_parser.parse_reports()
+	promising_models = param_trainer_parser.parse_reports("PC_1")
 	for model_params in promising_models:
 		model_architecture = model_params["architecture"]
 		model_number = model_params["model_num"]
