@@ -170,10 +170,10 @@ def get_signal_value(percent_delta):
 	signal = 1 # HODL by default
 
 	# SELL - lower is stronger
-	if percent_delta < -0.1:
+	if percent_delta < -0.175:
 		signal = 2 
 	# BUY - higher is stronger
-	elif percent_delta > 0.1:
+	elif percent_delta > 0.15:
 		signal = 0
 
 	return signal
@@ -239,7 +239,7 @@ def process_data(coin, data, start_date, end_date):
 	data = calculate_signals(data, days_from_now)
 	print(f"Signal calculation for {days_from_now} days from now complete.")
 	# save all features raw file for use in signal_generator
-	data.to_csv(f"datasets/raw/{coin}_historical_data_raw_all_features.csv", index=False)
+	data.to_csv(f"datasets/raw/{coin}_historical_data_raw_all_features.csv", index=False, float_format="%f")
 	# Normalize, must happen after SMA calculation or will skew results
 	data = normalize_data(data)
 	print("Data normalization complete.")
@@ -250,13 +250,13 @@ def process_data(coin, data, start_date, end_date):
 
 
 def run():
-	coins = ["aave", "algorand", "bitcoin", "cardano", "chainlink", "cosmos", "decentraland", "ethereum", "matic-network", "the-graph", "theta-token"]  
+	coins = ["algorand", "bitcoin", "cardano", "chainlink", "ethereum", "polkadot", "solana"]  
 	# The following two coins have shorter histories and require a different start date {polkadot = 2020-08-23; solana = 2020-04-11}
 	#coins = ["polkadot"]
 	#coins = ["solana"]
 
-	start_date = "2020-12-25"#"2019-10-20"
-	end_date = "2021-06-11"
+	start_date = "2020-08-23"#"2019-10-20"
+	end_date = "2021-07-08"
 
 	for coin in coins:
 		print(coin)
@@ -265,7 +265,7 @@ def run():
 
 		data = process_data(coin, data, start_date, end_date)
 
-		data.to_csv(f"datasets/clean/{coin}_historical_data_clean.csv", index=False)
+		data.to_csv(f"datasets/clean/{coin}_historical_data_clean.csv", index=False, float_format="%f")
 
 
 

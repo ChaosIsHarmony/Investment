@@ -13,7 +13,7 @@ import time
 import pandas as pd
 import numpy as np
 
-coin_id = ["aave", "algorand", "bitcoin", "cardano", "chainlink", "cosmos", "ethereum", "matic-network", "polkadot", "solana", "the-graph", "theta-token"]
+coin_id = ["algorand", "bitcoin", "cardano", "chainlink", "ethereum", "polkadot", "solana"]
 
 
 
@@ -81,6 +81,7 @@ def get_generic_score(data):
 
 def get_community_score(data):
 	'''
+	NO LONGER IN USE BECAUSE OF UNSTABLE DATA FEED.
 	Calculates a score for a coin's community health based on social media presence (Facebook, Twitter, & Reddit).
 	NOTE: Param data is a dictionary with several social media site names as keys.
 	'''
@@ -116,6 +117,7 @@ def get_dev_score(data):
 
 def get_public_interest_score(data):
 	'''
+	NO LONGER IN USE BECAUSE OF UNSTABLE DATA FEED.
 	Calculates the score related to searches in search engines for the coin.
 	'''
 	return get_generic_score(data)
@@ -142,16 +144,6 @@ def extract_basic_data(data, date):
 		data_dict["price"] = 0
 		data_dict["market_cap"] = 0
 		data_dict["volume"] = 0
-
-	if "community_data" in data.keys():
-		data_dict["community_score"] = get_community_score(data["community_data"])
-	else:
-		data_dict["community_score"] = 0
-
-	if "public_interest_stats" in data:
-		data_dict["public_interest_score"] = get_public_interest_score(data["public_interest_stats"])
-	else:
-		data_dict["public_interest_score"] = 0
 
 	return data_dict
 
@@ -184,7 +176,7 @@ def merge_datasets(coin, list_of_datasets, all_data=False):
 	merged_data = merged_data.reset_index()
 	merged_data = merged_data.drop(columns=["index"])
 
-	merged_data.to_csv(f"datasets/raw/{coin}_historical_data_raw.csv", index=False)
+	merged_data.to_csv(f"datasets/raw/{coin}_historical_data_raw.csv", index=False, float_format="%f")
 
 
 
@@ -237,13 +229,16 @@ def fetch_missing_data_by_dates(coin, dates, verbose=False):
 
 	# save as CSV
 	coin_data = pd.DataFrame(historical_data)
-	coin_data.to_csv(f"datasets/raw/{coin}_historical_data_by_date.csv", index=False)
+	coin_data.to_csv(f"datasets/raw/{coin}_historical_data_by_date.csv", index=False, float_format="%f")
 		
 	if verbose:
 		print(f"{coin} data successfully pulled and stored.")
 	
 	return coin_data
 
+
+#fetch_missing_data_by_dates("ethereum", ["2021-06-24"], verbose=True)
+#merge_new_dataset_with_old("ethereum", by_range=False)
 
 
 def fetch_missing_data_by_range(coin, n_days, start_delta, verbose=False):
@@ -282,7 +277,7 @@ def fetch_missing_data_by_range(coin, n_days, start_delta, verbose=False):
 
 	# save as CSV
 	coin_data = pd.DataFrame(historical_data)
-	coin_data.to_csv(f"datasets/raw/{coin}_historical_data_by_range.csv", index=False)
+	coin_data.to_csv(f"datasets/raw/{coin}_historical_data_by_range.csv", index=False, float_format="%f")
 		
 	if verbose:
 		print(f"{coin} data successfully pulled and stored.")
@@ -344,7 +339,7 @@ def run(how_far_back):
 		
 		# save as CSV
 		coin_data = pd.DataFrame(historical_data)
-		coin_data.to_csv(f"datasets/raw/{coin}_historical_data_raw.csv", index=False)
+		coin_data.to_csv(f"datasets/raw/{coin}_historical_data_raw.csv", index=False, float_format="%f")
 		
 		# if missing dates
 		if len(missing_dates) > 0:
