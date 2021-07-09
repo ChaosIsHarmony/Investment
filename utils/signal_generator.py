@@ -5,7 +5,7 @@ import neural_nets as nn
 import pandas as pd
 import numpy as np
 import joblib
-import concurrent.futures
+import concurrent.futures as cf
 from datetime import date, timedelta
 
 
@@ -34,27 +34,46 @@ FG_13_SMA = FG_3_SMA+5
 FG_15_SMA = FG_3_SMA+6
 FG_30_SMA = FG_3_SMA+7
 
-def fetch_new_data(n_days):
-	for coin in dt_agg.coin_id:
-		dt_agg.fetch_missing_data_by_range(coin, n_days, 0)
-		print(f"Successfully fetched new {coin} data")
-		dt_agg.merge_new_dataset_with_old(coin)
-		print(f"Successfully merged new and old {coin} data")
-		print()
 
+
+def fetch_new_data(n_days):
+	'''
+	Uses multithreading to speed up fetching process.
+	'''
+	with cf.ThreadPoolExecutor() as executor:
+		results = [executor.submit(dt_agg.fetch_missing_data_by_range, coin, n_days) for coin in dt_agg.coin_id]
+		
+		for thread in cf.as_completed(results):
+			print(thread.result())
+
+	with cf.ThreadPoolExecutor() as executor:
+		results = [executor.submit(dt_agg.merge_new_dataset_with_old, coin) for coin in dt_agg.coin_id]
+		
+		for thread in cf.as_completed(results):
+			print(thread.result())
+
+
+
+def process_individual_coin_new_data(start_date, end_date, coin):
+	'''
+	Uses multiprocessing to speed up data processing.
+	'''
+	data = pd.read_csv(f"datasets/raw/{coin}_historical_data_raw.csv")
+	data = dt_prepro.process_data(coin, data, start_date, end_date)
+	data.to_csv(f"datasets/clean/{coin}_historical_data_clean.csv", index=False)
+
+	return f"All new data processed for {coin}."
 
 
 def process_new_data():
 	start_date = str(date.today())
-	end_date = "2020-08-23" #the first day of data of the youngest asset: polkadot
-	for coin in dt_agg.coin_id:
-		print(coin)
+	end_date = "2020-08-23" #the first day of data of: the youngest asset: polkadot
+	with cf.ProcessPoolExecutor() as executor:
+		results = [executor.submit(process_individual_coin_new_data, start_date, end_date, coin) for coin in dt_agg.coin_id]
 
-		data = pd.read_csv(f"datasets/raw/{coin}_historical_data_raw.csv")
-		data = dt_prepro.process_data(coin, data, start_date, end_date)
-		data.to_csv(f"datasets/clean/{coin}_historical_data_clean.csv", index=False)
-
-
+		for process in cf.as_completed(results):
+			print(process.result())
+	
 
 def get_fg_indicator(fg_index):
 	if fg_index < 0.2:

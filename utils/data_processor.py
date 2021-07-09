@@ -503,8 +503,8 @@ def cleanup():
 def fully_automated_training_pipeline():
 	neural_net_architecture = ["Laptop_0"]
 	for model_architecture in neural_net_architecture:
-		parameter_tuner(model_architecture)
-		continue_training()
+	#	parameter_tuner(model_architecture)
+		continue_training(model_architecture)
 		cleanup()
 
 
