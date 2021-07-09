@@ -1,1 +1,2 @@
-2.) Transfer learning for other assets' datasets
+1.) Transfer learning for other assets' datasets
+2.) Multiprocess/multithreading support

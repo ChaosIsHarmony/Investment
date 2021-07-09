@@ -1,6 +1,2 @@
-models/best/bitcoin_PC_0_1780_54-0_512xaug.pt
-models/best/bitcoin_Laptop_1_65_54-0_512xaug.pt
-models/best/bitcoin_Laptop_0_2870_52-0_512xaug.pt
-models/best/bitcoin_PC_0_1682_51-0_512xaug.pt
-models/best/bitcoin_PC_0_2487_49-0_512xaug.pt
-models/best/bitcoin_Laptop_1_218_49-0_512xaug.pt
+models/best/bitcoin_Laptop_0_4051_71-0_32xaug.pt
+models/best/bitcoin_Laptop_0_2817_70-1_32xaug.pt

@@ -1,6 +1,10 @@
 '''
 Parses the Parameter_Tuning_Reports.txt file so that it can automatically set the parameters in the continue_training method of the data_processor file.
 '''
+ACCURACY_THRESHOLD = 0.55
+INACCURACY_THRESHOLD = 0.05
+
+
 def parse_reports(model_architecture):
 	with open(f"reports/Parameter_Tuning_Report_{model_architecture}.txt", 'r') as f:
 		reports = f.read()
@@ -42,7 +46,7 @@ def parse_reports(model_architecture):
 		model["inaccuracy"] = float(reports[start_ind : end_ind])
 
 		# Add model if meets accuracy threshhold 
-		if model["accuracy"] > model["inaccuracy"] and model["inaccuracy"] < 0.2:
+		if model["accuracy"] > ACCURACY_THRESHOLD and model["inaccuracy"] < INACCURACY_THRESHOLD:
 			models.append(model)
 
 		# delete up until next model
@@ -53,12 +57,16 @@ def parse_reports(model_architecture):
 
 
 
-def list_promising_model_details():
-	models = parse_reports()
+def list_promising_model_details(model_architecture):
+	models = parse_reports(model_architecture)
 
+	count = 0
 	for model in models:
+		count += 1
 		print(f"Model num: {model['model_num']}")
 		print(f"Model acc: {model['accuracy']}")
 		print(f"Model bad: {model['inaccuracy']}")
 		print()
+	
+	print(f"{count} promising models found.")
 
