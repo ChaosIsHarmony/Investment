@@ -1,2 +1,0 @@
-models/best/bitcoin_Laptop_0_4051_71-0_32xaug.pt
-models/best/bitcoin_Laptop_0_2817_70-1_32xaug.pt
