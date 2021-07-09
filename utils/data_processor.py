@@ -345,13 +345,13 @@ def parameter_tuner(model_architecture):
 	data_aug_factor = 32
 	print("Creating datasets...")
 	train_data, valid_data, test_data = get_datasets(COIN, data_aug_factor)
-	model_counter = 0
+	model_number = 0
 
 	for eta in np.arange(0.00025, 0.01025, 0.00025):
 		for decay in np.arange(0.9999, 0.99999, 0.00001):	
 			for dropout in np.arange(0.05, 0.85, 0.05):
 				print("Start of new Experiment\n__________________________")
-				print(f"Model #{model_counter}")
+				print(f"Model #{model_number}")
 				print(f"Eta: {eta} | Decay: {decay} | Dropout: {dropout}")
 				report = "" 
 				
@@ -379,7 +379,7 @@ def parameter_tuner(model_architecture):
 						total_train_loss += take_one_step(model, feature, target)
 						# if end of batch or end of dataset, validate model
 						if steps % BATCH_SIZE == 0 or steps == len(train_data)-1:
-							valid_loss, lowest_valid_loss = validate_model(model, valid_data, lowest_valid_loss, f"models/{COIN}_{model_architecture}_{model_counter}_param_tuning.pt")
+							valid_loss, lowest_valid_loss = validate_model(model, valid_data, lowest_valid_loss, f"models/{COIN}_{model_architecture}_{model_number}_param_tuning.pt")
 							total_valid_loss += valid_loss
 
 							avg_valid_loss = total_valid_loss / (steps / BATCH_SIZE)
@@ -397,7 +397,7 @@ def parameter_tuner(model_architecture):
 				
 				model_acc = evaluate_model(model, test_data)
 				
-				report += f"MODEL: {model_counter}\nLast Training Loss: {prev_train_losses[-1]} | Last Valid Loss: {prev_valid_losses[-1]}\nPARAMETERS:\n\t{model_architecture}\n\teta: {nn.LEARNING_RATE} | decay: {nn.LEARNING_RATE_DECAY} | dropout: {nn.DROPOUT}\nDECISIONS:\n\tPerfect Decision: {model_acc[0]}\n\tTold to Hodl, though Should Have Bought/Sold: {model_acc[1]}\n\tSignal Should Have Been Hodl: {model_acc[2]}\n\tSignal and Answer Exact Opposite: {model_acc[3]}"
+				report += f"MODEL: {model_number}\nLast Training Loss: {prev_train_losses[-1]} | Last Valid Loss: {prev_valid_losses[-1]}\nPARAMETERS:\n\t{model_architecture}\n\teta: {nn.LEARNING_RATE} | decay: {nn.LEARNING_RATE_DECAY} | dropout: {nn.DROPOUT}\nDECISIONS:\n\tPerfect Decision: {model_acc[0]}\n\tTold to Hodl, though Should Have Bought/Sold: {model_acc[1]}\n\tSignal Should Have Been Hodl: {model_acc[2]}\n\tSignal and Answer Exact Opposite: {model_acc[3]}"
 				
 				if model_acc[0] > ptp.ACCURACY_THRESHOLD + 0.15 and model_acc[3] < ptp.INACCURACY_THRESHOLD:
 					save_filepath = f"models/best/{COIN}_{model_architecture}_{model_number}_{int(round(model_acc[0], 2) * 100)}-{int(round(model_acc[3], 2))}_{data_aug_factor}xaug.pt"
@@ -412,7 +412,7 @@ def parameter_tuner(model_architecture):
 
 					print("Report written")
 
-				model_counter += 1
+				model_number += 1
 
 
 
