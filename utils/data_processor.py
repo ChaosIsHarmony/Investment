@@ -7,6 +7,7 @@ This file is used to train the neural nets. It is comprised of several trainers:
 		- Used to continue the learning either in parameter tuned models or when training for other cryptoassets (change COIN variable to reflect dataset)
 '''
 import os
+import glob
 import pandas as pd
 import torch
 from datetime import datetime
@@ -339,7 +340,7 @@ def generate_report():
 # ------------- Find the Most Promising Models -----------------
 #
 
-def parameter_tuner():
+def parameter_tuner(model_architecture):
 	global COIN, BATCH_SIZE, EPOCHS
 	data_aug_factor = 32
 	print("Creating datasets...")
@@ -350,10 +351,10 @@ def parameter_tuner():
 		for decay in np.arange(0.9999, 0.99999, 0.00001):	
 			for dropout in np.arange(0.05, 0.85, 0.05):
 				print("Start of new Experiment\n__________________________")
+				print(f"Model #{model_counter}")
 				print(f"Eta: {eta} | Decay: {decay} | Dropout: {dropout}")
 				report = "" 
 				
-				model_architecture = "PC_0"
 				nn.set_model_parameters(dropout, eta, decay)
 				nn.set_model(model_architecture) 
 				nn.set_model_props(nn.get_model())
@@ -394,10 +395,16 @@ def parameter_tuner():
 								break
 
 				
-				mod_acc = evaluate_model(model, test_data)
+				model_acc = evaluate_model(model, test_data)
 				
-				report += f"MODEL: {model_counter}\nLast Training Loss: {prev_train_losses[-1]} | Last Valid Loss: {prev_valid_losses[-1]}\nPARAMETERS:\n\t{model_architecture}\n\teta: {nn.LEARNING_RATE} | decay: {nn.LEARNING_RATE_DECAY} | dropout: {nn.DROPOUT}\nDECISIONS:\n\tPerfect Decision: {mod_acc[0]}\n\tTold to Hodl, though Should Have Bought/Sold: {mod_acc[1]}\n\tSignal Should Have Been Hodl: {mod_acc[2]}\n\tSignal and Answer Exact Opposite: {mod_acc[3]}"
+				report += f"MODEL: {model_counter}\nLast Training Loss: {prev_train_losses[-1]} | Last Valid Loss: {prev_valid_losses[-1]}\nPARAMETERS:\n\t{model_architecture}\n\teta: {nn.LEARNING_RATE} | decay: {nn.LEARNING_RATE_DECAY} | dropout: {nn.DROPOUT}\nDECISIONS:\n\tPerfect Decision: {model_acc[0]}\n\tTold to Hodl, though Should Have Bought/Sold: {model_acc[1]}\n\tSignal Should Have Been Hodl: {model_acc[2]}\n\tSignal and Answer Exact Opposite: {model_acc[3]}"
 				
+				if model_acc[0] > ptp.ACCURACY_THRESHOLD + 0.15 and model_acc[3] < ptp.INACCURACY_THRESHOLD:
+					save_filepath = f"models/best/{COIN}_{model_architecture}_{model_number}_{int(round(model_acc[0], 2) * 100)}-{int(round(model_acc[3], 2))}_{data_aug_factor}xaug.pt"
+					save_model(model, save_filepath)
+					with open("reports/best_performers.txt", 'a') as f:
+						f.write(save_filepath + '\n')
+
 				if len(report) > 0:
 					with open(f"reports/Parameter_Tuning_Report_{model_architecture}.txt", "a") as f:
 					# starting from index 1 to avoid first triple space divider
@@ -407,14 +414,12 @@ def parameter_tuner():
 
 				model_counter += 1
 
-parameter_tuner()
-
 
 
 #
 # -------------- Continue Training Most Successful Experiments --------------
 #
-def continue_training():
+def continue_training(model_architecture):
 	global REPORTS, COIN, EPOCHS, BATCH_SIZE
 
 	# 
@@ -429,9 +434,8 @@ def continue_training():
 	#
 	# ------------ MODEL TRAINING -----------
 	#
-	promising_models = param_trainer_parser.parse_reports("PC_1")
+	promising_models = ptp.parse_reports(model_architecture)
 	for model_params in promising_models:
-		model_architecture = model_params["architecture"]
 		model_number = model_params["model_num"]
 		model_filepath = f"models/{COIN}_{model_architecture}_{model_number}_param_tuning.pt"
 	
@@ -459,23 +463,16 @@ def continue_training():
 		model_acc = evaluate_model(model, test_data)
 
 		# save iff accuracy is higher/lower than threshholds
-		if model_acc[0] > ptp.ACCURACY_THRESHOLD and model_acc[3] < ptp.INACCURACY_THRESHOLD:
-			save_model(model, f"models/{COIN}_{model_architecture}_{model_number}_{int(round(model_acc[0], 2) * 100)}-{int(round(model_acc[3], 2))}_{data_aug_factor}xaug.pt")
+		if model_acc[0] > ptp.ACCURACY_THRESHOLD + 0.1 and model_acc[3] < ptp.INACCURACY_THRESHOLD:
+			save_filepath = f"models/best/{COIN}_{model_architecture}_{model_number}_{int(round(model_acc[0], 2) * 100)}-{int(round(model_acc[3], 2))}_{data_aug_factor}xaug.pt"
+			save_model(model, save_filepath)
+			with open("reports/best_performers.txt", 'a') as f:
+				f.write(save_filepath + '\n')
 
 			#
 			# ---------- GENERATE REPORT -----------
 			#
 			generate_report()
-	
-
-#continue_training()
-
-def try_model():
-		model_number = 2817
-		train_data, valid_data, test_data = get_datasets("bitcoin", 0)
-		nn.set_model_parameters(dropout=0 , eta=0, eta_decay=0)
-		model = load_model(nn.CryptoSoothsayer_Laptop_0(nn.N_FEATURES, nn.N_SIGNALS), f"models/bitcoin_Laptop_0_{model_number}_lowest_val_loss.pt")
-		model_acc = evaluate_model(model, test_data)
 	
 
 
@@ -490,3 +487,25 @@ def transfer_learner():
 	pass
 
 
+#
+# ------------ FULLY AUTOMATED TRAINING PIPELINE --------------
+#
+def cleanup():
+	file_list = glob.glob("models/*.pt")
+	for f in file_list:
+		try:
+			os.remove(f)
+		except:
+			print(f"Error when attempting to remove {f}")
+
+
+
+def fully_automated_training_pipeline():
+	neural_net_architecture = ["Laptop_0"]
+	for model_architecture in neural_net_architecture:
+		parameter_tuner(model_architecture)
+		continue_training()
+		cleanup()
+
+
+fully_automated_training_pipeline()
