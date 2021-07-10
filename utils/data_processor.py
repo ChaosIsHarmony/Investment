@@ -399,7 +399,7 @@ def parameter_tuner(model_architecture):
 				
 				report += f"MODEL: {model_number}\nLast Training Loss: {prev_train_losses[-1]} | Last Valid Loss: {prev_valid_losses[-1]}\nPARAMETERS:\n\t{model_architecture}\n\teta: {nn.LEARNING_RATE} | decay: {nn.LEARNING_RATE_DECAY} | dropout: {nn.DROPOUT}\nDECISIONS:\n\tPerfect Decision: {model_acc[0]}\n\tTold to Hodl, though Should Have Bought/Sold: {model_acc[1]}\n\tSignal Should Have Been Hodl: {model_acc[2]}\n\tSignal and Answer Exact Opposite: {model_acc[3]}"
 				
-				if model_acc[0] > ptp.ACCURACY_THRESHOLD + 0.15 and model_acc[3] < ptp.INACCURACY_THRESHOLD:
+				if model_acc[0] > ptp.ACCURACY_THRESHOLD + 0.1 and model_acc[3] < ptp.INACCURACY_THRESHOLD:
 					save_filepath = f"models/best/{COIN}_{model_architecture}_{model_number}_{int(round(model_acc[0], 2) * 100)}-{int(round(model_acc[3], 2))}_{data_aug_factor}xaug.pt"
 					save_model(model, save_filepath)
 					with open("reports/best_performers.txt", 'a') as f:
@@ -449,7 +449,8 @@ def continue_training(model_architecture):
 		reports = [f"Model: {model.get_class_name()}", f"Learning rate: {eta}", f"Learning rate decay: {eta_decay}", f"Chance of dropout: {dropout}", f"Batch size: {BATCH_SIZE}", f"Epochs: {EPOCHS}", f"Coin: {COIN}"]
 
 		start_time = time.time()
-	
+		print(f"Model #{model_number}")
+
 		fully_train(model, train_data, valid_data, start_time, f"models/{COIN}_{model_architecture}_{model_number}_lowest_val_loss.pt")
 
 		#
@@ -501,9 +502,9 @@ def cleanup():
 
 
 def fully_automated_training_pipeline():
-	neural_net_architecture = ["Laptop_0"]
+	neural_net_architecture = ["Laptop_1"]
 	for model_architecture in neural_net_architecture:
-	#	parameter_tuner(model_architecture)
+		parameter_tuner(model_architecture)
 		continue_training(model_architecture)
 		cleanup()
 

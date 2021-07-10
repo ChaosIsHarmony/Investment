@@ -9,7 +9,7 @@ import concurrent.futures as cf
 from datetime import date, timedelta
 
 
-DECISIONS = ["BUY X", "HODL", "SELL Y"]
+DECISIONS = ["BUY", "HODL", "SELL"]
 PRICE = 0
 MARKET_CAP = 1
 VOLUME = 2
