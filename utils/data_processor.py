@@ -400,7 +400,7 @@ def parameter_tuner(model_architecture):
 				report += f"MODEL: {model_number}\nLast Training Loss: {prev_train_losses[-1]} | Last Valid Loss: {prev_valid_losses[-1]}\nPARAMETERS:\n\t{model_architecture}\n\teta: {nn.LEARNING_RATE} | decay: {nn.LEARNING_RATE_DECAY} | dropout: {nn.DROPOUT}\nDECISIONS:\n\tPerfect Decision: {model_acc[0]}\n\tTold to Hodl, though Should Have Bought/Sold: {model_acc[1]}\n\tSignal Should Have Been Hodl: {model_acc[2]}\n\tSignal and Answer Exact Opposite: {model_acc[3]}"
 				
 				# automatically save the best models to best as is
-				if model_acc[0] > ptp.ACCURACY_THRESHOLD + 0.1 and model_acc[3] < ptp.INACCURACY_THRESHOLD:
+				if model_acc[0] > ptp.ACCURACY_THRESHOLD + 0.05 and model_acc[3] < ptp.INACCURACY_THRESHOLD:
 					save_filepath = f"models/best/{COIN}_{model_architecture}_{model_number}_{int(round(model_acc[0], 2) * 100)}-{int(round(model_acc[3], 2))}_{data_aug_factor}xaug.pt"
 					save_model(model, save_filepath)
 					with open("reports/best_performers.txt", 'a') as f:
@@ -470,7 +470,7 @@ def continue_training(model_architecture):
 		model_acc = evaluate_model(model, test_data)
 
 		# save iff accuracy is higher/lower than threshholds
-		if model_acc[0] > ptp.ACCURACY_THRESHOLD + 0.1 and model_acc[3] < ptp.INACCURACY_THRESHOLD:
+		if model_acc[0] > ptp.ACCURACY_THRESHOLD + 0.05 and model_acc[3] < ptp.INACCURACY_THRESHOLD:
 			save_filepath = f"models/best/{COIN}_{model_architecture}_{model_number}_{int(round(model_acc[0], 2) * 100)}-{int(round(model_acc[3], 2))}_{data_aug_factor}xaug.pt"
 			save_model(model, save_filepath)
 			with open("reports/best_performers.txt", 'a') as f:

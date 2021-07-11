@@ -30,3 +30,4 @@ models/best/bitcoin_Laptop_1_2624_65-0_32xaug.pt
 models/best/bitcoin_Laptop_1_2752_67-0_32xaug.pt
 models/best/bitcoin_Laptop_1_3953_74-0_32xaug.pt
 models/best/bitcoin_Laptop_1_4674_67-0_32xaug.pt
+models/best/bitcoin_Laptop_1_5216_67-0_32xaug.pt
