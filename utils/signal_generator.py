@@ -254,10 +254,32 @@ def get_models(best):
 			models.append(load_model(nn.CryptoSoothsayer_Pi_0(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
 		elif "Pi_1" in best[i]:
 			models.append(load_model(nn.CryptoSoothsayer_Pi_1(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
+		elif "Pi_2" in best[i]:
+			models.append(load_model(nn.CryptoSoothsayer_Pi_2(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
+		elif "Pi_3" in best[i]:
+			models.append(load_model(nn.CryptoSoothsayer_Pi_3(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
+		elif "Pi_4" in best[i]:
+			models.append(load_model(nn.CryptoSoothsayer_Pi_4(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
+		elif "Pi_5" in best[i]:
+			models.append(load_model(nn.CryptoSoothsayer_Pi_5(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
+		elif "Pi_6" in best[i]:
+			models.append(load_model(nn.CryptoSoothsayer_Pi_6(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
+		elif "Pi_7" in best[i]:
+			models.append(load_model(nn.CryptoSoothsayer_Pi_7(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
 		elif "PC_0" in best[i]:
 			models.append(load_model(nn.CryptoSoothsayer_PC_0(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
 		elif "PC_1" in best[i]:
 			models.append(load_model(nn.CryptoSoothsayer_PC_1(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
+		elif "PC_2" in best[i]:
+			models.append(load_model(nn.CryptoSoothsayer_PC_2(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
+		elif "PC_3" in best[i]:
+			models.append(load_model(nn.CryptoSoothsayer_PC_3(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
+		elif "PC_4" in best[i]:
+			models.append(load_model(nn.CryptoSoothsayer_PC_4(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
+		elif "PC_5" in best[i]:
+			models.append(load_model(nn.CryptoSoothsayer_PC_5(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
+		elif "PC_6" in best[i]:
+			models.append(load_model(nn.CryptoSoothsayer_PC_6(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
 
 
 	return models
@@ -317,7 +339,7 @@ def generate_signals(full_report=False):
 		best_models = f.read().splitlines() 
 
 	for coin in dt_agg.coin_id:
-		# NOTE: raw_data is used for the SMA ratio calculations as the normalized data cannot adequately capture the ratios significances
+		# NOTE: raw_data is used for the SMA ratio calculations as the normalized data cannot adequately capture the ratios' significances
 		data = pd.read_csv(f"datasets/clean/{coin}_historical_data_clean.csv")
 		raw_data = pd.read_csv(f"datasets/raw/{coin}_historical_data_raw_all_features.csv")
 		# extracts the most recent data as a python list
@@ -400,18 +422,26 @@ def generate_report(report):
 
 
 
-fetch_data = input("Fetch most recent daily data? [y/n; only if you haven't already fetched today] ")
+def main():
+	# collects new data and then cleans it
+	fetch_data = input("Fetch most recent daily data? [y/n; only if you haven't already fetched today] ")
+	if (fetch_data.lower())[0] == 'y':
+		days_back = -1
+		while days_back < 0:
+			days_back = int(input("How many days worth of data? [e.g., 5 if you haven't calculated a signal for 5 days] "))
+		fetch_new_data(days_back)
+		process_new_data()
 
-if (fetch_data.lower())[0] == 'y':
-	days_back = -1
-	while days_back < 0:
-		days_back = int(input("How many days worth of data? [e.g., 5 if you haven't calculated a signal for 5 days] "))
-	fetch_new_data(days_back)
-	process_new_data()
+	# determines signal and creates report
+	full_report = input("Full report? [y/n; y gives all the gory details] ")
+	if (full_report.lower())[0] == 'y':
+		report = generate_signals(True)
+	else:
+		report = generate_signals()
 
-full_report = input("Full report? [y/n; y gives all the gory details] ")
-if (full_report.lower())[0] == 'y':
-	report = generate_signals(True)
-else:
-	report = generate_signals()
-generate_report(report)
+	generate_report(report)
+
+
+
+if "__name__" == "__main__":
+	main()

@@ -5,6 +5,7 @@ models/best/bitcoin_Laptop_0_2499_69-0_32xaug.pt
 models/best/bitcoin_Laptop_0_2593_69-0_32xaug.pt
 models/best/bitcoin_Laptop_0_2513_67-0_32xaug.pt
 models/best/bitcoin_PC_0_2707_67-0_64xaug.pt
+models/best/bitcoin_PC_0_4626_66-0_64xaug.pt
 models/best/bitcoin_Laptop_0_110_67-0_32xaug.pt
 models/best/bitcoin_Laptop_0_3714_67-0_32xaug.pt
 models/best/bitcoin_Laptop_0_3057_66-0_32xaug.pt
@@ -19,5 +20,13 @@ models/best/bitcoin_Laptop_0_2803_65-0_64xaug.pt
 models/best/bitcoin_Laptop_0_4851_65-0_64xaug.pt
 models/best/bitcoin_Laptop_0_4896_65-0_64xaug.pt
 models/best/bitcoin_Laptop_0_5265_65-0_64xaug.pt
-models/best/bitcoin_Laptop_0_6072_63-0_64xaug.pt
-models/best/bitcoin_Laptop_0_6199_61-0_64xaug.pt
+models/best/bitcoin_PC_0_3714_65-0_64xaug.pt
+models/best/bitcoin_Laptop_1_1713_71-0_32xaug.pt
+models/best/bitcoin_Laptop_1_2037_69-0_32xaug.pt
+models/best/bitcoin_Laptop_1_2064_66-0_32xaug.pt
+models/best/bitcoin_Laptop_1_2229_68-0_32xaug.pt
+models/best/bitcoin_Laptop_1_2352_67-0_32xaug.pt
+models/best/bitcoin_Laptop_1_2624_65-0_32xaug.pt
+models/best/bitcoin_Laptop_1_2752_67-0_32xaug.pt
+models/best/bitcoin_Laptop_1_3953_74-0_32xaug.pt
+models/best/bitcoin_Laptop_1_4674_67-0_32xaug.pt
