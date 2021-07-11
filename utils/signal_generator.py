@@ -5,11 +5,11 @@ import neural_nets as nn
 import pandas as pd
 import numpy as np
 import joblib
-import concurrent.futures
+import concurrent.futures as cf
 from datetime import date, timedelta
 
 
-DECISIONS = ["BUY X", "HODL", "SELL Y"]
+DECISIONS = ["BUY", "HODL", "SELL"]
 PRICE = 0
 MARKET_CAP = 1
 VOLUME = 2
@@ -34,27 +34,46 @@ FG_13_SMA = FG_3_SMA+5
 FG_15_SMA = FG_3_SMA+6
 FG_30_SMA = FG_3_SMA+7
 
-def fetch_new_data(n_days):
-	for coin in dt_agg.coin_id:
-		dt_agg.fetch_missing_data_by_range(coin, n_days, 0)
-		print(f"Successfully fetched new {coin} data")
-		dt_agg.merge_new_dataset_with_old(coin)
-		print(f"Successfully merged new and old {coin} data")
-		print()
 
+
+def fetch_new_data(n_days):
+	'''
+	Uses multithreading to speed up fetching process.
+	'''
+	with cf.ThreadPoolExecutor() as executor:
+		results = [executor.submit(dt_agg.fetch_missing_data_by_range, coin, n_days) for coin in dt_agg.coin_id]
+		
+		for thread in cf.as_completed(results):
+			print(thread.result())
+
+	with cf.ThreadPoolExecutor() as executor:
+		results = [executor.submit(dt_agg.merge_new_dataset_with_old, coin) for coin in dt_agg.coin_id]
+		
+		for thread in cf.as_completed(results):
+			print(thread.result())
+
+
+
+def process_individual_coin_new_data(start_date, end_date, coin):
+	'''
+	Uses multiprocessing to speed up data processing.
+	'''
+	data = pd.read_csv(f"datasets/raw/{coin}_historical_data_raw.csv")
+	data = dt_prepro.process_data(coin, data, start_date, end_date)
+	data.to_csv(f"datasets/clean/{coin}_historical_data_clean.csv", index=False)
+
+	return f"All new data processed for {coin}."
 
 
 def process_new_data():
 	start_date = str(date.today())
-	end_date = "2020-08-23" #the first day of data of the youngest asset: polkadot
-	for coin in dt_agg.coin_id:
-		print(coin)
+	end_date = "2020-08-23" #the first day of data of: the youngest asset: polkadot
+	with cf.ProcessPoolExecutor() as executor:
+		results = [executor.submit(process_individual_coin_new_data, start_date, end_date, coin) for coin in dt_agg.coin_id]
 
-		data = pd.read_csv(f"datasets/raw/{coin}_historical_data_raw.csv")
-		data = dt_prepro.process_data(coin, data, start_date, end_date)
-		data.to_csv(f"datasets/clean/{coin}_historical_data_clean.csv", index=False)
-
-
+		for process in cf.as_completed(results):
+			print(process.result())
+	
 
 def get_fg_indicator(fg_index):
 	if fg_index < 0.2:
@@ -235,10 +254,32 @@ def get_models(best):
 			models.append(load_model(nn.CryptoSoothsayer_Pi_0(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
 		elif "Pi_1" in best[i]:
 			models.append(load_model(nn.CryptoSoothsayer_Pi_1(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
+		elif "Pi_2" in best[i]:
+			models.append(load_model(nn.CryptoSoothsayer_Pi_2(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
+		elif "Pi_3" in best[i]:
+			models.append(load_model(nn.CryptoSoothsayer_Pi_3(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
+		elif "Pi_4" in best[i]:
+			models.append(load_model(nn.CryptoSoothsayer_Pi_4(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
+		elif "Pi_5" in best[i]:
+			models.append(load_model(nn.CryptoSoothsayer_Pi_5(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
+		elif "Pi_6" in best[i]:
+			models.append(load_model(nn.CryptoSoothsayer_Pi_6(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
+		elif "Pi_7" in best[i]:
+			models.append(load_model(nn.CryptoSoothsayer_Pi_7(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
 		elif "PC_0" in best[i]:
 			models.append(load_model(nn.CryptoSoothsayer_PC_0(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
 		elif "PC_1" in best[i]:
 			models.append(load_model(nn.CryptoSoothsayer_PC_1(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
+		elif "PC_2" in best[i]:
+			models.append(load_model(nn.CryptoSoothsayer_PC_2(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
+		elif "PC_3" in best[i]:
+			models.append(load_model(nn.CryptoSoothsayer_PC_3(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
+		elif "PC_4" in best[i]:
+			models.append(load_model(nn.CryptoSoothsayer_PC_4(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
+		elif "PC_5" in best[i]:
+			models.append(load_model(nn.CryptoSoothsayer_PC_5(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
+		elif "PC_6" in best[i]:
+			models.append(load_model(nn.CryptoSoothsayer_PC_6(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
 
 
 	return models
@@ -298,7 +339,7 @@ def generate_signals(full_report=False):
 		best_models = f.read().splitlines() 
 
 	for coin in dt_agg.coin_id:
-		# NOTE: raw_data is used for the SMA ratio calculations as the normalized data cannot adequately capture the ratios significances
+		# NOTE: raw_data is used for the SMA ratio calculations as the normalized data cannot adequately capture the ratios' significances
 		data = pd.read_csv(f"datasets/clean/{coin}_historical_data_clean.csv")
 		raw_data = pd.read_csv(f"datasets/raw/{coin}_historical_data_raw_all_features.csv")
 		# extracts the most recent data as a python list
@@ -381,18 +422,26 @@ def generate_report(report):
 
 
 
-fetch_data = input("Fetch most recent daily data? [y/n; only if you haven't already fetched today] ")
+def main():
+	# collects new data and then cleans it
+	fetch_data = input("Fetch most recent daily data? [y/n; only if you haven't already fetched today] ")
+	if (fetch_data.lower())[0] == 'y':
+		days_back = -1
+		while days_back < 0:
+			days_back = int(input("How many days worth of data? [e.g., 5 if you haven't calculated a signal for 5 days] "))
+		fetch_new_data(days_back)
+		process_new_data()
 
-if (fetch_data.lower())[0] == 'y':
-	days_back = -1
-	while days_back < 0:
-		days_back = int(input("How many days worth of data? [e.g., 5 if you haven't calculated a signal for 5 days] "))
-	fetch_new_data(days_back)
-	process_new_data()
+	# determines signal and creates report
+	full_report = input("Full report? [y/n; y gives all the gory details] ")
+	if (full_report.lower())[0] == 'y':
+		report = generate_signals(True)
+	else:
+		report = generate_signals()
 
-full_report = input("Full report? [y/n; y gives all the gory details] ")
-if (full_report.lower())[0] == 'y':
-	report = generate_signals(True)
-else:
-	report = generate_signals()
-generate_report(report)
+	generate_report(report)
+
+
+
+if "__name__" == "__main__":
+	main()

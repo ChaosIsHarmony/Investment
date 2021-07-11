@@ -399,12 +399,18 @@ def parameter_tuner(model_architecture):
 				
 				report += f"MODEL: {model_number}\nLast Training Loss: {prev_train_losses[-1]} | Last Valid Loss: {prev_valid_losses[-1]}\nPARAMETERS:\n\t{model_architecture}\n\teta: {nn.LEARNING_RATE} | decay: {nn.LEARNING_RATE_DECAY} | dropout: {nn.DROPOUT}\nDECISIONS:\n\tPerfect Decision: {model_acc[0]}\n\tTold to Hodl, though Should Have Bought/Sold: {model_acc[1]}\n\tSignal Should Have Been Hodl: {model_acc[2]}\n\tSignal and Answer Exact Opposite: {model_acc[3]}"
 				
-				if model_acc[0] > ptp.ACCURACY_THRESHOLD + 0.1 and model_acc[3] < ptp.INACCURACY_THRESHOLD:
+				# automatically save the best models to best as is
+				if model_acc[0] > ptp.ACCURACY_THRESHOLD + 0.05 and model_acc[3] < ptp.INACCURACY_THRESHOLD:
 					save_filepath = f"models/best/{COIN}_{model_architecture}_{model_number}_{int(round(model_acc[0], 2) * 100)}-{int(round(model_acc[3], 2))}_{data_aug_factor}xaug.pt"
 					save_model(model, save_filepath)
 					with open("reports/best_performers.txt", 'a') as f:
 						f.write(save_filepath + '\n')
+				# save the model to the promising models folder
+				if model_acc[0] > ptp.ACCURACY_THRESHOLD and model_acc[3] < ptp.INACCURACY_THRESHOLD:
+					save_filepath = f"models/promising/{COIN}_{model_architecture}_{model_number}_param_tuning.pt"
+					save_model(model, save_filepath)
 
+				# write the report on all models independent of performance
 				if len(report) > 0:
 					with open(f"reports/Parameter_Tuning_Report_{model_architecture}.txt", "a") as f:
 					# starting from index 1 to avoid first triple space divider
@@ -437,7 +443,7 @@ def continue_training(model_architecture):
 	promising_models = ptp.parse_reports(model_architecture)
 	for model_params in promising_models:
 		model_number = model_params["model_num"]
-		model_filepath = f"models/{COIN}_{model_architecture}_{model_number}_param_tuning.pt"
+		model_filepath = f"models/promising/{COIN}_{model_architecture}_{model_number}_param_tuning.pt"
 	
 		nn.set_model_parameters(dropout = model_params["dropout"], eta = model_params["eta"], eta_decay = model_params["decay"])
 		nn.set_model(model_architecture)
@@ -450,8 +456,8 @@ def continue_training(model_architecture):
 
 		start_time = time.time()
 		print(f"Model #{model_number}")
-	
-		fully_train(model, train_data, valid_data, start_time, f"models/{COIN}_{model_architecture}_{model_number}_lowest_val_loss.pt")
+
+		fully_train(model, train_data, valid_data, start_time, f"models/promising/{COIN}_{model_architecture}_{model_number}_lowest_val_loss.pt")
 
 		#
 		# ------------ MODEL TESTING -----------
@@ -464,7 +470,7 @@ def continue_training(model_architecture):
 		model_acc = evaluate_model(model, test_data)
 
 		# save iff accuracy is higher/lower than threshholds
-		if model_acc[0] > ptp.ACCURACY_THRESHOLD + 0.1 and model_acc[3] < ptp.INACCURACY_THRESHOLD:
+		if model_acc[0] > ptp.ACCURACY_THRESHOLD + 0.05 and model_acc[3] < ptp.INACCURACY_THRESHOLD:
 			save_filepath = f"models/best/{COIN}_{model_architecture}_{model_number}_{int(round(model_acc[0], 2) * 100)}-{int(round(model_acc[3], 2))}_{data_aug_factor}xaug.pt"
 			save_model(model, save_filepath)
 			with open("reports/best_performers.txt", 'a') as f:
@@ -492,12 +498,22 @@ def transfer_learner():
 # ------------ FULLY AUTOMATED TRAINING PIPELINE --------------
 #
 def cleanup():
+	# delete all non-promising models
 	file_list = glob.glob("models/*.pt")
 	for f in file_list:
 		try:
 			os.remove(f)
 		except:
-			print(f"Error when attempting to remove {f}")
+			print(f"Error when attempting to remove {f}.")
+	
+	# delete trained promising models lowest validation that didn't make the cut
+	# NOTE: we are still keeping the promising models to train later with different data aug factors
+	file_list = glob.glob("models/promising/*lowest_val_loss.pt")
+	for f in file_list:
+		try:
+			os.remove(f)
+		except:
+			print(f"Error when attempting to remove {f}.")
 
 
 

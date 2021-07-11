@@ -189,7 +189,7 @@ def get_weighting_constant(n=28):
 
 
 
-def calculate_signals(data, limit=28):
+def calculate_signals(data, limit=28, verbose=False):
 	'''
 	Calculates the signal on a scale from 0-3 (BUY, HODL, & SELL) based on weighted average of the price future (days_out) price movement deltas.
 	If percentage increase exceeds given threshold, then SELL; if decrease then BUY.
@@ -209,7 +209,8 @@ def calculate_signals(data, limit=28):
 
 	data["signal"] = pd.Series(signals)
 
-	print("Value counts for signals in dataset:\n", data["signal"].value_counts())
+	if verbose:
+		print("Value counts for signals in dataset:\n", data["signal"].value_counts())
 
 	data = data.fillna(0)
 
@@ -217,7 +218,7 @@ def calculate_signals(data, limit=28):
 
 
 
-def process_data(coin, data, start_date, end_date):
+def process_data(coin, data, start_date, end_date, verbose=False):
 	'''
 	Processes the basic data provided by coingecko in the following ways:
 		
@@ -230,19 +231,23 @@ def process_data(coin, data, start_date, end_date):
 	'''
 	# Fill in missing values
 	data = handle_missing_data(data, start_date, end_date)
-	print("Missing data handling complete.")
+	if verbose:
+		print(f"Missing data handling complete for {coin}.")
 	# Calculate SMAs 
 	data = calculate_SMAs(data)
-	print("SMA calculation complete.")
+	if verbose:
+		print(f"SMA calculation complete for {coin}.")
 	# Calculate signals
 	days_from_now = 7 * 5 # 7 * n weeks 
 	data = calculate_signals(data, days_from_now)
-	print(f"Signal calculation for {days_from_now} days from now complete.")
+	if verbose:
+		print(f"Signal calculation for {days_from_now} days from now complete for {coin}.")
 	# save all features raw file for use in signal_generator
 	data.to_csv(f"datasets/raw/{coin}_historical_data_raw_all_features.csv", index=False, float_format="%f")
 	# Normalize, must happen after SMA calculation or will skew results
 	data = normalize_data(data)
-	print("Data normalization complete.")
+	if verbose:
+		print(f"Data normalization complete for {coin}.")
 	print()
 
 	return data

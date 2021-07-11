@@ -196,6 +196,7 @@ def merge_new_dataset_with_old(coin, by_range=True):
 
 	merge_datasets(coin, data_to_merge)
 
+	return f"Successfully merged new and old {coin} data"
 
 
 def fetch_missing_data_by_dates(coin, dates, verbose=False):
@@ -241,7 +242,7 @@ def fetch_missing_data_by_dates(coin, dates, verbose=False):
 #merge_new_dataset_with_old("ethereum", by_range=False)
 
 
-def fetch_missing_data_by_range(coin, n_days, start_delta, verbose=False):
+def fetch_missing_data_by_range(coin, n_days, start_delta=0, verbose=False):
 	today = date.today() - timedelta(start_delta)
 	historical_data = []
 	missing_dates = []
@@ -279,8 +280,11 @@ def fetch_missing_data_by_range(coin, n_days, start_delta, verbose=False):
 	coin_data = pd.DataFrame(historical_data)
 	coin_data.to_csv(f"datasets/raw/{coin}_historical_data_by_range.csv", index=False, float_format="%f")
 		
+	message = f"{coin} data successfully pulled and stored."
 	if verbose:
-		print(f"{coin} data successfully pulled and stored.")
+		print(message)
+
+	return message
 
 
 
