@@ -280,6 +280,8 @@ def get_models(best):
 			models.append(load_model(nn.CryptoSoothsayer_PC_5(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
 		elif "PC_6" in best[i]:
 			models.append(load_model(nn.CryptoSoothsayer_PC_6(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
+		elif "PC_7" in best[i]:
+			models.append(load_model(nn.CryptoSoothsayer_PC_7(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
 
 
 	return models
