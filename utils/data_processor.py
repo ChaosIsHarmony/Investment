@@ -406,7 +406,8 @@ def parameter_tuner(model_architecture):
 					with open("reports/best_performers.txt", 'a') as f:
 						f.write(save_filepath + '\n')
 				# save the model to the promising models folder
-				elif model_acc[0] > ptp.ACCURACY_THRESHOLD and model_acc[3] < ptp.INACCURACY_THRESHOLD:
+				# saves to both locations for further training
+				if model_acc[0] > ptp.ACCURACY_THRESHOLD and model_acc[3] < ptp.INACCURACY_THRESHOLD:
 					save_filepath = f"models/promising/{COIN}_{model_architecture}_{model_number}_param_tuning.pt"
 					save_model(model, save_filepath)
 
@@ -463,7 +464,7 @@ def continue_training(model_architecture):
 		# ------------ MODEL TESTING -----------
 		#
 		# load model with lowest validation loss
-		model = load_model(model, f"models/{COIN}_{model_architecture}_{model_number}_lowest_val_loss.pt")
+		model = load_model(model, f"models/promising/{COIN}_{model_architecture}_{model_number}_lowest_val_loss.pt")
 		report = "EVALUATE TRAINED MODEL"
 		REPORTS.append(report)
 		print(report)
@@ -518,11 +519,11 @@ def cleanup():
 
 
 def fully_automated_training_pipeline():
-	neural_net_architecture = ["Laptop_1"]
+	neural_net_architecture = ["Laptop_3"]
 	for model_architecture in neural_net_architecture:
 		parameter_tuner(model_architecture)
 		continue_training(model_architecture)
 		cleanup()
 
-
-fully_automated_training_pipeline()
+if __name__ == "__main__":
+	fully_automated_training_pipeline()

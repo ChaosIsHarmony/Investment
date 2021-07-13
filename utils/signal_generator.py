@@ -290,9 +290,8 @@ def get_signal_strength(data, raw_data, buy_signal, hodl_signal, sell_signal):
 	# direction of signal
 	buy = buy_signal > sell_signal
 
-	# absolute difference between buy and sell
-	#signal_strength = abs(buy_signal - sell_signal) 
-	signal_strength = abs(buy_signal - hodl_signal) + abs(sell_signal - hodl_signal) 
+	# ratio of buy to sell or sell to buy depending on signal direction
+	signal_strength = (abs(buy_signal - hodl_signal) / abs(sell_signal - hodl_signal)) if buy else (abs(sell_signal - hodl_signal) / abs(buy_signal - hodl_signal))
 	
 	# counter to typical action (Buy when fearful; Sell when greedy), thus detracts; else, additive
 	fg_mult = -1 if (buy and data[FEAR_GREED] >= 0.5) or (not buy and data[FEAR_GREED] <= 0.5) else 1
@@ -321,12 +320,7 @@ def get_signal_strength(data, raw_data, buy_signal, hodl_signal, sell_signal):
 	signal_strength += 0 if tot_metrics == 0 else fg_mult * (tot_val / tot_metrics)
 
 	# ultimate decision
-	if signal_strength > 5:
-		buy_or_sell = "BUY" if buy else "SELL"
-	else:
-		signal_strength = 0
-		buy_or_sell = "TOO WEAK"
-
+	buy_or_sell = "BUY" if buy else "SELL"
 
 	return signal_strength, buy_or_sell
 
@@ -443,5 +437,5 @@ def main():
 
 
 
-if "__name__" == "__main__":
+if __name__ == "__main__":
 	main()

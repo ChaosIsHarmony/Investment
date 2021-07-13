@@ -3,4 +3,3 @@ __pycache__/
 *.swo
 *.txt
 *.pt
-reports/Parameter_Tuning_Report.txt

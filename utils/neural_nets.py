@@ -455,7 +455,7 @@ class CryptoSoothsayer_Laptop_6(nn.Module):
 def set_model_props(model):
 	global DEVICE, CRITERION, OPTIMIZER, SCHEDULER
 
-	DEVICE = (torch.device("cuda") if torch.cuda.is_available else torch.device("cpu"))
+	DEVICE = (torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu"))
 	model.to(DEVICE)
 	CRITERION = nn.CrossEntropyLoss()
 	OPTIMIZER = optim.Adam(model.parameters(), lr=LEARNING_RATE)
