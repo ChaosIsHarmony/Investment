@@ -309,6 +309,27 @@ class CryptoSoothsayer_PC_6(nn.Module):
 
 
 
+class CryptoSoothsayer_PC_7(nn.Module):
+	def __init__(self, input_size, n_signals):
+		super(CryptoSoothsayer_PC_7, self).__init__()
+		self.layer_1 = nn.Linear(input_size, 19)
+		self.layer_2 = nn.Linear(19, 5)
+		self.layer_output = nn.Linear(5, n_signals)
+		self.dropout = nn.Dropout(DROPOUT)
+
+
+	def forward(self, inputs):
+		out = self.dropout(F.relu(self.layer_1(inputs)))
+		out = self.dropout(F.relu(self.layer_2(out)))
+		out = self.layer_output(out)
+		return out
+
+
+	def get_class_name(self):
+		return "CryptoSoothsayer_PC_7"
+
+
+
 #
 # ---------- MODELS TRAINED ON LAPTOP ----------
 #
@@ -455,7 +476,7 @@ class CryptoSoothsayer_Laptop_6(nn.Module):
 def set_model_props(model):
 	global DEVICE, CRITERION, OPTIMIZER, SCHEDULER
 
-	DEVICE = (torch.device("cuda") if torch.cuda.is_available else torch.device("cpu"))
+	DEVICE = (torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu"))
 	model.to(DEVICE)
 	CRITERION = nn.CrossEntropyLoss()
 	OPTIMIZER = optim.Adam(model.parameters(), lr=LEARNING_RATE)
@@ -511,6 +532,8 @@ def set_model(model_architecture):
 		MODEL = CryptoSoothsayer_PC_5(N_FEATURES, N_SIGNALS)
 	elif "PC_6" in model_architecture:
 		MODEL = CryptoSoothsayer_PC_6(N_FEATURES, N_SIGNALS)
+	elif "PC_7" in model_architecture:
+		MODEL = CryptoSoothsayer_PC_7(N_FEATURES, N_SIGNALS)
 
 
 

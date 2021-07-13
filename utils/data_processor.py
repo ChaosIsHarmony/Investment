@@ -463,7 +463,7 @@ def continue_training(model_architecture):
 		# ------------ MODEL TESTING -----------
 		#
 		# load model with lowest validation loss
-		model = load_model(model, f"models/{COIN}_{model_architecture}_{model_number}_lowest_val_loss.pt")
+		model = load_model(model, f"models/promising/{COIN}_{model_architecture}_{model_number}_lowest_val_loss.pt")
 		report = "EVALUATE TRAINED MODEL"
 		REPORTS.append(report)
 		print(report)
@@ -518,7 +518,10 @@ def cleanup():
 
 
 def fully_automated_training_pipeline():
-	neural_net_architecture = ["PC_1"]
+#	neural_net_architecture = ["Pi_0", "Pi_1", "PC_i", "Pi_3", "Pi_4", "Pi_5", "Pi_6", "PC_7"]
+#	neural_net_architecture = ["PC_0", "PC_1", "PC_2", "PC_3", "PC_4", "PC_5", "PC_6"]
+	neural_net_architecture = ["PC_7"]
+#	neural_net_architecture = ["Laptop_0", "Laptop_1", "Laptop_2", "Laptop_3", "Laptop_4", "Laptop_5", "Laptop_6"]
 	for model_architecture in neural_net_architecture:
 		parameter_tuner(model_architecture)
 		continue_training(model_architecture)
