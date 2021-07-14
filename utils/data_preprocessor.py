@@ -1,4 +1,5 @@
 import pandas as pd
+import common 
 
 
 def handle_missing_data(data, start_date, end_date):
@@ -42,7 +43,7 @@ def handle_missing_data(data, start_date, end_date):
 def normalize_data(data):
 	'''
 	Normalizes data using min-max normalization but only up until the given point in history, e.g., datapoint for 2021/02/28 does not have any knowledge of data from 01/03/2021 and onwards.
-	NOTE: only uses 2 until seocnd to last column, because 1st column is the date and the last column is the signal (i.e., what the appropriate action to take should be).
+	NOTE: only uses 2nd until 2nd to last column, because 1st column is the date and the last column is the signal (i.e., what the appropriate action to take should be).
 	'''
 	data_cp = data.copy(deep=True)
 
@@ -238,8 +239,7 @@ def process_data(coin, data, start_date, end_date, verbose=False):
 	if verbose:
 		print(f"SMA calculation complete for {coin}.")
 	# Calculate signals
-	days_from_now = 7 * 5 # 7 * n weeks 
-	data = calculate_signals(data, days_from_now)
+	data = calculate_signals(data, common.SIGNAL_FOR_N_DAYS_FROM_NOW)
 	if verbose:
 		print(f"Signal calculation for {days_from_now} days from now complete for {coin}.")
 	# save all features raw file for use in signal_generator

@@ -331,10 +331,15 @@ def get_signal_strength(data, raw_data, buy_signal, hodl_signal, sell_signal):
 def generate_signals(full_report=False):
 	report = []
 
-	with open("reports/best_performers.txt") as f:
-		best_models = f.read().splitlines() 
-
 	for coin in dt_agg.coin_id:
+		# parse all asset-specific best-performing models OR just use the bitcoin one if no asset-specific ones exist (e.g., polkadot because it's too new)
+		try:
+			with open("reports/{coin}_best_performers.txt") as f:
+				best_models = f.read().splitlines() 
+		except:
+			with open("reports/bitcoin_best_performers.txt") as f:
+				best_models = f.read().splitlines() 
+
 		# NOTE: raw_data is used for the SMA ratio calculations as the normalized data cannot adequately capture the ratios' significances
 		data = pd.read_csv(f"datasets/clean/{coin}_historical_data_clean.csv")
 		raw_data = pd.read_csv(f"datasets/raw/{coin}_historical_data_raw_all_features.csv")

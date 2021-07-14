@@ -1,2 +1,0 @@
-1.) Transfer learning for other assets' datasets
-2.) Multiprocess/multithreading support

@@ -430,47 +430,6 @@ class CryptoSoothsayer_Laptop_4(nn.Module):
 
 
 
-class CryptoSoothsayer_Laptop_5(nn.Module):
-	def __init__(self, input_size, n_signals):
-		super(CryptoSoothsayer_Laptop_5, self).__init__()
-		self.layer_1 = nn.Linear(input_size, 20)
-		self.layer_2 = nn.Linear(20, 13)
-		self.layer_output = nn.Linear(13, n_signals)
-		self.dropout = nn.Dropout(DROPOUT)
-
-
-	def forward(self, inputs):
-		out = self.dropout(F.relu(self.layer_1(inputs)))
-		out = self.dropout(F.relu(self.layer_2(inputs)))
-		out = self.layer_output(out)
-		return out
-
-	
-	def get_class_name(self):
-		return "CryptoSoothsayer_Laptop_5"
-
-
-
-class CryptoSoothsayer_Laptop_6(nn.Module):
-	def __init__(self, input_size, n_signals):
-		super(CryptoSoothsayer_Laptop_6, self).__init__()
-		self.layer_1 = nn.Linear(input_size, 21)
-		self.layer_2 = nn.Linear(21, 13)
-		self.layer_output = nn.Linear(13, n_signals)
-		self.dropout = nn.Dropout(DROPOUT)
-
-
-	def forward(self, inputs):
-		out = self.dropout(F.relu(self.layer_1(inputs)))
-		out = self.dropout(F.relu(self.layer_2(inputs)))
-		out = self.layer_output(out)
-		return out
-
-	
-	def get_class_name(self):
-		return "CryptoSoothsayer_Laptop_6"
-
-
 #
 # -------------- GETTERS & SETTERS ---------------
 #
@@ -500,10 +459,6 @@ def set_model(model_architecture):
 		MODEL = CryptoSoothsayer_Laptop_3(N_FEATURES, N_SIGNALS)
 	elif "Laptop_4" in model_architecture:
 		MODEL = CryptoSoothsayer_Laptop_4(N_FEATURES, N_SIGNALS)
-	elif "Laptop_5" in model_architecture:
-		MODEL = CryptoSoothsayer_Laptop_5(N_FEATURES, N_SIGNALS)
-	elif "Laptop_6" in model_architecture:
-		MODEL = CryptoSoothsayer_Laptop_6(N_FEATURES, N_SIGNALS)
 	elif "Pi_0" in model_architecture:
 		MODEL = CryptoSoothsayer_Pi_0(N_FEATURES, N_SIGNALS)
 	elif "Pi_1" in model_architecture:
@@ -570,15 +525,20 @@ def get_device():
 	global DEVICE
 	return DEVICE
 
+
+
 def get_criterion():
 	global CRITERION
 	return CRITERION
+
+
 
 def get_optimizer():
 	global OPTIMIZER
 	return OPTIMIZER
 
+
+
 def get_scheduler():
 	global SCHEDULER
 	return SCHEDULER
-
