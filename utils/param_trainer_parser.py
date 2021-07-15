@@ -1,7 +1,7 @@
 '''
 Parses the Parameter_Tuning_Reports.txt file so that it can automatically set the parameters in the continue_training method of the data_processor file.
 '''
-ACCURACY_THRESHOLD = 0.6
+ACCURACY_THRESHOLD = 0.55
 INACCURACY_THRESHOLD = 0.05
 
 

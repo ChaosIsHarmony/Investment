@@ -400,10 +400,10 @@ def parameter_tuner(model_architecture):
 				report += f"MODEL: {model_number}\nLast Training Loss: {prev_train_losses[-1]} | Last Valid Loss: {prev_valid_losses[-1]}\nPARAMETERS:\n\t{model_architecture}\n\teta: {nn.LEARNING_RATE} | decay: {nn.LEARNING_RATE_DECAY} | dropout: {nn.DROPOUT}\nDECISIONS:\n\tPerfect Decision: {model_acc[0]}\n\tTold to Hodl, though Should Have Bought/Sold: {model_acc[1]}\n\tSignal Should Have Been Hodl: {model_acc[2]}\n\tSignal and Answer Exact Opposite: {model_acc[3]}"
 				
 				# automatically save the best models to best as is
-				if model_acc[0] > ptp.ACCURACY_THRESHOLD + 0.085 and model_acc[3] < ptp.INACCURACY_THRESHOLD:
+				if model_acc[0] > ptp.ACCURACY_THRESHOLD + 0.1 and model_acc[3] < ptp.INACCURACY_THRESHOLD:
 					save_filepath = f"models/best/{COIN}_{model_architecture}_{model_number}_{int(round(model_acc[0], 2) * 100)}-{int(round(model_acc[3], 2))}_{data_aug_factor}xaug.pt"
 					save_model(model, save_filepath)
-					with open("reports/{COIN}_best_performers.txt", 'a') as f:
+					with open(f"reports/{COIN}_best_performers.txt", 'a') as f:
 						f.write(save_filepath + '\n')
 				# save the model to the promising models folder
 				# saves to both locations for further training
@@ -476,10 +476,10 @@ def continue_training(model_architecture):
 		model_acc = evaluate_model(model, test_data)
 
 		# save iff accuracy is higher/lower than threshholds
-		if model_acc[0] > ptp.ACCURACY_THRESHOLD + 0.085 and model_acc[3] < ptp.INACCURACY_THRESHOLD:
+		if model_acc[0] > ptp.ACCURACY_THRESHOLD + 0.1 and model_acc[3] < ptp.INACCURACY_THRESHOLD:
 			save_filepath = f"models/best/{COIN}_{model_architecture}_{model_number}_{int(round(model_acc[0], 2) * 100)}-{int(round(model_acc[3], 2))}_{data_aug_factor}xaug.pt"
 			save_model(model, save_filepath)
-			with open("reports/{COIN}_best_performers.txt", 'a') as f:
+			with open(f"reports/{COIN}_best_performers.txt", 'a') as f:
 				f.write(save_filepath + '\n')
 
 			#
@@ -563,8 +563,7 @@ def cleanup():
 def fully_automated_training_pipeline():
 #	neural_net_architecture = ["Pi_0", "Pi_1", "PC_i", "Pi_3", "Pi_4", "Pi_5", "Pi_6", "PC_7"]
 #	neural_net_architecture = ["PC_0", "PC_1", "PC_2", "PC_3", "PC_4", "PC_5", "PC_6"]
-	neural_net_architecture = ["Laptop_4"]
-#	neural_net_architecture = ["Laptop_0", "Laptop_1", "Laptop_2", "Laptop_3", "Laptop_4", "Laptop_5", "Laptop_6"]
+	neural_net_architecture = ["Laptop_0", "Laptop_1", "Laptop_2", "Laptop_3", "Laptop_4", "Laptop_5", "Laptop_6"]
 	for model_architecture in neural_net_architecture:
 		parameter_tuner(model_architecture)
 		continue_training(model_architecture)
@@ -573,5 +572,5 @@ def fully_automated_training_pipeline():
 
 
 if __name__ == "__main__":
-#	fully_automated_training_pipeline()
-	transfer_learner()
+	fully_automated_training_pipeline()
+#	transfer_learner()
