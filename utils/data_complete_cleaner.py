@@ -4,9 +4,8 @@ Takes a clean dataset and prunes it so that it's suitable for training.
 import pandas as pd
 import common
 
-coins = ["algorand", "bitcoin", "cardano", "chainlink", "ethereum", "polkadot", "solana"]
 
-for coin in coins: 
+for coin in common.coins: 
 	data = pd.read_csv(f"datasets/clean/{coin}_historical_data_clean.csv")
 
 	# find first instance of real SMA_350 value

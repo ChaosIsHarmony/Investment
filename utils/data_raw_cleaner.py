@@ -12,8 +12,8 @@ for coin in coin_id:
 			former_cell = data.iloc[r-1, c]
 			curr_cell = data.iloc[r, c]
 			latter_cell = data.iloc[r+1, c]
-			if (curr_cell / 10) > former_cell and (curr_cell / 10) > latter_cell:
-				factor = curr_cell // ((former_cell + latter_cell) / 2)
+			if (curr_cell / 10) > former_cell or (curr_cell / 10) > latter_cell:
+				factor = curr_cell // min(former_cell, latter_cell)
 				print(c,r, factor)
 				if factor >= 100:
 					data.iloc[r, c] = data.iloc[r, c] / 1000

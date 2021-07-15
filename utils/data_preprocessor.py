@@ -241,7 +241,7 @@ def process_data(coin, data, start_date, end_date, verbose=False):
 	# Calculate signals
 	data = calculate_signals(data, common.SIGNAL_FOR_N_DAYS_FROM_NOW)
 	if verbose:
-		print(f"Signal calculation for {days_from_now} days from now complete for {coin}.")
+		print(f"Signal calculation for {common.SIGNAL_FOR_N_DAYS_FROM_NOW} days from now complete for {coin}.")
 	# save all features raw file for use in signal_generator
 	data.to_csv(f"datasets/raw/{coin}_historical_data_raw_all_features.csv", index=False, float_format="%f")
 	# Normalize, must happen after SMA calculation or will skew results
@@ -259,7 +259,6 @@ def run():
 	# The following two coins have shorter histories and require a different start date {polkadot = 2020-08-23; solana = 2020-04-11}
 	#coins = ["polkadot"]
 	#coins = ["solana"]
-
 	start_date = "2020-08-23"#"2019-10-20"
 	end_date = "2021-07-08"
 
@@ -268,7 +267,7 @@ def run():
 
 		data = pd.read_csv(f"datasets/raw/{coin}_historical_data_raw.csv")
 
-		data = process_data(coin, data, start_date, end_date)
+		data = process_data(coin, data, start_date, end_date, verbose=True)
 
 		data.to_csv(f"datasets/clean/{coin}_historical_data_clean.csv", index=False, float_format="%f")
 

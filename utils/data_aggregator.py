@@ -172,7 +172,8 @@ def merge_datasets(coin, list_of_datasets, all_data=False):
 		subset_cols = ["date", "price", "market_cap", "vol"]
 	else:
 		subset_cols = ["date"]
-	merged_data = merged_data.drop_duplicates(subset=subset_cols)
+
+	merged_data = merged_data.drop_duplicates(subset=subset_cols, keep="last")
 	merged_data = merged_data.reset_index()
 	merged_data = merged_data.drop(columns=["index"])
 

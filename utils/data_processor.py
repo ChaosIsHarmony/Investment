@@ -494,8 +494,8 @@ def transfer_learner():
 	# ------------ DATA GENERATION ----------
 	#
 	start_time = time.time()
-	data_aug_factor = 32 
-	coin = "algorand"
+	data_aug_factor = 128 
+	coin = "chainlink"
 	print("Creating datasets...")
 	train_data, valid_data, test_data = get_datasets(coin, data_aug_factor)
 	print(f"Datasets created in {(time.time()-start_time)/60:.1f} mins")
