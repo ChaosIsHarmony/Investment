@@ -2,9 +2,11 @@ import pandas as pd
 
 
 coin_id = ["algorand", "bitcoin", "cardano", "chainlink", "ethereum", "polkadot", "solana"]
+data_type = "raw"
+
 
 for coin in coin_id:
-	data = pd.read_csv(f"datasets/raw/{coin}_historical_data_raw.csv")
+	data = pd.read_csv(f"datasets/{data_type}/{coin}_historical_data_{data_type}.csv")
 
 	count = 0
 	for c in range(1, len(data.columns)):
@@ -23,4 +25,4 @@ for coin in coin_id:
 
 	print(count)
 	
-	data.to_csv(f"datasets/raw/{coin}_historical_data_raw.csv", index=False, float_format="%f")
+	data.to_csv(f"datasets/{data_type}/{coin}_historical_data_{data_type}.csv", index=False, float_format="%f")

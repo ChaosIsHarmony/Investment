@@ -452,16 +452,16 @@ def continue_training(model_architecture):
 	#
 	promising_models = ptp.parse_reports(model_architecture)
 	for model_params in promising_models:
-		model_filepath = f"models/promising/{COIN}_{model_params['model_architecture']}_{model_params['model_number']}_param_tuning.pt"
+		model_filepath = f"models/promising/{COIN}_{model_architecture}_{model_params['model_num']}_param_tuning.pt"
 		model = load_model_by_params(model_filepath, model_params)
 
 		dropout, eta, eta_decay = nn.get_model_parameters()
 		reports = [f"Model: {model.get_class_name()}", f"Learning rate: {eta}", f"Learning rate decay: {eta_decay}", f"Chance of dropout: {dropout}", f"Batch size: {BATCH_SIZE}", f"Epochs: {EPOCHS}", f"Coin: {COIN}"]
 
 		start_time = time.time()
-		print(f"Model #{model_number}")
+		print(f"Model #{model_params['model_num']}")
 
-		fully_train(model, train_data, valid_data, start_time, f"models/promising/{COIN}_{model_architecture}_{model_number}_lowest_val_loss.pt")
+		fully_train(model, train_data, valid_data, start_time, f"models/promising/{COIN}_{model_architecture}_{model_params['model_num']}_lowest_val_loss.pt")
 
 
 
@@ -469,15 +469,15 @@ def continue_training(model_architecture):
 		# ------------ MODEL TESTING -----------
 		#
 		# load model with lowest validation loss
-		model = load_model(model, f"models/promising/{COIN}_{model_architecture}_{model_number}_lowest_val_loss.pt")
+		model = load_model(model, f"models/promising/{COIN}_{model_architecture}_{model_params['model_num']}_lowest_val_loss.pt")
 		report = "EVALUATE TRAINED MODEL"
 		REPORTS.append(report)
 		print(report)
 		model_acc = evaluate_model(model, test_data)
 
 		# save iff accuracy is higher/lower than threshholds
-		if model_acc[0] > ptp.ACCURACY_THRESHOLD + 0.1 and model_acc[3] < ptp.INACCURACY_THRESHOLD:
-			save_filepath = f"models/best/{COIN}_{model_architecture}_{model_number}_{int(round(model_acc[0], 2) * 100)}-{int(round(model_acc[3], 2))}_{data_aug_factor}xaug.pt"
+		if model_acc[0] > ptp.ACCURACY_THRESHOLD + 0.095 and model_acc[3] < ptp.INACCURACY_THRESHOLD:
+			save_filepath = f"models/best/{COIN}_{model_architecture}_{model_params['model_num']}_{int(round(model_acc[0], 2) * 100)}-{int(round(model_acc[3], 2))}_{data_aug_factor}xaug.pt"
 			save_model(model, save_filepath)
 			with open(f"reports/{COIN}_best_performers.txt", 'a') as f:
 				f.write(save_filepath + '\n')
@@ -529,7 +529,7 @@ def transfer_learner():
 
 
 		# save iff accuracy is higher/lower than threshholds
-		if model_acc[0] > ptp.ACCURACY_THRESHOLD + 0.085 and model_acc[3] < ptp.INACCURACY_THRESHOLD:
+		if model_acc[0] > ptp.ACCURACY_THRESHOLD + 0.095 and model_acc[3] < ptp.INACCURACY_THRESHOLD:
 			save_filepath = f"models/best/{coin}_{model_params['architecture']}_{model_params['model_num']}_{int(round(model_acc[0], 2) * 100)}-{int(round(model_acc[3], 2))}_{data_aug_factor}xaug.pt"
 			save_model(model, save_filepath)
 			with open(f"reports/{coin}_best_performers.txt", 'a') as f:
@@ -563,7 +563,9 @@ def cleanup():
 def fully_automated_training_pipeline():
 #	neural_net_architecture = ["Pi_0", "Pi_1", "PC_i", "Pi_3", "Pi_4", "Pi_5", "Pi_6", "PC_7"]
 #	neural_net_architecture = ["PC_0", "PC_1", "PC_2", "PC_3", "PC_4", "PC_5", "PC_6"]
-	neural_net_architecture = ["Laptop_0", "Laptop_1", "Laptop_2", "Laptop_3", "Laptop_4", "Laptop_5", "Laptop_6"]
+#	neural_net_architecture = ["Laptop_0", "Laptop_1", "Laptop_2", "Laptop_3", "Laptop_4", "Laptop_5", "Laptop_6"]
+	neural_net_architecture = ["Laptop_1", "Laptop_2", "Laptop_3", "Laptop_4", "Laptop_5", "Laptop_6"]
+	
 	for model_architecture in neural_net_architecture:
 		parameter_tuner(model_architecture)
 		continue_training(model_architecture)
