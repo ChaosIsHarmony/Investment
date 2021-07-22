@@ -5,8 +5,8 @@ ACCURACY_THRESHOLD = 0.655
 INACCURACY_THRESHOLD = 0.05
 
 
-def parse_reports(model_architecture):
-	with open(f"reports/Parameter_Tuning_Report_{model_architecture}.txt", 'r') as f:
+def parse_reports(coin, model_architecture):
+	with open(f"reports/{coin}_Parameter_Tuning_Report_{model_architecture}.txt", 'r') as f:
 		reports = f.read()
 
 	models = []
@@ -71,7 +71,7 @@ def list_promising_model_details(model_architecture):
 	print(f"{count} promising models found.")
 
 
-def find_model_params(file_name):
+def find_model_params(coin, file_name):
 	start_ind = file_name.find('_') + 1
 	end_ind = file_name.find('_', start_ind) + 2
 	model_architecture = file_name[start_ind:end_ind]
@@ -81,7 +81,7 @@ def find_model_params(file_name):
 	model_num = file_name[start_ind:end_ind]
 
 	try:
-		models = parse_reports(model_architecture)
+		models = parse_reports(coin, model_architecture)
 		for model in models:
 			if model["model_num"] == int(model_num):
 				return model

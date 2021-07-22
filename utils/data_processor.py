@@ -24,7 +24,7 @@ WHEN testing need these versions instead
 
 BATCH_SIZE = 256 
 EPOCHS = 20
-COIN = "bitcoin"
+COIN = "cardano"
 REPORTS = []
 
 #
@@ -82,6 +82,25 @@ def generate_dataset(data, limit, offset, data_aug_per_sample=0):
 	return dataset
 
 
+
+def load_data(coin):
+	# Load data
+	data = pd.read_csv(f"datasets/complete/{coin}_historical_data_complete.csv")
+	data = data.drop(columns=["date"])
+	data["signal"] = data["signal"].astype("int64")
+
+	return data
+
+
+
+def vet_data_integrity(data):
+	# Check for any anomalous, unnormalized data in all columns except the signal column
+	for c in range(len(data.columns)-1):
+		for r in range(len(data)):
+			assert (data.iloc[r, c] > 1) == False, f"ERROR: Unnormalized data still present in the dataset in column: {data.columns[c]}."
+
+
+
 def get_datasets(coin, data_aug_factor=0):
 	'''
 	Splits dataset into training, validation, and testing datasets.
@@ -90,15 +109,8 @@ def get_datasets(coin, data_aug_factor=0):
 	global REPORTS
 
 
-	# Load data
-	data = pd.read_csv(f"datasets/complete/{coin}_historical_data_complete.csv")
-	data = data.drop(columns=["date"])
-	data["signal"] = data["signal"].astype("int64")
-
-	# Check for any anomalous, unnormalized data in all columns except the signal column
-	for c in range(len(data.columns)-1):
-		for r in range(len(data)):
-			assert (data.iloc[r, c] > 1) == False, f"ERROR: Unnormalized data still present in the dataset in column: {data.columns[c]}."
+	data = load_data(coin)
+	vet_data_integrity(data)
 
 	# Split into training, validation, testing
 	# 70-15-15 split
@@ -413,7 +425,7 @@ def parameter_tuner(model_architecture):
 
 				# write the report on all models independent of performance
 				if len(report) > 0:
-					with open(f"reports/Parameter_Tuning_Report_{model_architecture}.txt", "a") as f:
+					with open(f"reports/{COIN}_Parameter_Tuning_Report_{model_architecture}.txt", "a") as f:
 					# starting from index 1 to avoid first triple space divider
 						f.write(report + "\n\n")
 
@@ -423,6 +435,11 @@ def parameter_tuner(model_architecture):
 
 
 
+	
+
+#
+# -------------- Continue Training Most Successful Experiments --------------
+#
 def load_model_by_params(model_filepath, model_params):
 	nn.set_model_parameters(dropout = model_params["dropout"], eta = model_params["eta"], eta_decay = model_params["decay"])
 	nn.set_model(model_params["architecture"])
@@ -430,11 +447,8 @@ def load_model_by_params(model_filepath, model_params):
 	nn.set_model_props(nn.get_model())
 	return nn.get_model()
 
-		
 
-#
-# -------------- Continue Training Most Successful Experiments --------------
-#
+	
 def continue_training(model_architecture):
 	global REPORTS, COIN, EPOCHS, BATCH_SIZE
 
@@ -450,7 +464,7 @@ def continue_training(model_architecture):
 	#
 	# ------------ MODEL TRAINING -----------
 	#
-	promising_models = ptp.parse_reports(model_architecture)
+	promising_models = ptp.parse_reports(COIN, model_architecture)
 	for model_params in promising_models:
 		model_filepath = f"models/promising/{COIN}_{model_architecture}_{model_params['model_num']}_param_tuning.pt"
 		model = load_model_by_params(model_filepath, model_params)
@@ -494,8 +508,8 @@ def transfer_learner():
 	# ------------ DATA GENERATION ----------
 	#
 	start_time = time.time()
-	data_aug_factor = 128 
-	coin = "chainlink"
+	data_aug_factor = 16 
+	coin = "solana"
 	print("Creating datasets...")
 	train_data, valid_data, test_data = get_datasets(coin, data_aug_factor)
 	print(f"Datasets created in {(time.time()-start_time)/60:.1f} mins")
@@ -506,8 +520,9 @@ def transfer_learner():
 		best_models = f.read().splitlines() 
 
 	for file_name in best_models:
-		model_params = ptp.find_model_params(file_name)
+		model_params = ptp.find_model_params("bitcoin", file_name)
 		if model_params == None:
+			print(f"{file_name} Not Found. Continuing on to other models.")
 			continue
 		model = load_model_by_params(file_name, model_params)
 
@@ -516,7 +531,7 @@ def transfer_learner():
 		reports = [f"Model: {model.get_class_name()}", f"Learning rate: {eta}", f"Learning rate decay: {eta_decay}", f"Chance of dropout: {dropout}"]
 
 		start_time = time.time()
-		print(f"Model #{model_params['model_num']}")
+		print(f"Architecture: {file_name}\nModel: {model_params['model_num']}")
 
 		fully_train(model, train_data, valid_data, start_time, f"models/promising/{coin}_{model_params['architecture']}_{model_params['model_num']}_lowest_val_loss.pt")
 
@@ -535,6 +550,41 @@ def transfer_learner():
 			with open(f"reports/{coin}_best_performers.txt", 'a') as f:
 				f.write(save_filepath + '\n')
 
+
+
+
+def benchmark_models(model_coin, test_coin):
+	# 
+	# ------------ DATA GENERATION ----------
+	#
+	start_time = time.time()
+	data_aug_factor = 0 
+	print("Creating datasets...")
+
+	data = load_data(test_coin)
+	vet_data_integrity(data)
+
+	data = generate_dataset(data, limit=data.shape[0], offset=0)
+
+	print(f"Datasets created in {(time.time()-start_time)/60:.1f} mins")
+	
+	# load previously trained model
+	best_models = []
+	with open(f"reports/{model_coin}_best_performers.txt", 'r') as f:
+		best_models = f.read().splitlines() 
+
+	for file_name in best_models:
+		model_params = ptp.find_model_params(model_coin, file_name)
+		if model_params == None:
+			print(f"{file_name} Not Found. Continuing on to other models.")
+			continue
+		model = load_model_by_params(file_name, model_params)
+
+	# evaluate
+		model = load_model(model, f"{file_name}")
+		print("EVALUATE TRAINED MODEL")
+		print(f"{file_name}")
+		model_acc = evaluate_model(model, data)
 
 
 #
@@ -561,10 +611,9 @@ def cleanup():
 
 
 def fully_automated_training_pipeline():
-#	neural_net_architecture = ["Pi_0", "Pi_1", "PC_i", "Pi_3", "Pi_4", "Pi_5", "Pi_6", "PC_7"]
+#	neural_net_architecture = ["Pi_5", "Pi_6", "Pi_7"]
 #	neural_net_architecture = ["PC_0", "PC_1", "PC_2", "PC_3", "PC_4", "PC_5", "PC_6"]
-#	neural_net_architecture = ["Laptop_0", "Laptop_1", "Laptop_2", "Laptop_3", "Laptop_4", "Laptop_5", "Laptop_6"]
-	neural_net_architecture = ["Laptop_1", "Laptop_2", "Laptop_3", "Laptop_4", "Laptop_5", "Laptop_6"]
+	neural_net_architecture = ["Laptop_0", "Laptop_1", "Laptop_2", "Laptop_3", "Laptop_4"]
 	
 	for model_architecture in neural_net_architecture:
 		parameter_tuner(model_architecture)
@@ -574,5 +623,6 @@ def fully_automated_training_pipeline():
 
 
 if __name__ == "__main__":
-	fully_automated_training_pipeline()
+#	fully_automated_training_pipeline()
 #	transfer_learner()
+	benchmark_models(model_coin="bitcoin", test_coin="bitcoin")

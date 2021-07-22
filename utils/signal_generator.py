@@ -189,15 +189,15 @@ def populate_stat_report_essentials(coin, data, raw_data, report):
 					"[>0 means greater risk/overvalued; <0 means less risk/undervalued]"] 
 
 	if raw_data[PRICE_150_SMA] > 0:
-		price_ratios.append(f"\t50-day/150-day:\t\t{raw_data[PRICE_50_SMA]/raw_data[PRICE_150_SMA]:>9.6f}")
+		price_ratios.append(f"50-day/150-day:\t\t{raw_data[PRICE_50_SMA]/raw_data[PRICE_150_SMA]:>9.6f}")
 	if raw_data[PRICE_200_SMA] > 0:
-		price_ratios.append(f"\t50-day/200-day:\t\t{raw_data[PRICE_50_SMA]/raw_data[PRICE_200_SMA]:>9.6f}")
+		price_ratios.append(f"50-day/200-day:\t\t{raw_data[PRICE_50_SMA]/raw_data[PRICE_200_SMA]:>9.6f}")
 	if raw_data[PRICE_250_SMA] > 0:
-		price_ratios.append(f"\t50-day/250-day:\t\t{raw_data[PRICE_50_SMA]/raw_data[PRICE_250_SMA]:>9.6f}")
+		price_ratios.append(f"50-day/250-day:\t\t{raw_data[PRICE_50_SMA]/raw_data[PRICE_250_SMA]:>9.6f}")
 	if raw_data[PRICE_300_SMA] > 0:
-		price_ratios.append(f"\t50-day/300-day:\t\t{raw_data[PRICE_50_SMA]/raw_data[PRICE_300_SMA]:>9.6f}")
+		price_ratios.append(f"50-day/300-day:\t\t{raw_data[PRICE_50_SMA]/raw_data[PRICE_300_SMA]:>9.6f}")
 	if raw_data[PRICE_350_SMA] > 0:
-		price_ratios.append(f"\t50-day/350-day:\t\t{raw_data[PRICE_50_SMA]/raw_data[PRICE_350_SMA]:>9.6f}")
+		price_ratios.append(f"50-day/350-day:\t\t{raw_data[PRICE_50_SMA]/raw_data[PRICE_350_SMA]:>9.6f}")
 	else:
 		price_ratios.append("WARNING: DATA MISSING FROM SMAs; MODEL MAY BE UNRELIABLE")
 
@@ -331,14 +331,20 @@ def get_signal_strength(data, raw_data, buy_signal, hodl_signal, sell_signal):
 def generate_signals(full_report=False):
 	report = []
 
+	best_models = []
 	for coin in dt_agg.coin_id:
 		# parse all asset-specific best-performing models OR just use the bitcoin one if no asset-specific ones exist (e.g., polkadot because it's too new)
 		try:
-			with open("reports/{coin}_best_performers.txt") as f:
-				best_models = f.read().splitlines() 
+			with open(f"reports/{coin}_best_performers.txt") as f:
+				models = f.read().splitlines() 
+			for model in models:
+				best_models.append(model)
 		except:
 			with open("reports/bitcoin_best_performers.txt") as f:
-				best_models = f.read().splitlines() 
+				models = f.read().splitlines() 
+			for model in models:
+				best_models.append(model)
+
 
 		# NOTE: raw_data is used for the SMA ratio calculations as the normalized data cannot adequately capture the ratios' significances
 		data = pd.read_csv(f"datasets/clean/{coin}_historical_data_clean.csv")
@@ -385,10 +391,6 @@ def generate_signals(full_report=False):
 
 		formatted_w_list = [round((x/len(best_models)), 4) for x in n_weights.tolist()]	
 		
-		best_w = max(formatted_w_list)
-		second_best_w = min(formatted_w_list) # placeholder
-		worst_w = min(formatted_w_list)
-		
 		buy_signal = formatted_w_list[0]
 		hodl_signal = formatted_w_list[1]
 		sell_signal = formatted_w_list[2]
@@ -396,20 +398,20 @@ def generate_signals(full_report=False):
 		# calculate signal strength
 		signal_strength, buy_or_sell = get_signal_strength(data, raw_data, buy_signal, hodl_signal, sell_signal)
 
-		for weight in formatted_w_list:
-			if weight > second_best_w and weight < best_w:
-				second_best_w = weight
-
 		report.append("\nAction Signals")
 		report.append(f"Signal by best nn:\t{signal_b}")
 		report.append(f"Signal by votes:\t{signal_v}")
 		report.append(f"Signal by weights:\t{signal_w}")
 		report.append(f"Buy/Sell pressure:\t{buy_or_sell} {signal_strength:.1f}X")
-		report.append("\t[Greater disparities mean a more confident signal]")
-		report.append(f"\tWeights:\t{formatted_w_list}")
-		report.append(f"\tDiff 1st and 2nd:\t{best_w - second_best_w:>9.4f}")
-		report.append(f"\tDiff 1st and last:\t{best_w - worst_w:>9.4f}")
-		report.append(f"\tDiff BUY and SELL:\t{abs(buy_signal - sell_signal):>9.4f}")
+
+		report.append("\nWeight Breakdown")
+		report.append("[Greater disparities mean a more confident signal]")
+		report.append(f"Weights:\t{formatted_w_list}")
+		report.append(f"Diff BUY and SELL:\t\t{abs(buy_signal - sell_signal):>9.4f}")
+		report.append(f"Diff HODL and BUY:\t\t{abs(hodl_signal - buy_signal):>9.4f}")
+		report.append(f"Diff HODL and SELL:\t\t{abs(hodl_signal - sell_signal):>9.4f}")
+		report.append("[>0.7 is strong; <0.3 is weak]")
+		report.append(f"BUY to SELL diff ratio:\t{abs(buy_signal - sell_signal) / (abs(hodl_signal - buy_signal) + abs(hodl_signal - sell_signal)):>9.4f}")
 
 
 	return report
