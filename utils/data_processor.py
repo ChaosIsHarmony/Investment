@@ -14,6 +14,7 @@ from datetime import datetime
 import time
 import random
 import numpy as np
+import common
 import param_trainer_parser as ptp
 import neural_nets as nn
 '''
@@ -84,7 +85,9 @@ def generate_dataset(data, limit, offset, data_aug_per_sample=0):
 
 
 def load_data(coin):
-	# Load data
+	'''
+	Loads relevant data for given coin.
+	'''
 	data = pd.read_csv(f"datasets/complete/{coin}_historical_data_complete.csv")
 	data = data.drop(columns=["date"])
 	data["signal"] = data["signal"].astype("int64")
@@ -93,11 +96,14 @@ def load_data(coin):
 
 
 
-def vet_data_integrity(data):
-	# Check for any anomalous, unnormalized data in all columns except the signal column
+def is_data_clean(data):
+	'''
+	Checks for any anomalous, unnormalized data in all columns except the signal column.
+	'''
 	for c in range(len(data.columns)-1):
 		for r in range(len(data)):
-			assert (data.iloc[r, c] > 1) == False, f"ERROR: Unnormalized data still present in the dataset in column: {data.columns[c]}."
+			if (data.iloc[r, c] > 1):
+				raise Exception(f"Data unfit for processing! Unnormalized data still present in the dataset in column = {data.columns[c]}, row = {r}.")
 
 
 
@@ -108,9 +114,11 @@ def get_datasets(coin, data_aug_factor=0):
 	'''
 	global REPORTS
 
-
 	data = load_data(coin)
-	vet_data_integrity(data)
+	try:
+		is_data_clean(data)
+	except:
+		raise
 
 	# Split into training, validation, testing
 	# 70-15-15 split
@@ -135,19 +143,95 @@ def get_datasets(coin, data_aug_factor=0):
 
 
 #
-# ------------ SAVING/LOADING FUNCTIONS -----------
+# ------------ MODEL SAVING/LOADING/DELETING FUNCTIONS -----------
 #
-# save model
 def save_model(model, filepath):
 	torch.save(model.state_dict(), filepath)
 
 
-# load model
+
 def load_model(neural_net, filepath):
 	model = neural_net
 	model.load_state_dict(torch.load(filepath))
 
 	return model
+
+
+
+def cleanup():
+	'''
+	Delete all the *.pt files from models that are not worth keeping.
+	'''
+	# delete all non-promising models
+	file_list = glob.glob("models/*.pt")
+	for f in file_list:
+		try:
+			os.remove(f)
+		except:
+			print(f"Error when attempting to remove {f}.")
+	
+	# delete trained promising models lowest validation that didn't make the cut
+	# NOTE: we are still keeping the promising models to train later with different data aug factors
+	file_list = glob.glob("models/promising/*lowest_val_loss.pt")
+	for f in file_list:
+		try:
+			os.remove(f)
+		except:
+			print(f"Error when attempting to remove {f}.")
+
+
+
+#
+# ---------- REPORTING FUNCTIONS ----------
+#
+def join_all_reports():
+	'''
+	Collects all reports for different steps of the training process into a single string in prep for saving to disk.
+	'''
+	global REPORTS
+
+	final_report = ""
+	for report in REPORTS:
+		final_report += report + "\n"
+	return final_report
+
+
+
+def save_report(coin, architecture):
+	with open(f"reports/{coin}_{architecture}_report.txt", "w") as report:
+		report.write(join_all_reports())
+
+
+
+def print_batch_status(avg_train_loss, avg_valid_loss, start_time):
+	'''
+	Prints summary for the latest batch to console and appends it to the global REPORTS variable
+	'''
+	global REPORTS
+
+	now = datetime.now()
+	current_time = now.strftime("%H:%M:%S")
+	report = f"System Time: {current_time} | Time Elapsed: {(time.time() - start_time) / 60:.1f} mins. | Avg. Training Loss: {avg_train_loss:.4f} | Avg. Validation Loss: {avg_valid_loss:.4f} | eta: {nn.OPTIMIZER.state_dict()['param_groups'][0]['lr']:.6f}"
+	REPORTS.append(report)
+	print(report)
+
+
+def print_evaluation_status(model_accuracy):
+	'''
+	Prints summary for model evaluation.
+	'''
+	global REPORTS
+
+	report = f"""
+	POSITIVE:
+		[+] Perfect accuracy: {model_accuracy[0]:>10.4f}
+	NEGATIVE:
+		[-] Told to hodl but should have sold/bought rate: {model_accuracy[1]:>10.4f}
+		[--] Should have hodled but told to sell/buy rate: {model_accuracy[2]:>10.4f}
+		[---] Told to do the opposite of correct move rate: {model_accuracy[3]:>10.4f}
+		"""
+	REPORTS.append(report)
+	print(report)
 
 
 #
@@ -237,15 +321,6 @@ def terminate_early(prev_valid_losses):
 
 
 
-def print_batch_status(avg_train_loss, avg_valid_loss, start_time):
-	now = datetime.now()
-	current_time = now.strftime("%H:%M:%S")
-	report = f"System Time: {current_time} | Time Elapsed: {(time.time() - start_time) / 60:.1f} mins. | Avg. Training Loss: {avg_train_loss:.4f} | Avg. Validation Loss: {avg_valid_loss:.4f} | eta: {nn.OPTIMIZER.state_dict()['param_groups'][0]['lr']:.6f}"
-	REPORTS.append(report)
-	print(report)
-
-
-
 def fully_train(model, train_data, valid_data, start_time, filepath):
 	global REPORTS, EPOCHS, BATCH_SIZE
 
@@ -285,7 +360,7 @@ def fully_train(model, train_data, valid_data, start_time, filepath):
 
 
 
-def evaluate_model(model, test_data):
+def evaluate_model(model, test_data, verbose=True):
 	global REPORTS
 
 	model.eval()
@@ -314,38 +389,12 @@ def evaluate_model(model, test_data):
 		else:
 			safe_fail += 1
 
-	report = f"""
-	POSITIVE:
-		[+] Perfect accuracy: {correct/len(test_data):>10.4f}
-	NEGATIVE:
-		[-] Told to hodl but should have sold/bought rate: {safe_fail/len(test_data):>10.4f}
-		[--] Should have hodled but told to sell/buy rate: {nasty_fail/len(test_data):>10.4f}
-		[---] Told to do the opposite of correct move rate: {catastrophic_fail/len(test_data):>10.4f}
-		"""
-	REPORTS.append(report)
-	print(report)
+	model_accuracy = [correct/len(test_data), safe_fail/len(test_data), nasty_fail/len(test_data), catastrophic_fail/len(test_data)]
 
-	return [correct/len(test_data), safe_fail/len(test_data), nasty_fail/len(test_data), catastrophic_fail/len(test_data)]
+	if verbose:
+		print_evaluation_status(model_accuracy)
 
-
-
-#
-# ---------- REPORTING FUNCTIONS ----------
-#
-def join_all_reports():
-	global REPORTS
-
-	final_report = ""
-	for report in REPORTS:
-		final_report += report + "\n"
-	return final_report
-
-
-
-def generate_report():
-	with open(f"reports/{nn.get_model().get_class_name()}_report.txt", "w") as report:
-		report.write(join_all_reports())
-
+	return model_accuracy 
 
 
 #
@@ -356,7 +405,10 @@ def parameter_tuner(model_architecture):
 	global COIN, BATCH_SIZE, EPOCHS
 	data_aug_factor = 32
 	print("Creating datasets...")
-	train_data, valid_data, test_data = get_datasets(COIN, data_aug_factor)
+	try:
+		train_data, valid_data, test_data = get_datasets(COIN, data_aug_factor)
+	except:
+		raise
 	model_number = 0
 
 	for eta in np.arange(0.00025, 0.01025, 0.00025):
@@ -412,14 +464,14 @@ def parameter_tuner(model_architecture):
 				report += f"MODEL: {model_number}\nLast Training Loss: {prev_train_losses[-1]} | Last Valid Loss: {prev_valid_losses[-1]}\nPARAMETERS:\n\t{model_architecture}\n\teta: {nn.LEARNING_RATE} | decay: {nn.LEARNING_RATE_DECAY} | dropout: {nn.DROPOUT}\nDECISIONS:\n\tPerfect Decision: {model_acc[0]}\n\tTold to Hodl, though Should Have Bought/Sold: {model_acc[1]}\n\tSignal Should Have Been Hodl: {model_acc[2]}\n\tSignal and Answer Exact Opposite: {model_acc[3]}"
 				
 				# automatically save the best models to best as is
-				if model_acc[0] > ptp.ACCURACY_THRESHOLD + 0.1 and model_acc[3] < ptp.INACCURACY_THRESHOLD:
+				if model_acc[0] > common.OUTSTANDING_ACCURACY_THRESHOLD and model_acc[3] < common.INACCURACY_THRESHOLD:
 					save_filepath = f"models/best/{COIN}_{model_architecture}_{model_number}_{int(round(model_acc[0], 2) * 100)}-{int(round(model_acc[3], 2))}_{data_aug_factor}xaug.pt"
 					save_model(model, save_filepath)
 					with open(f"reports/{COIN}_best_performers.txt", 'a') as f:
 						f.write(save_filepath + '\n')
 				# save the model to the promising models folder
 				# saves to both locations for further training
-				if model_acc[0] > ptp.ACCURACY_THRESHOLD and model_acc[3] < ptp.INACCURACY_THRESHOLD:
+				if model_acc[0] > common.PROMISING_ACCURACY_THRESHOLD and model_acc[3] < common.INACCURACY_THRESHOLD:
 					save_filepath = f"models/promising/{COIN}_{model_architecture}_{model_number}_param_tuning.pt"
 					save_model(model, save_filepath)
 
@@ -458,7 +510,10 @@ def continue_training(model_architecture):
 	start_time = time.time()
 	data_aug_factor = 64
 	print("Creating datasets...")
-	train_data, valid_data, test_data = get_datasets(COIN, data_aug_factor)
+	try:
+		train_data, valid_data, test_data = get_datasets(COIN, data_aug_factor)
+	except:
+		raise
 	print(f"Datasets created in {(time.time()-start_time)/60:.1f} mins")
 
 	#
@@ -490,28 +545,50 @@ def continue_training(model_architecture):
 		model_acc = evaluate_model(model, test_data)
 
 		# save iff accuracy is higher/lower than threshholds
-		if model_acc[0] > ptp.ACCURACY_THRESHOLD + 0.095 and model_acc[3] < ptp.INACCURACY_THRESHOLD:
+		if model_acc[0] > common.OUTSTANDING_ACCURACY_THRESHOLD and model_acc[3] < common.INACCURACY_THRESHOLD:
 			save_filepath = f"models/best/{COIN}_{model_architecture}_{model_params['model_num']}_{int(round(model_acc[0], 2) * 100)}-{int(round(model_acc[3], 2))}_{data_aug_factor}xaug.pt"
 			save_model(model, save_filepath)
 			with open(f"reports/{COIN}_best_performers.txt", 'a') as f:
 				f.write(save_filepath + '\n')
 
-			#
-			# ---------- GENERATE REPORT -----------
-			#
-			generate_report()
+			save_report(COIN, model_architecture)
 	
+
+#
+# ------------ CONTROLLER METHODS ---------------
+#
+def fully_automated_training_pipeline():
+	'''
+	Pipeline involves three steps:
+
+		1.) Parameter tune: 	find the most promising learning rates, decay rates, and dropout rates for the given architecture
+		2.) Continue training:	take all the promising models found in the first step and give them more time to train
+		3.) Cleanup:			delete all extraneous files created in the first two phases
+	'''
+#	neural_net_architecture = ["Pi_5", "Pi_6", "Pi_7"]
+#	neural_net_architecture = ["PC_0", "PC_1", "PC_2", "PC_3", "PC_4", "PC_5", "PC_6"]
+#	neural_net_architecture = ["Laptop_0", "Laptop_1", "Laptop_2", "Laptop_3", "Laptop_4"]
+	
+	for model_architecture in neural_net_architecture:
+		parameter_tuner(model_architecture)
+		continue_training(model_architecture)
+		cleanup()
+
 
 
 def transfer_learner():
-	# 
-	# ------------ DATA GENERATION ----------
-	#
+	'''
+	Train new models from models successfully trained on other cryptoasset datasets.
+	'''
+	# create the datasets
 	start_time = time.time()
 	data_aug_factor = 16 
 	coin = "solana"
 	print("Creating datasets...")
-	train_data, valid_data, test_data = get_datasets(coin, data_aug_factor)
+	try:
+		train_data, valid_data, test_data = get_datasets(coin, data_aug_factor)
+	except:
+		raise
 	print(f"Datasets created in {(time.time()-start_time)/60:.1f} mins")
 	
 	# load previously trained model
@@ -519,6 +596,7 @@ def transfer_learner():
 	with open("reports/bitcoin_best_performers.txt", 'r') as f:
 		best_models = f.read().splitlines() 
 
+	# perform the transfer learning for each model
 	for file_name in best_models:
 		model_params = ptp.find_model_params("bitcoin", file_name)
 		if model_params == None:
@@ -542,9 +620,8 @@ def transfer_learner():
 		print(report)
 		model_acc = evaluate_model(model, test_data)
 
-
 		# save iff accuracy is higher/lower than threshholds
-		if model_acc[0] > ptp.ACCURACY_THRESHOLD + 0.095 and model_acc[3] < ptp.INACCURACY_THRESHOLD:
+		if model_acc[0] > common.OUTSTANDING_ACCURACY_THRESHOLD and model_acc[3] < common.INACCURACY_THRESHOLD:
 			save_filepath = f"models/best/{coin}_{model_params['architecture']}_{model_params['model_num']}_{int(round(model_acc[0], 2) * 100)}-{int(round(model_acc[3], 2))}_{data_aug_factor}xaug.pt"
 			save_model(model, save_filepath)
 			with open(f"reports/{coin}_best_performers.txt", 'a') as f:
@@ -552,17 +629,23 @@ def transfer_learner():
 
 
 
-
 def benchmark_models(model_coin, test_coin):
-	# 
-	# ------------ DATA GENERATION ----------
-	#
+	'''
+	Cross compares model performance on other datasets, e.g., bitcoin models on the ethereum dataset.
+	'''
+	# create the datasets
 	start_time = time.time()
 	data_aug_factor = 0 
 	print("Creating datasets...")
 
+	# separate valid, test
+	try:
+		_, valid_data, test_data = get_datasets(test_coin, data_aug_factor)
+	except:
+		raise
+	# all data together
 	data = load_data(test_coin)
-	vet_data_integrity(data)
+	is_data_clean(data)
 
 	data = generate_dataset(data, limit=data.shape[0], offset=0)
 
@@ -570,59 +653,44 @@ def benchmark_models(model_coin, test_coin):
 	
 	# load previously trained model
 	best_models = []
-	with open(f"reports/{model_coin}_best_performers.txt", 'r') as f:
+	with open(f"reports/{model_coin}_best_performers_all.txt", 'r') as f:
 		best_models = f.read().splitlines() 
 
+	most_reliable_models = []
 	for file_name in best_models:
 		model_params = ptp.find_model_params(model_coin, file_name)
 		if model_params == None:
 			print(f"{file_name} Not Found. Continuing on to other models.")
 			continue
+
 		model = load_model_by_params(file_name, model_params)
 
-	# evaluate
+		# evaluate
 		model = load_model(model, f"{file_name}")
-		print("EVALUATE TRAINED MODEL")
-		print(f"{file_name}")
-		model_acc = evaluate_model(model, data)
+		model_acc_all = evaluate_model(model, data, verbose=False)
+		model_acc_valid = evaluate_model(model, valid_data, verbose=False)
+		model_acc_test = evaluate_model(model, test_data, verbose=False)
 
+		if (model_acc_all[0] > 0.5) and (model_acc_valid[0] > 0.1) and (model_acc_test[0] > 0.4):
+			print(f"{file_name}")
+			print("ALL DATA")
+			print_evaluation_status(model_acc_all)
+			print("VALIDATION DATA")
+			print_evaluation_status(model_acc_valid)
+			print("TEST DATA")
+			print_evaluation_status(model_acc_test)
+			most_reliable_models.append(file_name)
+		else:
+			print(f"Model {file_name} performance did not meet the threshold.")
 
-#
-# ------------ FULLY AUTOMATED TRAINING PIPELINE --------------
-#
-def cleanup():
-	# delete all non-promising models
-	file_list = glob.glob("models/*.pt")
-	for f in file_list:
-		try:
-			os.remove(f)
-		except:
-			print(f"Error when attempting to remove {f}.")
-	
-	# delete trained promising models lowest validation that didn't make the cut
-	# NOTE: we are still keeping the promising models to train later with different data aug factors
-	file_list = glob.glob("models/promising/*lowest_val_loss.pt")
-	for f in file_list:
-		try:
-			os.remove(f)
-		except:
-			print(f"Error when attempting to remove {f}.")
-
-
-
-def fully_automated_training_pipeline():
-#	neural_net_architecture = ["Pi_5", "Pi_6", "Pi_7"]
-#	neural_net_architecture = ["PC_0", "PC_1", "PC_2", "PC_3", "PC_4", "PC_5", "PC_6"]
-	neural_net_architecture = ["Laptop_0", "Laptop_1", "Laptop_2", "Laptop_3", "Laptop_4"]
-	
-	for model_architecture in neural_net_architecture:
-		parameter_tuner(model_architecture)
-		continue_training(model_architecture)
-		cleanup()
+	print(most_reliable_models)
 
 
 
 if __name__ == "__main__":
-#	fully_automated_training_pipeline()
-#	transfer_learner()
-	benchmark_models(model_coin="bitcoin", test_coin="bitcoin")
+	try:
+#		fully_automated_training_pipeline()
+#		transfer_learner()
+		benchmark_models(model_coin="bitcoin", test_coin="bitcoin")
+	finally:
+		print("Program terminated.")

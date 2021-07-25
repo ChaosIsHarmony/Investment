@@ -1,13 +1,15 @@
 '''
 Parses the Parameter_Tuning_Reports.txt file so that it can automatically set the parameters in the continue_training method of the data_processor file.
 '''
-ACCURACY_THRESHOLD = 0.655
-INACCURACY_THRESHOLD = 0.05
-
+import common
 
 def parse_reports(coin, model_architecture):
-	with open(f"reports/{coin}_Parameter_Tuning_Report_{model_architecture}.txt", 'r') as f:
-		reports = f.read()
+	try:
+		with open(f"reports/{coin}_Parameter_Tuning_Report_{model_architecture}.txt", 'r') as f:
+			reports = f.read()
+	except:
+		print(f"reports/{coin}_Parameter_Tuning_Report_{model_architecture}.txt not found.")
+		raise
 
 	models = []
 	while len(reports) > 10:
@@ -46,7 +48,7 @@ def parse_reports(coin, model_architecture):
 		model["inaccuracy"] = float(reports[start_ind : end_ind])
 
 		# Add model if meets accuracy threshhold 
-		if model["accuracy"] > ACCURACY_THRESHOLD and model["inaccuracy"] < INACCURACY_THRESHOLD:
+		if model["accuracy"] > common.PROMISING_ACCURACY_THRESHOLD and model["inaccuracy"] < common.INACCURACY_THRESHOLD:
 			models.append(model)
 
 		# delete up until next model
@@ -86,9 +88,4 @@ def find_model_params(coin, file_name):
 			if model["model_num"] == int(model_num):
 				return model
 	except:
-		print(f"File {file_name} not on this computer.")	
-	
-	return None
-
-
-
+		return None
