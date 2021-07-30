@@ -25,7 +25,7 @@ WHEN testing need these versions instead
 
 BATCH_SIZE = 256 
 EPOCHS = 20
-COIN = "cardano"
+COIN = "all"
 REPORTS = []
 
 #
@@ -545,7 +545,7 @@ def continue_training(model_architecture):
 		model_acc = evaluate_model(model, test_data)
 
 		# save iff accuracy is higher/lower than threshholds
-		if model_acc[0] > common.OUTSTANDING_ACCURACY_THRESHOLD and model_acc[3] < common.INACCURACY_THRESHOLD:
+		if model_acc[0] > model_params["accuracy"] and model_acc[3] < common.INACCURACY_THRESHOLD:
 			save_filepath = f"models/best/{COIN}_{model_architecture}_{model_params['model_num']}_{int(round(model_acc[0], 2) * 100)}-{int(round(model_acc[3], 2))}_{data_aug_factor}xaug.pt"
 			save_model(model, save_filepath)
 			with open(f"reports/{COIN}_best_performers.txt", 'a') as f:
@@ -565,9 +565,10 @@ def fully_automated_training_pipeline():
 		2.) Continue training:	take all the promising models found in the first step and give them more time to train
 		3.) Cleanup:			delete all extraneous files created in the first two phases
 	'''
-#	neural_net_architecture = ["Pi_5", "Pi_6", "Pi_7"]
+#	neural_net_architecture = ["Pi_0", "Pi_1", "Pi_2", "Pi_3", "Pi_4", "Pi_5", "Pi_6", "Pi_7"]
 #	neural_net_architecture = ["PC_0", "PC_1", "PC_2", "PC_3", "PC_4", "PC_5", "PC_6"]
 #	neural_net_architecture = ["Laptop_0", "Laptop_1", "Laptop_2", "Laptop_3", "Laptop_4"]
+	neural_net_architecture = ["PC_1"]
 	
 	for model_architecture in neural_net_architecture:
 		parameter_tuner(model_architecture)
@@ -689,8 +690,8 @@ def benchmark_models(model_coin, test_coin):
 
 if __name__ == "__main__":
 	try:
-#		fully_automated_training_pipeline()
+		fully_automated_training_pipeline()
 #		transfer_learner()
-		benchmark_models(model_coin="bitcoin", test_coin="bitcoin")
+#		benchmark_models(model_coin="all", test_coin="ethereum")
 	finally:
 		print("Program terminated.")

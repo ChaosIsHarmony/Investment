@@ -1,5 +1,6 @@
 import torch
 import data_aggregator as dt_agg
+import common
 import data_preprocessor as dt_prepro
 import neural_nets as nn
 import pandas as pd
@@ -41,13 +42,13 @@ def fetch_new_data(n_days):
 	Uses multithreading to speed up fetching process.
 	'''
 	with cf.ThreadPoolExecutor() as executor:
-		results = [executor.submit(dt_agg.fetch_missing_data_by_range, coin, n_days) for coin in dt_agg.coin_id]
+		results = [executor.submit(dt_agg.fetch_missing_data_by_range, coin, n_days) for coin in common.coins]
 		
 		for thread in cf.as_completed(results):
 			print(thread.result())
 
 	with cf.ThreadPoolExecutor() as executor:
-		results = [executor.submit(dt_agg.merge_new_dataset_with_old, coin) for coin in dt_agg.coin_id]
+		results = [executor.submit(dt_agg.merge_new_dataset_with_old, coin) for coin in common.coins]
 		
 		for thread in cf.as_completed(results):
 			print(thread.result())
@@ -69,7 +70,7 @@ def process_new_data():
 	start_date = str(date.today())
 	end_date = "2020-08-23" #the first day of data of: the youngest asset: polkadot
 	with cf.ProcessPoolExecutor() as executor:
-		results = [executor.submit(process_individual_coin_new_data, start_date, end_date, coin) for coin in dt_agg.coin_id]
+		results = [executor.submit(process_individual_coin_new_data, start_date, end_date, coin) for coin in common.coins]
 
 		for process in cf.as_completed(results):
 			print(process.result())
@@ -332,7 +333,7 @@ def generate_signals(full_report=False):
 	report = []
 
 	best_models = []
-	for coin in dt_agg.coin_id:
+	for coin in common.coins:
 		# parse all asset-specific best-performing models OR just use the bitcoin one if no asset-specific ones exist (e.g., polkadot because it's too new)
 		try:
 			with open(f"reports/{coin}_best_performers.txt") as f:
@@ -340,11 +341,10 @@ def generate_signals(full_report=False):
 			for model in models:
 				best_models.append(model)
 		except:
-			with open("reports/bitcoin_best_performers.txt") as f:
+			with open("reports/all_best_performers.txt") as f:
 				models = f.read().splitlines() 
 			for model in models:
 				best_models.append(model)
-
 
 		# NOTE: raw_data is used for the SMA ratio calculations as the normalized data cannot adequately capture the ratios' significances
 		data = pd.read_csv(f"datasets/clean/{coin}_historical_data_clean.csv")

@@ -13,8 +13,6 @@ import time
 import pandas as pd
 import numpy as np
 
-coin_id = ["algorand", "bitcoin", "cardano", "chainlink", "ethereum", "polkadot", "solana"]
-
 
 
 def get_fear_greed():
@@ -161,6 +159,7 @@ def get_time():
 def merge_datasets(coin, list_of_datasets, all_data=False):
 	'''
 	Merges two or more datasets.
+	Param all_data is used when combining all datasets into one mega dataset.
 	
 	NOTE: Param list_of_datasets must be a list of pandas DataFrames
 	'''
@@ -169,7 +168,7 @@ def merge_datasets(coin, list_of_datasets, all_data=False):
 	merged_data = merged_data.sort_values(by=["date"], ascending=False)
 	# if merging all datasets into mega training dataset, more than date must be unique
 	if all_data:
-		subset_cols = ["date", "price", "market_cap", "vol"]
+		subset_cols = ["date", "price", "market_cap", "volume"]
 	else:
 		subset_cols = ["date"]
 
@@ -177,7 +176,10 @@ def merge_datasets(coin, list_of_datasets, all_data=False):
 	merged_data = merged_data.reset_index()
 	merged_data = merged_data.drop(columns=["index"])
 
-	merged_data.to_csv(f"datasets/raw/{coin}_historical_data_raw.csv", index=False, float_format="%f")
+	if all_data:
+		merged_data.to_csv(f"datasets/complete/all_historical_data_complete.csv", index=False, float_format="%f")
+	else:
+		merged_data.to_csv(f"datasets/raw/{coin}_historical_data_raw.csv", index=False, float_format="%f")
 
 
 
@@ -298,7 +300,7 @@ def run(how_far_back):
 	api_call_cycle_start = get_time() 
 	fear_greed = get_fear_greed_by_range(how_far_back)
 	
-	for coin in ["dogecoin"]: #coin_id:
+	for coin in ["bitcoin"]: #coin_id:
 		date_delta = -1 
 		fear_greed_ind = 0
 		has_next = True

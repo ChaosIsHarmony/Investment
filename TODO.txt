@@ -1,0 +1,1 @@
+1.) Train all architectures on a unified dataset composed of all coin data
