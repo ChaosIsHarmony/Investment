@@ -2,7 +2,7 @@ import torch
 import common
 import data_aggregator as dt_agg
 import data_preprocessor as dt_prepro
-import sharpe_calculator as sc
+import risk_adjusted_return_calculator as rarc
 import neural_nets as nn
 import pandas as pd
 import numpy as np
@@ -96,11 +96,12 @@ def populate_stat_report_full(coin, data, raw_data, report):
 					f"Report for {coin.upper()}:", 
 					"Basic Stats", 
 					"[1.0 is the highest; 0.0 is the lowest]", 
-					f"price:\t\t{data[PRICE]:.6f}", 
-					f"market_cap:\t{data[MARKET_CAP]:.6f}", 
-					f"volume:\t\t{data[VOLUME]:.6f}", 
-					f"fear/greed:\t{data[FEAR_GREED]:.6f} [{get_fg_indicator(data[FEAR_GREED])}]",
-					f"sharpe_ratio:\t{sc.print_sharpe_ratio(coin):.6f}"]
+					f"price:\t\t\t{data[PRICE]:.6f}", 
+					f"market_cap:\t\t{data[MARKET_CAP]:.6f}", 
+					f"volume:\t\t\t{data[VOLUME]:.6f}", 
+					f"fear/greed:\t\t{data[FEAR_GREED]:.6f} [{get_fg_indicator(data[FEAR_GREED])}]",
+					f"sharpe_ratio:\t{rarc.get_sharpe_ratio(coin):.6f}",
+					f"UPI:\t\t\t{rarc.get_upi(coin):.6f}"]
 	
 	price_ratios = ["\nPrice Ratios", 
 					"[>0 means greater risk/overvalued; <0 means less risk/undervalued]", 
@@ -183,11 +184,12 @@ def populate_stat_report_essentials(coin, data, raw_data, report):
 					f"Report for {coin.upper()}:", 
 					"Basic Stats", 
 					"[1.0 is the highest; 0.0 is the lowest]", 
-					f"price:\t\t{data[PRICE]:.6f}", 
-					f"market_cap:\t{data[MARKET_CAP]:.6f}", 
-					f"volume:\t\t{data[VOLUME]:.6f}", 
-					f"fear/greed\t{data[FEAR_GREED]:.6f} [{get_fg_indicator(data[FEAR_GREED])}]",
-					f"sharpe_ratio:\t{sc.print_sharpe_ratio(coin):.6f}"]
+					f"price:\t\t\t{data[PRICE]:.6f}", 
+					f"market_cap:\t\t{data[MARKET_CAP]:.6f}", 
+					f"volume:\t\t\t{data[VOLUME]:.6f}", 
+					f"fear/greed:\t\t{data[FEAR_GREED]:.6f} [{get_fg_indicator(data[FEAR_GREED])}]",
+					f"sharpe_ratio:\t{sc.get_sharpe_ratio(coin):.6f}",
+					f"UPI:\t\t\t{rarc.get_upi(coin):.6f}"]
 	
 	price_ratios = ["\nPrice Ratios", 
 					"[>0 means greater risk/overvalued; <0 means less risk/undervalued]"] 
