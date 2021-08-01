@@ -433,6 +433,16 @@ class CryptoSoothsayer_Laptop_4(nn.Module):
 #
 # -------------- GETTERS & SETTERS ---------------
 #
+def load_model(filepath):
+	'''
+	Param file has the model architecture in its name.
+	'''
+	model = set_model(filepath)
+	model.load_state_dict(torch.load(filepath))
+
+	return model
+
+
 
 def set_model_props(model):
 	global DEVICE, CRITERION, OPTIMIZER, SCHEDULER
@@ -450,48 +460,51 @@ def set_model(model_architecture):
 	global MODEL
 
 	if "Laptop_0" in model_architecture:
-		MODEL = CryptoSoothsayer_Laptop_0(N_FEATURES, N_SIGNALS)
+		model = CryptoSoothsayer_Laptop_0(N_FEATURES, N_SIGNALS)
 	elif "Laptop_1" in model_architecture:
-		MODEL = CryptoSoothsayer_Laptop_1(N_FEATURES, N_SIGNALS)
+		model = CryptoSoothsayer_Laptop_1(N_FEATURES, N_SIGNALS)
 	elif "Laptop_2" in model_architecture:
-		MODEL = CryptoSoothsayer_Laptop_2(N_FEATURES, N_SIGNALS)
+		model = CryptoSoothsayer_Laptop_2(N_FEATURES, N_SIGNALS)
 	elif "Laptop_3" in model_architecture:
-		MODEL = CryptoSoothsayer_Laptop_3(N_FEATURES, N_SIGNALS)
+		model = CryptoSoothsayer_Laptop_3(N_FEATURES, N_SIGNALS)
 	elif "Laptop_4" in model_architecture:
-		MODEL = CryptoSoothsayer_Laptop_4(N_FEATURES, N_SIGNALS)
+		model = CryptoSoothsayer_Laptop_4(N_FEATURES, N_SIGNALS)
 	elif "Pi_0" in model_architecture:
-		MODEL = CryptoSoothsayer_Pi_0(N_FEATURES, N_SIGNALS)
+		model = CryptoSoothsayer_Pi_0(N_FEATURES, N_SIGNALS)
 	elif "Pi_1" in model_architecture:
-		MODEL = CryptoSoothsayer_Pi_1(N_FEATURES, N_SIGNALS)
+		model = CryptoSoothsayer_Pi_1(N_FEATURES, N_SIGNALS)
 	elif "Pi_2" in model_architecture:
-		MODEL = CryptoSoothsayer_Pi_2(N_FEATURES, N_SIGNALS)
+		model = CryptoSoothsayer_Pi_2(N_FEATURES, N_SIGNALS)
 	elif "Pi_3" in model_architecture:
-		MODEL = CryptoSoothsayer_Pi_3(N_FEATURES, N_SIGNALS)
+		model = CryptoSoothsayer_Pi_3(N_FEATURES, N_SIGNALS)
 	elif "Pi_4" in model_architecture:
-		MODEL = CryptoSoothsayer_Pi_4(N_FEATURES, N_SIGNALS)
+		model = CryptoSoothsayer_Pi_4(N_FEATURES, N_SIGNALS)
 	elif "Pi_5" in model_architecture:
-		MODEL = CryptoSoothsayer_Pi_5(N_FEATURES, N_SIGNALS)
+		model = CryptoSoothsayer_Pi_5(N_FEATURES, N_SIGNALS)
 	elif "Pi_6" in model_architecture:
-		MODEL = CryptoSoothsayer_Pi_6(N_FEATURES, N_SIGNALS)
+		model = CryptoSoothsayer_Pi_6(N_FEATURES, N_SIGNALS)
 	elif "Pi_7" in model_architecture:
-		MODEL = CryptoSoothsayer_Pi_7(N_FEATURES, N_SIGNALS)
+		model = CryptoSoothsayer_Pi_7(N_FEATURES, N_SIGNALS)
 	elif "PC_0" in model_architecture:
-		MODEL = CryptoSoothsayer_PC_0(N_FEATURES, N_SIGNALS)
+		model = CryptoSoothsayer_PC_0(N_FEATURES, N_SIGNALS)
 	elif "PC_1" in model_architecture:
-		MODEL = CryptoSoothsayer_PC_1(N_FEATURES, N_SIGNALS)
+		model = CryptoSoothsayer_PC_1(N_FEATURES, N_SIGNALS)
 	elif "PC_2" in model_architecture:
-		MODEL = CryptoSoothsayer_PC_2(N_FEATURES, N_SIGNALS)
+		model = CryptoSoothsayer_PC_2(N_FEATURES, N_SIGNALS)
 	elif "PC_3" in model_architecture:
-		MODEL = CryptoSoothsayer_PC_3(N_FEATURES, N_SIGNALS)
+		model = CryptoSoothsayer_PC_3(N_FEATURES, N_SIGNALS)
 	elif "PC_4" in model_architecture:
-		MODEL = CryptoSoothsayer_PC_4(N_FEATURES, N_SIGNALS)
+		model = CryptoSoothsayer_PC_4(N_FEATURES, N_SIGNALS)
 	elif "PC_5" in model_architecture:
-		MODEL = CryptoSoothsayer_PC_5(N_FEATURES, N_SIGNALS)
+		model = CryptoSoothsayer_PC_5(N_FEATURES, N_SIGNALS)
 	elif "PC_6" in model_architecture:
-		MODEL = CryptoSoothsayer_PC_6(N_FEATURES, N_SIGNALS)
+		model = CryptoSoothsayer_PC_6(N_FEATURES, N_SIGNALS)
 	elif "PC_7" in model_architecture:
-		MODEL = CryptoSoothsayer_PC_7(N_FEATURES, N_SIGNALS)
+		model = CryptoSoothsayer_PC_7(N_FEATURES, N_SIGNALS)
 
+	set_pretrained_model(model)
+
+	return model
 
 
 def set_model_parameters(dropout=0, eta=0, eta_decay=0):

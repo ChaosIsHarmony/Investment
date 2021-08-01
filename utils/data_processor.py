@@ -15,7 +15,6 @@ import time
 import random
 import numpy as np
 import common
-import param_trainer_parser as ptp
 import neural_nets as nn
 '''
 WHEN testing need these versions instead
@@ -519,7 +518,7 @@ def continue_training(model_architecture):
 	#
 	# ------------ MODEL TRAINING -----------
 	#
-	promising_models = ptp.parse_reports(COIN, model_architecture)
+	promising_models = common.parse_training_reports(COIN, model_architecture)
 	for model_params in promising_models:
 		model_filepath = f"models/promising/{COIN}_{model_architecture}_{model_params['model_num']}_param_tuning.pt"
 		model = load_model_by_params(model_filepath, model_params)
@@ -568,10 +567,10 @@ def fully_automated_training_pipeline():
 #	neural_net_architecture = ["Pi_0", "Pi_1", "Pi_2", "Pi_3", "Pi_4", "Pi_5", "Pi_6", "Pi_7"]
 #	neural_net_architecture = ["PC_0", "PC_1", "PC_2", "PC_3", "PC_4", "PC_5", "PC_6"]
 #	neural_net_architecture = ["Laptop_0", "Laptop_1", "Laptop_2", "Laptop_3", "Laptop_4"]
-	neural_net_architecture = ["PC_1"]
+	neural_net_architecture = ["Pi_1"]
 	
 	for model_architecture in neural_net_architecture:
-		parameter_tuner(model_architecture)
+	#	parameter_tuner(model_architecture)
 		continue_training(model_architecture)
 		cleanup()
 
@@ -598,19 +597,19 @@ def transfer_learner():
 		best_models = f.read().splitlines() 
 
 	# perform the transfer learning for each model
-	for file_name in best_models:
-		model_params = ptp.find_model_params("bitcoin", file_name)
+	for filename in best_models:
+		model_params = common.get_model_params("bitcoin", filename)
 		if model_params == None:
-			print(f"{file_name} Not Found. Continuing on to other models.")
+			print(f"{filename} Not Found. Continuing on to other models.")
 			continue
-		model = load_model_by_params(file_name, model_params)
+		model = load_model_by_params(filename, model_params)
 
 		# train on novel data
 		dropout, eta, eta_decay = nn.get_model_parameters()
 		reports = [f"Model: {model.get_class_name()}", f"Learning rate: {eta}", f"Learning rate decay: {eta_decay}", f"Chance of dropout: {dropout}"]
 
 		start_time = time.time()
-		print(f"Architecture: {file_name}\nModel: {model_params['model_num']}")
+		print(f"Architecture: {filename}\nModel: {model_params['model_num']}")
 
 		fully_train(model, train_data, valid_data, start_time, f"models/promising/{coin}_{model_params['architecture']}_{model_params['model_num']}_lowest_val_loss.pt")
 
@@ -658,31 +657,31 @@ def benchmark_models(model_coin, test_coin):
 		best_models = f.read().splitlines() 
 
 	most_reliable_models = []
-	for file_name in best_models:
-		model_params = ptp.find_model_params(model_coin, file_name)
+	for filename in best_models:
+		model_params = common.get_model_params(model_coin, filename)
 		if model_params == None:
-			print(f"{file_name} Not Found. Continuing on to other models.")
+			print(f"{filename} Not Found. Continuing on to other models.")
 			continue
 
-		model = load_model_by_params(file_name, model_params)
+		model = load_model_by_params(filename, model_params)
 
 		# evaluate
-		model = load_model(model, f"{file_name}")
+		model = load_model(model, f"{filename}")
 		model_acc_all = evaluate_model(model, data, verbose=False)
 		model_acc_valid = evaluate_model(model, valid_data, verbose=False)
 		model_acc_test = evaluate_model(model, test_data, verbose=False)
 
 		if (model_acc_all[0] > 0.5) and (model_acc_valid[0] > 0.1) and (model_acc_test[0] > 0.4):
-			print(f"{file_name}")
+			print(f"{filename}")
 			print("ALL DATA")
 			print_evaluation_status(model_acc_all)
 			print("VALIDATION DATA")
 			print_evaluation_status(model_acc_valid)
 			print("TEST DATA")
 			print_evaluation_status(model_acc_test)
-			most_reliable_models.append(file_name)
+			most_reliable_models.append(filename)
 		else:
-			print(f"Model {file_name} performance did not meet the threshold.")
+			print(f"Model {filename} performance did not meet the threshold.")
 
 	print(most_reliable_models)
 

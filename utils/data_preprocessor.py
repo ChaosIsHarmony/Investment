@@ -1,5 +1,5 @@
 import pandas as pd
-import common 
+import common
 
 
 def handle_missing_data(data, start_date, end_date):
@@ -15,7 +15,6 @@ def handle_missing_data(data, start_date, end_date):
 
 	data = data.fillna(0)
 
-	numeric_data = data.iloc[:, 1:]
 
 	for i, row in data.iterrows():
 		for column in data.columns[1:]:

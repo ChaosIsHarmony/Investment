@@ -1,9 +1,5 @@
 import torch
 import common
-import data_aggregator as dt_agg
-import data_preprocessor as dt_prepro
-import risk_adjusted_return_calculator as rarc
-import neural_nets as nn
 import pandas as pd
 import numpy as np
 import joblib
@@ -43,13 +39,13 @@ def fetch_new_data(n_days):
 	Uses multithreading to speed up fetching process.
 	'''
 	with cf.ThreadPoolExecutor() as executor:
-		results = [executor.submit(dt_agg.fetch_missing_data_by_range, coin, n_days) for coin in common.coins]
+		results = [executor.submit(common.aggregate_new_data, coin, n_days) for coin in common.coins]
 		
 		for thread in cf.as_completed(results):
 			print(thread.result())
 
 	with cf.ThreadPoolExecutor() as executor:
-		results = [executor.submit(dt_agg.merge_new_dataset_with_old, coin) for coin in common.coins]
+		results = [executor.submit(common.merge_newly_aggregated_data, coin) for coin in common.coins]
 		
 		for thread in cf.as_completed(results):
 			print(thread.result())
@@ -57,17 +53,17 @@ def fetch_new_data(n_days):
 
 
 def process_individual_coin_new_data(start_date, end_date, coin):
-	'''
-	Uses multiprocessing to speed up data processing.
-	'''
 	data = pd.read_csv(f"datasets/raw/{coin}_historical_data_raw.csv")
-	data = dt_prepro.process_data(coin, data, start_date, end_date)
+	data = common.clean_coin_data(coin, data, start_date, end_date)
 	data.to_csv(f"datasets/clean/{coin}_historical_data_clean.csv", index=False)
 
-	return f"All new data processed for {coin}."
+	return f"All new data cleaned for {coin}."
 
 
 def process_new_data():
+	'''
+	Uses multiprocessing to speed up data processing.
+	'''
 	start_date = str(date.today())
 	end_date = "2020-08-23" #the first day of data of: the youngest asset: polkadot
 	with cf.ProcessPoolExecutor() as executor:
@@ -100,8 +96,8 @@ def populate_stat_report_full(coin, data, raw_data, report):
 					f"market_cap:\t\t{data[MARKET_CAP]:.6f}", 
 					f"volume:\t\t\t{data[VOLUME]:.6f}", 
 					f"fear/greed:\t\t{data[FEAR_GREED]:.6f} [{get_fg_indicator(data[FEAR_GREED])}]",
-					f"sharpe_ratio:\t{rarc.get_sharpe_ratio(coin):.6f}",
-					f"UPI:\t\t\t{rarc.get_upi(coin):.6f}"]
+					f"sharpe_ratio:\t{common.get_sharpe_ratio(coin):.6f}",
+					f"UPI:\t\t\t{common.get_upi(coin):.6f}"]
 	
 	price_ratios = ["\nPrice Ratios", 
 					"[>0 means greater risk/overvalued; <0 means less risk/undervalued]", 
@@ -188,8 +184,8 @@ def populate_stat_report_essentials(coin, data, raw_data, report):
 					f"market_cap:\t\t{data[MARKET_CAP]:.6f}", 
 					f"volume:\t\t\t{data[VOLUME]:.6f}", 
 					f"fear/greed:\t\t{data[FEAR_GREED]:.6f} [{get_fg_indicator(data[FEAR_GREED])}]",
-					f"sharpe_ratio:\t{sc.get_sharpe_ratio(coin):.6f}",
-					f"UPI:\t\t\t{rarc.get_upi(coin):.6f}"]
+					f"sharpe_ratio:\t{common.get_sharpe_ratio(coin):.6f}",
+					f"UPI:\t\t\t{common.get_upi(coin):.6f}"]
 	
 	price_ratios = ["\nPrice Ratios", 
 					"[>0 means greater risk/overvalued; <0 means less risk/undervalued]"] 
@@ -229,108 +225,87 @@ def populate_stat_report_essentials(coin, data, raw_data, report):
 		report.append(item)
 
 
-def load_model(neural_net, filepath):
-	model = neural_net
-	model.load_state_dict(torch.load(filepath))
-
-
-	return model
-
-
 
 def get_models(best):
 	models = []
-	nn.set_model_parameters()
+	common.set_nn_model_parameters()
 	for i in range(len(best)):
-		if "Laptop_0" in best[i]:
-			models.append(load_model(nn.CryptoSoothsayer_Laptop_0(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
-		elif "Laptop_1" in best[i]:
-			models.append(load_model(nn.CryptoSoothsayer_Laptop_1(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
-		elif "Laptop_2" in best[i]:
-			models.append(load_model(nn.CryptoSoothsayer_Laptop_2(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
-		elif "Laptop_3" in best[i]:
-			models.append(load_model(nn.CryptoSoothsayer_Laptop_3(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
-		elif "Laptop_4" in best[i]:
-			models.append(load_model(nn.CryptoSoothsayer_Laptop_4(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
-		elif "Laptop_5" in best[i]:
-			models.append(load_model(nn.CryptoSoothsayer_Laptop_5(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
-		elif "Laptop_6" in best[i]:
-			models.append(load_model(nn.CryptoSoothsayer_Laptop_6(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
-		elif "Pi_0" in best[i]:
-			models.append(load_model(nn.CryptoSoothsayer_Pi_0(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
-		elif "Pi_1" in best[i]:
-			models.append(load_model(nn.CryptoSoothsayer_Pi_1(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
-		elif "Pi_2" in best[i]:
-			models.append(load_model(nn.CryptoSoothsayer_Pi_2(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
-		elif "Pi_3" in best[i]:
-			models.append(load_model(nn.CryptoSoothsayer_Pi_3(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
-		elif "Pi_4" in best[i]:
-			models.append(load_model(nn.CryptoSoothsayer_Pi_4(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
-		elif "Pi_5" in best[i]:
-			models.append(load_model(nn.CryptoSoothsayer_Pi_5(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
-		elif "Pi_6" in best[i]:
-			models.append(load_model(nn.CryptoSoothsayer_Pi_6(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
-		elif "Pi_7" in best[i]:
-			models.append(load_model(nn.CryptoSoothsayer_Pi_7(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
-		elif "PC_0" in best[i]:
-			models.append(load_model(nn.CryptoSoothsayer_PC_0(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
-		elif "PC_1" in best[i]:
-			models.append(load_model(nn.CryptoSoothsayer_PC_1(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
-		elif "PC_2" in best[i]:
-			models.append(load_model(nn.CryptoSoothsayer_PC_2(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
-		elif "PC_3" in best[i]:
-			models.append(load_model(nn.CryptoSoothsayer_PC_3(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
-		elif "PC_4" in best[i]:
-			models.append(load_model(nn.CryptoSoothsayer_PC_4(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
-		elif "PC_5" in best[i]:
-			models.append(load_model(nn.CryptoSoothsayer_PC_5(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
-		elif "PC_6" in best[i]:
-			models.append(load_model(nn.CryptoSoothsayer_PC_6(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
-		elif "PC_7" in best[i]:
-			models.append(load_model(nn.CryptoSoothsayer_PC_7(nn.N_FEATURES, nn.N_SIGNALS), best[i]))
-
-
+		models.append(common.load_nn_model(best[i]))
+	
 	return models
 
 
 
-def get_signal_strength(data, raw_data, buy_signal, hodl_signal, sell_signal):
-	# direction of signal
-	buy = buy_signal > sell_signal
-
-	# ratio of buy to sell or sell to buy depending on signal direction
-	signal_strength = (abs(buy_signal - hodl_signal) / abs(sell_signal - hodl_signal)) if buy else (abs(sell_signal - hodl_signal) / abs(buy_signal - hodl_signal))
-	
-	# counter to typical action (Buy when fearful; Sell when greedy), thus detracts; else, additive
-	fg_mult = -1 if (buy and data[FEAR_GREED] >= 0.5) or (not buy and data[FEAR_GREED] <= 0.5) else 1
-
-	signal_strength += fg_mult * ((0.5 - data[FEAR_GREED]) / 0.5) if buy else fg_mult * ((FEAR_GREED - 0.5) / 0.5)
-	
-	# under/overvaluation
-	tot_val = 0
-	tot_metrics = 0
+def get_signal_strength(data, raw_data):
+	# determine signal direction
 	if raw_data[PRICE_200_SMA] > 0:
-		tot_val += 1 / (raw_data[PRICE_50_SMA] / raw_data[PRICE_200_SMA]) if buy else (raw_data[PRICE_50_SMA] / raw_data[PRICE_200_SMA])
-		tot_metrics += 1
+		ratio = raw_data[PRICE_50_SMA] / raw_data[PRICE_200_SMA]
+		if ratio < 0.8:
+			buy, hodl, sell = True, False, False
+		elif ratio > 1.5:
+			buy, hodl, sell = False, False, True
+		else:
+			buy, hodl, sell = False, True, False
+	else:
+		buy = True if data[FEAR_GREED] < 0.4 else False
+		hodl = True if 0.4 <= data[FEAR_GREED] <= 0.75 else False
+		sell = True if data[FEAR_GREED] > 0.75 else False
 
-	if raw_data[PRICE_250_SMA] > 0:
-		tot_val += 1 / (raw_data[PRICE_50_SMA] / raw_data[PRICE_250_SMA]) if buy else (raw_data[PRICE_50_SMA] / raw_data[PRICE_250_SMA])
-		tot_metrics += 1
 
-	if raw_data[PRICE_300_SMA] > 0:
-		tot_val += 1 / (raw_data[PRICE_50_SMA] / raw_data[PRICE_300_SMA]) if buy else (raw_data[PRICE_50_SMA] / raw_data[PRICE_300_SMA])
-		tot_metrics += 1
+	signal_strength = 0
+	if not hodl:
+		# calculate how fearful/greedy market is
+		if buy:
+			signal_strength += ((0.5 - data[FEAR_GREED]) / 0.5) 
+		elif sell:
+			signal_strength += ((data[FEAR_GREED] - 0.5) / 0.5)
+	
+		# calculate under/overvaluation
+		tot_val = 0
+		tot_metrics = 0
+		if raw_data[PRICE_200_SMA] > 0:
+			ratio = raw_data[PRICE_50_SMA] / raw_data[PRICE_200_SMA]
+			if buy:
+				tot_val += 1 / ratio 
+			elif sell:
+				tot_val += ratio
+			tot_metrics += 1
 
-	if raw_data[PRICE_350_SMA] > 0:
-		tot_val += 1 / (raw_data[PRICE_50_SMA] / raw_data[PRICE_350_SMA]) if buy else (raw_data[PRICE_50_SMA] / raw_data[PRICE_350_SMA])
-		tot_metrics += 1
+		if raw_data[PRICE_250_SMA] > 0:
+			ratio = raw_data[PRICE_50_SMA] / raw_data[PRICE_250_SMA]
+			if buy:
+				tot_val += 1 / ratio 
+			elif sell:
+				tot_val += ratio
+			tot_metrics += 1
+	
+		if raw_data[PRICE_300_SMA] > 0:
+			ratio = raw_data[PRICE_50_SMA] / raw_data[PRICE_300_SMA]
+			if buy:
+				tot_val += 1 / ratio 
+			elif sell:
+				tot_val += ratio
+			tot_metrics += 1
 
-	signal_strength += 0 if tot_metrics == 0 else fg_mult * (tot_val / tot_metrics)
+		if raw_data[PRICE_350_SMA] > 0:
+			ratio = raw_data[PRICE_50_SMA] / raw_data[PRICE_350_SMA]
+			if buy:
+				tot_val += 1 / ratio 
+			elif sell:
+				tot_val += ratio
+			tot_metrics += 1
+
+		signal_strength += 0 if tot_metrics == 0 else (tot_val / tot_metrics)
 
 	# ultimate decision
-	buy_or_sell = "BUY" if buy else "SELL"
+	if buy:
+		signal_direction = "BUY" 
+	elif sell:
+		signal_direction = "SELL"
+	else:
+		signal_direction = "HODL"
 
-	return signal_strength, buy_or_sell
+	return signal_strength, signal_direction
 
 
 
@@ -401,7 +376,7 @@ def generate_signals(full_report=False):
 		sell_signal = formatted_w_list[2]
 		
 		# calculate signal strength
-		signal_strength, buy_or_sell = get_signal_strength(data, raw_data, buy_signal, hodl_signal, sell_signal)
+		signal_strength, buy_or_sell = get_signal_strength(data, raw_data)
 
 		report.append("\nAction Signals")
 		report.append(f"Signal by best nn:\t{signal_b}")

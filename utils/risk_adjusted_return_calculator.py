@@ -1,8 +1,25 @@
 import pandas as pd
-import data_preprocessor as dpp
-import ulcer_index_calculator as uic
 import numpy as np
 import common
+
+
+def calculate_ulcer_index(data, interval):
+	# R_i_sq = ((price_i / max_price) - 1) ** 2
+	curr_row = interval
+	max_price = data.iloc[curr_row, 1]
+	sum_R_sq = 0
+	while curr_row > 1:
+		curr_row -= 1
+		new_price = data.iloc[curr_row, 1] 
+		if new_price > max_price:
+			max_price = new_price
+		else:
+			sum_R_sq += ((new_price / max_price) - 1) ** 2
+
+	ulcer_index = np.sqrt(sum_R_sq / interval)
+
+	return ulcer_index
+    
 
 
 def calculate_ulcer_performance_index(data, interval):
@@ -15,7 +32,7 @@ def calculate_ulcer_performance_index(data, interval):
 	
 	# calculate sharpe ratio components
 	excess_return = sum(daily_price_delta) - risk_free_rate
-	volatility = uic.calculate_ulcer_index(data, interval)
+	volatility = calculate_ulcer_index(data, interval)
 
 	upi = excess_return / volatility
 
@@ -61,7 +78,8 @@ def prepare_dataframe(coin):
 	# drop irrelevant columns
 	data = data.drop(columns=["market_cap", "volume", "fear_greed"])
 	last_ind = data.shape[0] - 1
-	data = dpp.handle_missing_data(data, data.iloc[0,0], data.iloc[last_ind,0])
+	data = common.handle_missing_data(data, data.iloc[0,0], data.iloc[last_ind,0])
+
 	return data
 
 
@@ -70,9 +88,9 @@ def get_sharpe_ratio(coin):
 	data = prepare_dataframe(coin)
 	interval = data.shape[0] - 1
 	try:
-		return get_current_sharpe_ratio(data, coin)
+		return get_current_sharpe_ratio(data)
 	except:
-		return get_custom_sharpe_ratio(data, coin, interval)
+		return get_custom_sharpe_ratio(data, interval)
 
 
 
@@ -126,7 +144,7 @@ if __name__ == "__main__":
 
 
 	if choice != "0":
-		for coin in common.coins:
+		for coin in common.possible_coins:
 			if choice == "1":
 				print_sharpe_ratio(coin)
 				print_ulcer_performance_index(coin)

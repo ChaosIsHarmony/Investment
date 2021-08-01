@@ -1,1 +1,1 @@
-1.) Train all architectures on a unified dataset composed of all coin data
+1.) Make auto merge function with fear-greed dataset on missing data values in data aggregator

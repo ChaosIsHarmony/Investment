@@ -12,7 +12,7 @@ from datetime import date, datetime, timedelta
 import time
 import pandas as pd
 import numpy as np
-
+import common
 
 
 def get_fear_greed():
@@ -156,52 +156,6 @@ def get_time():
 
 
 
-def merge_datasets(coin, list_of_datasets, all_data=False):
-	'''
-	Merges two or more datasets.
-	Param all_data is used when combining all datasets into one mega dataset.
-	
-	NOTE: Param list_of_datasets must be a list of pandas DataFrames
-	'''
-	merged_data = pd.concat(list_of_datasets)
-	merged_data["date"] = pd.to_datetime(merged_data["date"], dayfirst=True, infer_datetime_format=True)
-	merged_data = merged_data.sort_values(by=["date"], ascending=False)
-	# if merging all datasets into mega training dataset, more than date must be unique
-	if all_data:
-		subset_cols = ["date", "price", "market_cap", "volume"]
-	else:
-		subset_cols = ["date"]
-
-	merged_data = merged_data.drop_duplicates(subset=subset_cols, keep="last")
-	merged_data = merged_data.reset_index()
-	merged_data = merged_data.drop(columns=["index"])
-
-	if all_data:
-		merged_data.to_csv(f"datasets/complete/all_historical_data_complete.csv", index=False, float_format="%f")
-	else:
-		merged_data.to_csv(f"datasets/raw/{coin}_historical_data_raw.csv", index=False, float_format="%f")
-
-
-
-def merge_new_dataset_with_old(coin, by_range=True):
-	'''
-	Merges all previous datasets with the newly fetched data.
-	NOTE: Assumes fetch_missing_data_by_range or fetch_missing_data_by_date have been called first.
-	'''
-	data_to_merge = [pd.read_csv(f"datasets/raw/{coin}_historical_data_raw.csv")]
-
-	if by_range:
-		data_to_merge.append(pd.read_csv(f"datasets/raw/{coin}_historical_data_by_range.csv"))
-		os.remove(f"datasets/raw/{coin}_historical_data_by_range.csv")
-	else:
-		data_to_merge.append(pd.read_csv(f"datasets/raw/{coin}_historical_data_by_date.csv"))
-		os.remove(f"datasets/raw/{coin}_historical_data_by_date.csv")
-
-	merge_datasets(coin, data_to_merge)
-
-	return f"Successfully merged new and old {coin} data"
-
-
 def fetch_missing_data_by_dates(coin, dates, verbose=False):
 	'''
 	WARNING: Cannot automatically fetch Fear/Greed index <- This is partially alleviated by the data_preprocessors handle_missing_data method.
@@ -229,7 +183,7 @@ def fetch_missing_data_by_dates(coin, dates, verbose=False):
 			more_data = fetch_missing_data_by_dates(coin, missing_dates)
 			# merge the data
 			historical_data = pd.DataFrame(historical_data)
-			historical_data = pd.concat(more_data)
+			historical_data = pd.concat([historical_data, more_data])
 
 	# save as CSV
 	coin_data = pd.DataFrame(historical_data)
@@ -240,9 +194,6 @@ def fetch_missing_data_by_dates(coin, dates, verbose=False):
 	
 	return coin_data
 
-
-#fetch_missing_data_by_dates("ethereum", ["2021-06-24"], verbose=True)
-#merge_new_dataset_with_old("ethereum", by_range=False)
 
 
 def fetch_missing_data_by_range(coin, n_days, start_delta=0, verbose=False):
@@ -277,7 +228,7 @@ def fetch_missing_data_by_range(coin, n_days, start_delta=0, verbose=False):
 			more_data = fetch_missing_data_by_dates(coin, missing_dates)
 			# merge the data
 			historical_data = pd.DataFrame(historical_data)
-			historical_data = pd.concat(more_data)
+			historical_data = pd.concat([historical_data, more_data])
 
 	# save as CSV
 	coin_data = pd.DataFrame(historical_data)
@@ -291,16 +242,17 @@ def fetch_missing_data_by_range(coin, n_days, start_delta=0, verbose=False):
 
 
 
-def run(how_far_back):
+def aggregate_data_for_new_coins(coins, how_far_back=600):
 	'''
-	NOTE: param how_far_back indicates how many days counting backwards from today to collect data for.
+	Param coins is a list of all the coins to aggregate data for.
+	Param how_far_back indicates how many days counting backwards from today to collect data for.
 	'''
 	today = date.today()
 	api_calls = 0
 	api_call_cycle_start = get_time() 
 	fear_greed = get_fear_greed_by_range(how_far_back)
 	
-	for coin in ["bitcoin"]: #coin_id:
+	for coin in coins:
 		date_delta = -1 
 		fear_greed_ind = 0
 		has_next = True
@@ -351,10 +303,11 @@ def run(how_far_back):
 		# if missing dates
 		if len(missing_dates) > 0:
 			fetch_missing_data_by_dates(coin, missing_dates, verbose=True)
-			merge_new_dataset_with_old(coin, by_range=False)
+			common.merge_newly_aggregated_data(coin, by_range=False)
 
 		print(f"{coin} data successfully pulled and stored.")
 
 
 
-#run(10)
+if __name__ == "__main__":
+	aggregate_data_for_new_coins(common.possible_coins)

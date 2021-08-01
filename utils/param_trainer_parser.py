@@ -73,14 +73,14 @@ def list_promising_model_details(model_architecture):
 	print(f"{count} promising models found.")
 
 
-def find_model_params(coin, file_name):
-	start_ind = file_name.find('_') + 1
-	end_ind = file_name.find('_', start_ind) + 2
-	model_architecture = file_name[start_ind:end_ind]
+def get_model_params(coin, filename):
+	start_ind = filename.find('_') + 1
+	end_ind = filename.find('_', start_ind) + 2
+	model_architecture = filename[start_ind:end_ind]
 
-	start_ind = file_name.find('_', end_ind) + 1
-	end_ind = file_name.find('_', start_ind)
-	model_num = file_name[start_ind:end_ind]
+	start_ind = filename.find('_', end_ind) + 1
+	end_ind = filename.find('_', start_ind)
+	model_num = filename[start_ind:end_ind]
 
 	try:
 		models = parse_reports(coin, model_architecture)
