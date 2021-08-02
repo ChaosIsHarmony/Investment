@@ -19,7 +19,7 @@ OUTSTANDING_ACCURACY_THRESHOLD = 0.76
 INACCURACY_THRESHOLD = 0.05
 
 coins = ["algorand", "bitcoin", "cardano", "chainlink", "ethereum", "polkadot", "solana"]
-possible_coins = ["harmony", "matic-network", "quant-network", "the-graph", "theta-token", "zilliqa"]
+possible_coins = ["harmony", "matic-network", "quant-network", "theta-token", "zilliqa"]
 
 #
 # ------------- INTERFACES ------------
