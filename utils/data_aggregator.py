@@ -13,6 +13,7 @@ import time
 import pandas as pd
 import numpy as np
 import common
+from typing import List
 
 
 def get_fear_greed():
@@ -196,7 +197,7 @@ def fetch_missing_data_by_dates(coin, dates, verbose=False):
 
 
 
-def fetch_missing_data_by_range(coin, n_days, start_delta=0, verbose=False):
+def fetch_missing_data_by_range(coin: str, n_days: int, start_delta=0, verbose=False) -> str:
 	today = date.today() - timedelta(start_delta)
 	historical_data = []
 	missing_dates = []
@@ -242,7 +243,7 @@ def fetch_missing_data_by_range(coin, n_days, start_delta=0, verbose=False):
 
 
 
-def aggregate_data_for_new_coins(coins, how_far_back=600):
+def aggregate_data_for_new_coins(coins: List[str], how_far_back: int = 600) -> None:
 	'''
 	Param coins is a list of all the coins to aggregate data for.
 	Param how_far_back indicates how many days counting backwards from today to collect data for.
@@ -310,4 +311,5 @@ def aggregate_data_for_new_coins(coins, how_far_back=600):
 
 
 if __name__ == "__main__":
+	#aggregate_data_for_new_coins(common.coins)
 	aggregate_data_for_new_coins(common.possible_coins)

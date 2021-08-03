@@ -18,10 +18,22 @@ CRITERION = None
 OPTIMIZER = None
 SCHEDULER = None
 
+
+
+class CryptoSoothsayer(nn.Module):
+	def __init__(self):
+		super(CryptoSoothsayer, self).__init__()
+
+	def forward(inputs):
+		pass
+
+	def get_class_name(self):
+		pass
+		
 #
 # ---------- MODELS TRAINED ON RASPBERRY PI ----------
 #
-class CryptoSoothsayer_Pi_0(nn.Module):
+class CryptoSoothsayer_Pi_0(CryptoSoothsayer):
 	def __init__(self, input_size, n_signals):
 		super(CryptoSoothsayer_Pi_0, self).__init__()
 		self.layer_1 = nn.Linear(input_size, 5)
@@ -40,7 +52,7 @@ class CryptoSoothsayer_Pi_0(nn.Module):
 
 
 
-class CryptoSoothsayer_Pi_1(nn.Module):
+class CryptoSoothsayer_Pi_1(CryptoSoothsayer):
 	def __init__(self, input_size, n_signals):
 		super(CryptoSoothsayer_Pi_1, self).__init__()
 		self.layer_1 = nn.Linear(input_size, 6)
@@ -59,7 +71,7 @@ class CryptoSoothsayer_Pi_1(nn.Module):
 
 
 
-class CryptoSoothsayer_Pi_2(nn.Module):
+class CryptoSoothsayer_Pi_2(CryptoSoothsayer):
 	def __init__(self, input_size, n_signals):
 		super(CryptoSoothsayer_Pi_2, self).__init__()
 		self.layer_1 = nn.Linear(input_size, 7)
@@ -78,7 +90,7 @@ class CryptoSoothsayer_Pi_2(nn.Module):
 
 
 
-class CryptoSoothsayer_Pi_3(nn.Module):
+class CryptoSoothsayer_Pi_3(CryptoSoothsayer):
 	def __init__(self, input_size, n_signals):
 		super(CryptoSoothsayer_Pi_3, self).__init__()
 		self.layer_1 = nn.Linear(input_size, 8)
@@ -97,7 +109,7 @@ class CryptoSoothsayer_Pi_3(nn.Module):
 
 
 
-class CryptoSoothsayer_Pi_4(nn.Module):
+class CryptoSoothsayer_Pi_4(CryptoSoothsayer):
 	def __init__(self, input_size, n_signals):
 		super(CryptoSoothsayer_Pi_4, self).__init__()
 		self.layer_1 = nn.Linear(input_size, 9)
@@ -116,7 +128,7 @@ class CryptoSoothsayer_Pi_4(nn.Module):
 
 
 
-class CryptoSoothsayer_Pi_5(nn.Module):
+class CryptoSoothsayer_Pi_5(CryptoSoothsayer):
 	def __init__(self, input_size, n_signals):
 		super(CryptoSoothsayer_Pi_5, self).__init__()
 		self.layer_1 = nn.Linear(input_size, 10)
@@ -135,7 +147,7 @@ class CryptoSoothsayer_Pi_5(nn.Module):
 
 
 
-class CryptoSoothsayer_Pi_6(nn.Module):
+class CryptoSoothsayer_Pi_6(CryptoSoothsayer):
 	def __init__(self, input_size, n_signals):
 		super(CryptoSoothsayer_Pi_6, self).__init__()
 		self.layer_1 = nn.Linear(input_size, 11)
@@ -154,7 +166,7 @@ class CryptoSoothsayer_Pi_6(nn.Module):
 
 
 
-class CryptoSoothsayer_Pi_7(nn.Module):
+class CryptoSoothsayer_Pi_7(CryptoSoothsayer):
 	def __init__(self, input_size, n_signals):
 		super(CryptoSoothsayer_Pi_7, self).__init__()
 		self.layer_1 = nn.Linear(input_size, 12)
@@ -176,7 +188,7 @@ class CryptoSoothsayer_Pi_7(nn.Module):
 #
 # ---------- MODELS TRAINED ON OLD PC ----------
 #
-class CryptoSoothsayer_PC_0(nn.Module):
+class CryptoSoothsayer_PC_0(CryptoSoothsayer):
 	def __init__(self, input_size, n_signals):
 		super(CryptoSoothsayer_PC_0, self).__init__()
 		self.layer_1 = nn.Linear(input_size, 13)
@@ -195,7 +207,7 @@ class CryptoSoothsayer_PC_0(nn.Module):
 
 
 
-class CryptoSoothsayer_PC_1(nn.Module):
+class CryptoSoothsayer_PC_1(CryptoSoothsayer):
 	def __init__(self, input_size, n_signals):
 		super(CryptoSoothsayer_PC_1, self).__init__()
 		self.layer_1 = nn.Linear(input_size, 14)
@@ -214,7 +226,7 @@ class CryptoSoothsayer_PC_1(nn.Module):
 
 
 
-class CryptoSoothsayer_PC_2(nn.Module):
+class CryptoSoothsayer_PC_2(CryptoSoothsayer):
 	def __init__(self, input_size, n_signals):
 		super(CryptoSoothsayer_PC_2, self).__init__()
 		self.layer_1 = nn.Linear(input_size, 15)
@@ -233,7 +245,7 @@ class CryptoSoothsayer_PC_2(nn.Module):
 
 
 
-class CryptoSoothsayer_PC_3(nn.Module):
+class CryptoSoothsayer_PC_3(CryptoSoothsayer):
 	def __init__(self, input_size, n_signals):
 		super(CryptoSoothsayer_PC_3, self).__init__()
 		self.layer_1 = nn.Linear(input_size, 16)
@@ -252,7 +264,7 @@ class CryptoSoothsayer_PC_3(nn.Module):
 
 
 
-class CryptoSoothsayer_PC_4(nn.Module):
+class CryptoSoothsayer_PC_4(CryptoSoothsayer):
 	def __init__(self, input_size, n_signals):
 		super(CryptoSoothsayer_PC_4, self).__init__()
 		self.layer_1 = nn.Linear(input_size, 17)
@@ -271,7 +283,7 @@ class CryptoSoothsayer_PC_4(nn.Module):
 
 
 
-class CryptoSoothsayer_PC_5(nn.Module):
+class CryptoSoothsayer_PC_5(CryptoSoothsayer):
 	def __init__(self, input_size, n_signals):
 		super(CryptoSoothsayer_PC_5, self).__init__()
 		self.layer_1 = nn.Linear(input_size, 18)
@@ -290,7 +302,7 @@ class CryptoSoothsayer_PC_5(nn.Module):
 
 
 
-class CryptoSoothsayer_PC_6(nn.Module):
+class CryptoSoothsayer_PC_6(CryptoSoothsayer):
 	def __init__(self, input_size, n_signals):
 		super(CryptoSoothsayer_PC_6, self).__init__()
 		self.layer_1 = nn.Linear(input_size, 19)
@@ -309,7 +321,7 @@ class CryptoSoothsayer_PC_6(nn.Module):
 
 
 
-class CryptoSoothsayer_PC_7(nn.Module):
+class CryptoSoothsayer_PC_7(CryptoSoothsayer):
 	def __init__(self, input_size, n_signals):
 		super(CryptoSoothsayer_PC_7, self).__init__()
 		self.layer_1 = nn.Linear(input_size, 19)
@@ -333,7 +345,7 @@ class CryptoSoothsayer_PC_7(nn.Module):
 #
 # ---------- MODELS TRAINED ON LAPTOP ----------
 #
-class CryptoSoothsayer_Laptop_0(nn.Module):
+class CryptoSoothsayer_Laptop_0(CryptoSoothsayer):
 	def __init__(self, input_size, n_signals):
 		super(CryptoSoothsayer_Laptop_0, self).__init__()
 		self.layer_1 = nn.Linear(input_size, 20)
@@ -352,7 +364,7 @@ class CryptoSoothsayer_Laptop_0(nn.Module):
 
 
 
-class CryptoSoothsayer_Laptop_1(nn.Module):
+class CryptoSoothsayer_Laptop_1(CryptoSoothsayer):
 	def __init__(self, input_size, n_signals):
 		super(CryptoSoothsayer_Laptop_1, self).__init__()
 		self.layer_1 = nn.Linear(input_size, 21)
@@ -371,7 +383,7 @@ class CryptoSoothsayer_Laptop_1(nn.Module):
 
 
 
-class CryptoSoothsayer_Laptop_2(nn.Module):
+class CryptoSoothsayer_Laptop_2(CryptoSoothsayer):
 	def __init__(self, input_size, n_signals):
 		super(CryptoSoothsayer_Laptop_2, self).__init__()
 		self.layer_1 = nn.Linear(input_size, 22)
@@ -390,7 +402,7 @@ class CryptoSoothsayer_Laptop_2(nn.Module):
 
 
 
-class CryptoSoothsayer_Laptop_3(nn.Module):
+class CryptoSoothsayer_Laptop_3(CryptoSoothsayer):
 	def __init__(self, input_size, n_signals):
 		super(CryptoSoothsayer_Laptop_3, self).__init__()
 		self.layer_1 = nn.Linear(input_size, 23)
@@ -409,7 +421,7 @@ class CryptoSoothsayer_Laptop_3(nn.Module):
 
 
 
-class CryptoSoothsayer_Laptop_4(nn.Module):
+class CryptoSoothsayer_Laptop_4(CryptoSoothsayer):
 	def __init__(self, input_size, n_signals):
 		super(CryptoSoothsayer_Laptop_4, self).__init__()
 		self.layer_1 = nn.Linear(input_size, 20)
@@ -433,7 +445,7 @@ class CryptoSoothsayer_Laptop_4(nn.Module):
 #
 # -------------- GETTERS & SETTERS ---------------
 #
-def load_model(filepath):
+def load_model(filepath: str) -> CryptoSoothsayer:
 	'''
 	Param file has the model architecture in its name.
 	'''
@@ -507,7 +519,7 @@ def set_model(model_architecture):
 	return model
 
 
-def set_model_parameters(dropout=0, eta=0, eta_decay=0):
+def set_model_parameters(dropout: float = 0.0, eta: float = 0.0, eta_decay: float = 0.0) -> None:
 	global DROPOUT, LEARNING_RATE, LEARNING_RATE_DECAY
 
 	DROPOUT = dropout

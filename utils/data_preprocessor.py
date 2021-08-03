@@ -2,7 +2,7 @@ import pandas as pd
 import common
 
 
-def handle_missing_data(data, start_date, end_date):
+def handle_missing_data(data: pd.DataFrame, start_date: str, end_date: str) -> pd.DataFrame:
 	'''
 	Checks for missing days
 	Fills all NaN values with 0.
@@ -218,7 +218,7 @@ def calculate_signals(data, limit=28, verbose=False):
 
 
 
-def process_data(coin, data, start_date, end_date, verbose=False):
+def process_data(coin: str, data: pd.DataFrame, start_date: str, end_date: str, verbose=False) -> pd.DataFrame:
 	'''
 	Processes the basic data provided by coingecko in the following ways:
 		

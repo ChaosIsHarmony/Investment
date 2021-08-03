@@ -2,8 +2,9 @@
 Parses the Parameter_Tuning_Reports.txt file so that it can automatically set the parameters in the continue_training method of the data_processor file.
 '''
 import common
+from typing import List
 
-def parse_reports(coin, model_architecture):
+def parse_reports(coin: str, model_architecture: str) -> List[dict]:
 	try:
 		with open(f"reports/{coin}_Parameter_Tuning_Report_{model_architecture}.txt", 'r') as f:
 			reports = f.read()
@@ -73,7 +74,7 @@ def list_promising_model_details(model_architecture):
 	print(f"{count} promising models found.")
 
 
-def get_model_params(coin, filename):
+def get_model_params(coin: str, filename: str) -> dict:
 	start_ind = filename.find('_') + 1
 	end_ind = filename.find('_', start_ind) + 2
 	model_architecture = filename[start_ind:end_ind]

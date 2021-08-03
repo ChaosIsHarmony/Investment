@@ -2,9 +2,11 @@ import pandas as pd
 import numpy as np
 import common
 import datetime
+from typing import List, Tuple
 
 
-def calculate_excess_return(data, interval, verbose=False):
+
+def calculate_excess_return(data: pd.DataFrame, interval: int, verbose: bool = False) -> Tuple[float, List[float]]:
 	'''
 	Excess return = closing_price - starting_price
 	'''
@@ -12,7 +14,7 @@ def calculate_excess_return(data, interval, verbose=False):
 
 	# calculate daily price change
 	daily_price_delta = []
-	for r in range(0, interval):
+	for r in range(0, interval-1):
 		daily_price_delta.append(((data.iloc[r, 1] - data.iloc[r+1, 1])/data.iloc[r-1, 1]))
 	
 	if verbose:
@@ -31,9 +33,9 @@ def calculate_excess_return(data, interval, verbose=False):
 
 
 
-def calculate_ulcer_index(data, interval):
+def calculate_ulcer_index(data: pd.DataFrame, interval: int) -> float:
 	# R_i_sq = ((price_i / max_price) - 1) ** 2
-	curr_row = interval
+	curr_row = interval - 1
 	max_price = data.iloc[curr_row, 1]
 	sum_R_sq = 0
 	while curr_row > 1:
@@ -50,7 +52,7 @@ def calculate_ulcer_index(data, interval):
     
 
 
-def calculate_ulcer_performance_index(data, interval):
+def calculate_ulcer_performance_index(data: pd.DataFrame, interval: int) -> float:
 	excess_return, _ = calculate_excess_return(data, interval)	
 	volatility = calculate_ulcer_index(data, interval)
 
@@ -60,7 +62,7 @@ def calculate_ulcer_performance_index(data, interval):
 
 
 
-def calculate_sharpe_ratio(data, interval):
+def calculate_sharpe_ratio(data: pd.DataFrame, interval: int) -> float:
 	excess_return, daily_price_delta = calculate_excess_return(data, interval)
 	volatility = np.std(daily_price_delta)*np.sqrt(interval) # multiplying by np.sqrt(interval) scales std to size of the interval
 
@@ -70,17 +72,17 @@ def calculate_sharpe_ratio(data, interval):
 
 
 
-def get_current_sharpe_ratio(data):
+def get_current_sharpe_ratio(data: pd.DataFrame) -> float:
 	return calculate_sharpe_ratio(data, 365)
 
 
 
-def get_custom_sharpe_ratio(data, interval):
+def get_custom_sharpe_ratio(data: pd.DataFrame, interval: int) -> float:
 	return calculate_sharpe_ratio(data, interval)
 
 
 
-def prepare_dataframe(coin):
+def prepare_dataframe(coin: str):
 	data = pd.read_csv(f"datasets/raw/{coin}_historical_data_raw.csv")
 
 	# drop irrelevant columns
@@ -92,13 +94,13 @@ def prepare_dataframe(coin):
 
 
 
-def get_sharpe_ratio(coin):
+def get_sharpe_ratio(coin: str) -> float:
 	'''
 	If possible, returns the 365-day Sharpe Ratio
 	Else, returns the max interval Sharpe Ratio.
 	'''
 	data = prepare_dataframe(coin)
-	interval = data.shape[0] - 1
+	interval = data.shape[0]
 	try:
 		return get_current_sharpe_ratio(data)
 	except:
@@ -106,13 +108,13 @@ def get_sharpe_ratio(coin):
 
 
 
-def get_upi(coin):
+def get_upi(coin: str) -> float:
 	'''
 	If possible, returns the 365-day UPI
 	Else, returns the max interval UPI.
 	'''
 	data = prepare_dataframe(coin)
-	interval = data.shape[0] - 1
+	interval = data.shape[0]
 	try:
 		return calculate_ulcer_performance_index(data, 365)
 	except:
@@ -120,9 +122,9 @@ def get_upi(coin):
 
 
 
-def print_sharpe_ratio(coin):
+def print_sharpe_ratio(coin: str) -> None:
 	data = prepare_dataframe(coin)
-	interval = data.shape[0] - 1
+	interval = data.shape[0]
 	try:
 		print(f"Current yearly Sharpe ratio for {coin}: {get_current_sharpe_ratio(data):.6f}")
 	except:
@@ -130,9 +132,9 @@ def print_sharpe_ratio(coin):
 
 	
 
-def print_ulcer_performance_index(coin):
+def print_ulcer_performance_index(coin: str) -> None:
 	data = prepare_dataframe(coin)
-	interval = data.shape[0] - 1
+	interval = data.shape[0]
 	try:
 		print(f"Current yearly UPI for {coin}: {calculate_ulcer_performance_index(data, 365):.6f}")
 	except:
@@ -140,48 +142,48 @@ def print_ulcer_performance_index(coin):
 
 
 
-def print_personal_sharpe_ratio(coin, interval):
+def print_personal_sharpe_ratio(coin: str, interval: int) -> None:
 	data = prepare_dataframe(coin)
 	print(f"Personal Sharpe ratio for {coin} of {interval} days: {get_custom_sharpe_ratio(data, interval):.6f}")
 	
 
 
-def print_personal_ulcer_performance_index(coin, interval):
+def print_personal_ulcer_performance_index(coin: str, interval: int) -> None:
 	data = prepare_dataframe(coin)
 	print(f"Personal UPI for {coin} of {interval} days: {calculate_ulcer_performance_index(data, interval):.6f}")
 
 
 
-def print_max_sharpe_ratio(coin):
+def print_max_sharpe_ratio(coin: str) -> None:
 	data = prepare_dataframe(coin)
-	interval = data.shape[0] - 1
+	interval = data.shape[0]
 	print(f"Max Sharpe ratio for {coin} of {interval} days: {get_custom_sharpe_ratio(data, interval):.6f}")
 	
 
 
-def print_max_ulcer_performance_index(coin):
+def print_max_ulcer_performance_index(coin: str) -> None:
 	data = prepare_dataframe(coin)
-	interval = data.shape[0] - 1
+	interval = data.shape[0]
 	print(f"Max UPI for {coin} of {interval} days: {calculate_ulcer_performance_index(data, interval):.6f}")
 	
 
 
-def print_custom_sharpe_ratio(coin, interval):
+def print_custom_sharpe_ratio(coin: str, interval: int) -> None:
 	data = prepare_dataframe(coin)
 	try:
 		print(f"Custom Sharpe ratio for {coin} of {interval} days: {get_custom_sharpe_ratio(data, interval):.6f}")
 	except:
-		interval = data.shape[0] - 1
+		interval = data.shape[0]
 		print(f"Custom Sharpe ratio for {coin} of {interval} days: {get_custom_sharpe_ratio(data, interval):.6f}")
 	
 
 
-def print_custom_ulcer_performance_index(coin, interval):
+def print_custom_ulcer_performance_index(coin: str, interval: int) -> None:
 	data = prepare_dataframe(coin)
 	try:
 		print(f"Custom UPI ratio for {coin} of {interval} days: {calculate_ulcer_performance_index(data, interval):.6f}")
 	except:
-		interval = data.shape[0] - 1
+		interval = data.shape[0]
 		print(f"Custom UPI ratio for {coin} of {interval} days: {calculate_ulcer_performance_index(data, interval):.6f}")
 	
 
@@ -203,7 +205,7 @@ if __name__ == "__main__":
 			
 
 	if choice != "0":
-		for coin in common.coins:
+		for coin in common.coins + common.possible_coins:
 			if choice == "1":
 				print_sharpe_ratio(coin)
 				print_ulcer_performance_index(coin)

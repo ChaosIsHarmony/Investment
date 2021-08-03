@@ -1,8 +1,9 @@
 import pandas as pd
 import os
+from typing import List
 
 
-def merge_datasets(coin, list_of_datasets, all_data=False):
+def merge_datasets(coin: str, list_of_datasets: List[pd.DataFrame], all_data: bool = False) -> None:
 	'''
 	Merges two or more datasets.
 	Param all_data is used when combining all datasets into one mega dataset.
@@ -29,7 +30,7 @@ def merge_datasets(coin, list_of_datasets, all_data=False):
 
 
 
-def merge_new_dataset_with_old(coin, by_range=True):
+def merge_new_dataset_with_old(coin: str, by_range: bool = True) -> str:
 	'''
 	Merges all previous datasets with the newly fetched data.
 	NOTE: Assumes fetch_missing_data_by_range or fetch_missing_data_by_date have been called first.
