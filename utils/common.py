@@ -28,17 +28,17 @@ possible_coins = ["harmony", "matic-network", "quant-network", "theta-token", "z
 #
 # DATA AGGREGATOR
 def aggregate_data_for_new_coins(coins: List[str], interval: int = 600) -> None:
-	dt_agg.aggregate_data_for_new_coins(coins, interval)
+    dt_agg.aggregate_data_for_new_coins(coins, interval)
 
 
 def aggregate_new_data(coin: str, n_days: int) -> str:
-	return dt_agg.fetch_missing_data_by_range(coin, n_days)
+    return dt_agg.fetch_missing_data_by_range(coin, n_days)
 
 
 
 # DATA PREPROCESSOR
 def clean_coin_data(coin: str, data: pd.DataFrame, start_date: str, end_date: str) -> pd.DataFrame:
-	return dt_pp.process_data(coin, data, start_date, end_date)
+    return dt_pp.process_data(coin, data, start_date, end_date)
 
 
 def handle_missing_data(data: pd.DataFrame, start_date: str, end_date: str) -> pd.DataFrame:
@@ -48,38 +48,38 @@ def handle_missing_data(data: pd.DataFrame, start_date: str, end_date: str) -> p
 
 # DATASET COMBINER
 def merge_newly_aggregated_data(coin: str, by_range: bool = True) -> str:
-	return dt_c.merge_new_dataset_with_old(coin, by_range)
+    return dt_c.merge_new_dataset_with_old(coin, by_range)
 
 
 def merge_datasets(coin: str, datasets: List[pd.DataFrame], all_data: bool) -> None:
-	dt_c.merge_datasets(coin, datasets, all_data)
+    dt_c.merge_datasets(coin, datasets, all_data)
 
 
 
 # NEURAL NETS
 def load_nn_model(filepath: str) -> nn.CryptoSoothsayer:
-	return nn.load_model(filepath)
+    return nn.load_model(filepath)
 
 
 def set_nn_model_parameters() -> None:
-	nn.set_model_parameters()
+    nn.set_model_parameters()
 
 
 
 # PARAMATER TRAINER PARSER
 def get_model_params(coin: str, filepath: str) -> dict:
-	return ptp.get_model_params(coin, filepath)
+    return ptp.get_model_params(coin, filepath)
 
 
 def parse_training_reports(coin: str, model_architecture: str) -> List[dict]:
-	return ptp.parse_reports(coin, model_architecture)
+    return ptp.parse_reports(coin, model_architecture)
 
 
 
 # RISK ADJUSTED RETURN CALCULATOR
 def get_sharpe_ratio(coin: str) -> float:
-	return rarc.get_sharpe_ratio(coin)
+    return rarc.get_sharpe_ratio(coin)
 
 
 def get_upi(coin: str) -> float:
-	return rarc.get_upi(coin)
+    return rarc.get_upi(coin)

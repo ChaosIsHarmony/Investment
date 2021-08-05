@@ -1,3 +1,6 @@
+'''
+Convenience script to generate a best performers list (used in the signal_generatory file) from reading all files in a specific directory.
+'''
 import glob
 
 coin = "all"
@@ -5,5 +8,5 @@ coin = "all"
 models = glob.glob(f"models/aggregate/{coin}*")
 
 with open(f"reports/{coin}_best_performers.txt", 'w') as f:
-	for model in models:
-		f.write(model + '\n')
+    for model in models:
+        f.write(model + '\n')
