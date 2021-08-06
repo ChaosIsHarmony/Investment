@@ -68,6 +68,7 @@ def set_nn_model_parameters() -> None:
 
 # PARAMATER TRAINER PARSER
 def get_model_params(coin: str, filepath: str) -> dict:
+    print(coin, filepath)
     return ptp.get_model_params(coin, filepath)
 
 

@@ -513,6 +513,8 @@ def set_model(model_architecture: str) -> CryptoSoothsayer:
         model = CryptoSoothsayer_PC_6(N_FEATURES, N_SIGNALS)
     elif "PC_7" in model_architecture:
         model = CryptoSoothsayer_PC_7(N_FEATURES, N_SIGNALS)
+    else:
+        model = None
 
     set_pretrained_model(model)
 

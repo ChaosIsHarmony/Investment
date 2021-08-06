@@ -25,10 +25,10 @@ def parse_reports(coin: str, model_architecture: str) -> List[dict]:
     while len(reports) > 10:
         model = {}
         model["model_num"] =  int(extract_datum(reports, "MODEL:", '\n'))
-        model["architecture"] = extract_datum(reports, "PARAMETERS:", '\n')
+        model["architecture"] = extract_datum(reports, "PARAMETERS:", 'e')
         model["eta"] = float(extract_datum(reports, "eta:", '|'))
         model["decay"] = float(extract_datum(reports, "decay:", '|'))
-        model["dropout"] = float(extract_datum(reports, "dropout:", '|'))
+        model["dropout"] = float(extract_datum(reports, "dropout:", '\n'))
         model["accuracy"] = float(extract_datum(reports, "Decision:", '\n'))
         model["inaccuracy"] = float(extract_datum(reports, "Opposite:", '\n'))
 
@@ -44,8 +44,8 @@ def parse_reports(coin: str, model_architecture: str) -> List[dict]:
 
 
 
-def list_promising_model_details(model_architecture: str) -> None:
-    models = parse_reports(model_architecture)
+def list_promising_model_details(coin: str, model_architecture: str) -> None:
+    models = parse_reports(coin, model_architecture)
 
     count = 0
     for model in models:
@@ -75,3 +75,8 @@ def get_model_params(coin: str, filename: str) -> dict:
                 return model
     except:
         return None
+
+
+
+if __name__ == "__main__":
+    list_promising_model_details("all", "Pi_3")

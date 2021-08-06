@@ -5,7 +5,7 @@ import numpy as np
 import joblib
 import concurrent.futures as cf
 from datetime import date, timedelta
-from typing import List
+from typing import List, Tuple
 
 
 DECISIONS = ["BUY", "HODL", "SELL"]
@@ -309,7 +309,7 @@ def get_signal_strength(data: pd.DataFrame, raw_data: pd.DataFrame) -> Tuple[flo
 
 
 
-def generate_signals(full_report: bool =False) -> List[str]:
+def generate_signals(full_report: bool = False) -> List[str]:
     report = []
     best_models = []
     for coin in common.coins:

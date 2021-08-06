@@ -181,27 +181,33 @@ def get_signal_value(percent_delta: float) -> int:
 
 def get_weighting_constant(n: int = 28) -> float:
     '''
-    Calculates weighting constant required for the given period so that all weights add to 1.
+    Calculates weighting constant required for the given period such that:
+
+        The sum from j=1 to j=n of (weight_constant * j) = 1
+
+            e.g., when n = 2, then
+            (wc * 1) + (wc * 2) = 1 and, thus wc = 1/3
+
     NOTE: simplified from (100 / ((n * (n+1)) / 2)) / 100, where the numerator provides a constant that when multiplied by unit increments, the addition of all terms from 1 -> n will add to 1.
     '''
     return 2 / (n*(n+1))
 
 
 
-def calculate_signals(data: pd.DataFrame, limit: int = 28, verbose: bool = False) -> pd.DataFrame:
+def calculate_signals(data: pd.DataFrame, interval: int = 28, verbose: bool = False) -> pd.DataFrame:
     '''
     Calculates the signal on a scale from 0-3 (BUY, HODL, & SELL) based on weighted average of the price future (days_out) price movement deltas.
     If percentage increase exceeds given threshold, then SELL; if decrease then BUY.
     If percentage increase/decrease does not exceed minimum thresholds, then HODL.
-    NOTE: Weights days in the more distant future more heavily.
+    NOTE: The calculation weights days in the more distant future more heavily, as they are closer to what the actual value will be at the end of the specified time interval.
     '''
     signals = []
-    weighting_constant = get_weighting_constant(limit)
-    for ind in range(len(data) - limit):
+    weighting_constant = get_weighting_constant(interval)
+    for ind in range(len(data) - interval):
         current_price = data["price"][ind]
         price_delta_avg = 0.0
 
-        for days_from_now in range(1, limit+1):
+        for days_from_now in range(1, interval+1):
             later_price = data["price"][ind+days_from_now]
             percent_delta = (later_price - current_price) / current_price
             price_delta_avg += percent_delta * weighting_constant * days_from_now

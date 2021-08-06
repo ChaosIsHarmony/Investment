@@ -564,10 +564,10 @@ def fully_automated_training_pipeline() -> None:
     #neural_net_architecture = ["Pi_0", "Pi_1", "Pi_2", "Pi_3", "Pi_4", "Pi_5", "Pi_6", "Pi_7"]
     #neural_net_architecture = ["PC_0", "PC_1", "PC_2", "PC_3", "PC_4", "PC_5", "PC_6"]
     #neural_net_architecture = ["Laptop_0", "Laptop_1", "Laptop_2", "Laptop_3", "Laptop_4"]
-    neural_net_architecture = ["Laptop_4"]
+    neural_net_architecture = ["Pi_3"]
 
     for model_architecture in neural_net_architecture:
-        parameter_tuner(model_architecture)
+    #    parameter_tuner(model_architecture)
         continue_training(model_architecture)
         cleanup()
 
