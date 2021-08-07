@@ -40,15 +40,44 @@ def calculate_portfolio_performance(weights: np.array, mean_returns: pd.DataFram
 
 
 
-def print_results(coins: List[str], title: str, performance: Tuple[float, float], weights: np.array) -> None:
-    print()
-    print(title)
-    print(f"Return: {performance[0]*100:.2f}% | Volatility: {performance[1]*100:.2f}%")
+def update_best_portfolios(performance: Tuple[np.array, np.array], weights: np.array, best_performances: List[Tuple[np.array, np.array]], best_weights: List[np.array]) -> Tuple[List[Tuple[np.array, np.array]], List[np.array]]:
+    # Maximize returns
+    if performance[0] > best_performances[MAX_RETURN][0]:
+        best_performances[MAX_RETURN] = performance
+        best_weights[MAX_RETURN] = weights
+    # Minimize risk
+    if performance[1] < best_performances[MIN_VOLATILITY][1]:
+        best_performances[MIN_VOLATILITY] = performance
+        best_weights[MIN_VOLATILITY] = weights
+    # Maximize return for given risk
+    if performance[0] > best_performances[MAX_MIN_RET_VOL][0] and performance[1] <= VOLATILITY_TOLERANCE_THRESHOLD:
+        best_performances[MAX_MIN_RET_VOL] = performance
+        best_weights[MAX_MIN_RET_VOL] = weights
+    # Minimize risk for given return
+    if performance[0] >= RETURN_TOLERANCE_THRESHOLD and performance[1] < best_performances[MIN_MAX_VOL_RET][1]:
+        best_performances[MIN_MAX_VOL_RET] = performance
+        best_weights[MIN_MAX_VOL_RET] = weights
+
+    return best_performances, best_weights
+
+
+
+def print_results(coins: List[str], title: str, performance: Tuple[float, float], weights: np.array) -> str:
     report = ""
+    report += title + '\n'
+    report += f"Return: {performance[0]*100:.2f}% | Volatility: {performance[1]*100:.2f}%" + '\n'
     for i in range(len(coins)):
         report += f"{coins[i]}: {weights[i]*100:.2f}% | "
+    report += "\n\n"
     print(report)
-    print()
+
+    return report
+
+
+
+def save_report(report: str, interval: int, n_simulations: int) -> None:
+    with open(f"reports/optimized_portfolio_{n_simulations}_trials_{interval}_days.txt", 'w') as f:
+        f.write(f"Number of Simulations: {n_simulations} | Interval length: {interval} days\n\n" + report)
 
 
 
@@ -62,35 +91,23 @@ def calculate_optimal_portfolio(coins: List[str], interval: int, n_simulations: 
     covariance_matrix = returns.cov()
 
     # calculate portfolio performance
-    best_performances = [(0,10), (0,10), (0,10), (0,10)] # (return, volatility)
+    best_performances = [(0.0,10.0), (0.0,10.0), (0.0,10.0), (0.0,10.0)] # (return, volatility)
     best_weights = [np.zeros(7), np.zeros(7), np.zeros(7), np.zeros(7)]
     for _ in range(n_simulations):
         # random weights whose sum = 1
         weights = np.random.dirichlet(np.ones(len(coins)), size=1)[0]
         performance = calculate_portfolio_performance(weights, mean_returns, covariance_matrix, interval)
-        # Maximize returns
-        if performance[0] > best_performances[MAX_RETURN][0]:
-            best_performances[MAX_RETURN] = performance
-            best_weights[MAX_RETURN] = weights
-        # Minimize risk
-        if performance[1] < best_performances[MIN_VOLATILITY][1]:
-            best_performances[MIN_VOLATILITY] = performance
-            best_weights[MIN_VOLATILITY] = weights
-        # Maximize return for given risk
-        if performance[0] > best_performances[MAX_MIN_RET_VOL][0] and performance[1] <= VOLATILITY_TOLERANCE_THRESHOLD:
-            best_performances[MAX_MIN_RET_VOL] = performance
-            best_weights[MAX_MIN_RET_VOL] = weights
-        # Minimize risk for given return
-        if performance[0] >= RETURN_TOLERANCE_THRESHOLD and performance[1] < best_performances[MIN_MAX_VOL_RET][1]:
-            best_performances[MIN_MAX_VOL_RET] = performance
-            best_weights[MIN_MAX_VOL_RET] = weights
+        best_performances, best_weights = update_best_portfolios(performance, weights, best_performances, best_weights)
+
+    report = print_results(coins, "Max Return:", best_performances[MAX_RETURN], best_weights[MAX_RETURN])
+    report += print_results(coins, "Min-Risk Given-Return:", best_performances[MIN_MAX_VOL_RET], best_weights[MIN_MAX_VOL_RET])
+    report += print_results(coins, "Max-Return Given-Risk:", best_performances[MAX_MIN_RET_VOL], best_weights[MAX_MIN_RET_VOL])
+    report += print_results(coins, "Min Risk:", best_performances[MIN_VOLATILITY], best_weights[MIN_VOLATILITY])
+
+    save_report(report, interval, n_simulations)
 
 
-    print_results(coins, "Max Return:", best_performances[MAX_RETURN], best_weights[MAX_RETURN])
-    print_results(coins, "Min-Risk Given-Return:", best_performances[MIN_MAX_VOL_RET], best_weights[MIN_MAX_VOL_RET])
-    print_results(coins, "Max-Return Given-Risk:", best_performances[MAX_MIN_RET_VOL], best_weights[MAX_MIN_RET_VOL])
-    print_results(coins, "Min Risk:", best_performances[MIN_VOLATILITY], best_weights[MIN_VOLATILITY])
 
 if __name__ == "__main__":
     coins = ["algorand", "bitcoin", "cardano", "ethereum", "solana"]
-    calculate_optimal_portfolio(coins, 365, 1000000)
+    calculate_optimal_portfolio(coins, 480, 1000000)

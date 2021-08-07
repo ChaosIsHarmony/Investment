@@ -6,11 +6,14 @@ import data_aggregator as dt_agg
 import data_preprocessor as dt_pp
 import data_processor as dt_p
 import dataset_combiner as dt_c
+import dataset_methods as dt_m
+import model_methods as mm
 import risk_adjusted_return_calculator as rarc
 import neural_nets as nn
 import param_trainer_parser as ptp
 import pandas as pd
-from typing import List
+import torch
+from typing import List, Tuple
 
 #
 # ------------- CONSTANTS ------------
@@ -56,6 +59,49 @@ def merge_datasets(coin: str, datasets: List[pd.DataFrame], all_data: bool) -> N
 
 
 
+# DATASET METHODS
+def get_datasets(coin: str, data_aug_factor: int) -> Tuple[List[Tuple[List[float], float]], List[Tuple[List[float], float]], List[Tuple[List[float], float]]]:
+    return dt_m.get_datasets(coin, data_aug_factor)
+
+
+def load_data(coin: str) -> pd.DataFrame:
+    return dt_m.load_data(coin)
+
+
+def check_if_data_is_clean(data: pd.DataFrame) -> None:
+    try:
+        dt_m.check_if_data_is_clean(data)
+    except:
+        raise
+
+
+
+# MODEL METHODS
+def save_model(model: nn.CryptoSoothsayer, filepath: str) -> None:
+    mm.save_model(model, filepath)
+
+
+def load_model(model: nn.CryptoSoothsayer, filepath: str) -> nn.CryptoSoothsayer:
+    return mm.load_model(model, filepath)
+
+
+def load_model_by_params(filepath: str, params: dict) -> nn.CryptoSoothsayer:
+    return mm.load_model_by_params(filepath, params)
+
+
+def evaluate_model(model: nn.CryptoSoothsayer, test_data: Tuple[List[float], float]) -> List[float]:
+    return mm.evaluate_model(model, test_data)
+
+
+def convert_to_tensor(features: List[float], target: float) -> Tuple[torch.tensor, torch.tensor]:
+    return mm.convert_to_tensor(features, target)
+
+
+def print_evaluation_status(model_accuracy: List[float]) -> str:
+    return mm.print_evaluation_status(model_accuracy)
+
+
+
 # NEURAL NETS
 def load_nn_model(filepath: str) -> nn.CryptoSoothsayer:
     return nn.load_model(filepath)
@@ -68,7 +114,6 @@ def set_nn_model_parameters() -> None:
 
 # PARAMATER TRAINER PARSER
 def get_model_params(coin: str, filepath: str) -> dict:
-    print(coin, filepath)
     return ptp.get_model_params(coin, filepath)
 
 
