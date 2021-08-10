@@ -2,15 +2,15 @@
 Houses all the variables and methods shared among files (DRY).
 Houses interface for all sublibraries so that when modifying sublibrary, will not have to modify its method names in all other sub libraries.
 '''
-import data_aggregator as dt_agg
-import data_preprocessor as dt_pp
-import data_processor as dt_p
-import dataset_combiner as dt_c
-import dataset_methods as dt_m
-import model_methods as mm
-import risk_adjusted_return_calculator as rarc
-import neural_nets as nn
-import param_trainer_parser as ptp
+from . import data_aggregator as dt_agg
+from . import data_preprocessor as dt_pp
+from . import data_processor as dt_p
+from . import dataset_combiner as dt_c
+from . import dataset_methods as dt_m
+from . import model_methods as mm
+from . import risk_adjusted_return_calculator as rarc
+from . import neural_nets as nn
+from . import param_trainer_parser as ptp
 import pandas as pd
 import torch
 from typing import List, Tuple
@@ -18,7 +18,7 @@ from typing import List, Tuple
 #
 # ------------- CONSTANTS ------------
 #
-SIGNAL_FOR_N_DAYS_FROM_NOW = 7 * 5 # 7 * n weeks 
+SIGNAL_FOR_N_DAYS_FROM_NOW = 7 * 5 # 7 * n weeks
 PROMISING_ACCURACY_THRESHOLD = 0.655
 OUTSTANDING_ACCURACY_THRESHOLD = 0.76
 INACCURACY_THRESHOLD = 0.05

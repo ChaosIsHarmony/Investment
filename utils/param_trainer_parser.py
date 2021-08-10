@@ -1,7 +1,7 @@
 '''
 Parses the Parameter_Tuning_Reports.txt file so that it can automatically set the parameters in the continue_training method of the data_processor file.
 '''
-import common
+from . import common
 from typing import List
 
 
@@ -32,7 +32,7 @@ def parse_reports(coin: str, model_architecture: str) -> List[dict]:
         model["accuracy"] = float(extract_datum(reports, "Decision:", '\n'))
         model["inaccuracy"] = float(extract_datum(reports, "Opposite:", '\n'))
 
-        # Add model if meets accuracy threshhold 
+        # Add model if meets accuracy threshhold
         if model["accuracy"] > common.PROMISING_ACCURACY_THRESHOLD and model["inaccuracy"] < common.INACCURACY_THRESHOLD:
             models.append(model)
 

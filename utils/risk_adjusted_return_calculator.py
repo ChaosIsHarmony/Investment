@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-import common
+from . import common
 import datetime
 from typing import List, Tuple
 

@@ -1,6 +1,6 @@
 import torch
-import neural_nets as nn
-import common
+from . import neural_nets as nn
+from . import common
 from typing import List, Tuple
 
 

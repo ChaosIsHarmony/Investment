@@ -1,5 +1,5 @@
 import pandas as pd
-import common
+from . import common
 from typing import Dict, List, Tuple
 
 def handle_missing_data(data: pd.DataFrame, start_date: str, end_date: str) -> pd.DataFrame:
@@ -240,7 +240,7 @@ def process_data(coin: str, data: pd.DataFrame, start_date: str, end_date: str, 
     data = handle_missing_data(data, start_date, end_date)
     if verbose:
         print(f"Missing data handling complete for {coin}.")
-    # Calculate SMAs 
+    # Calculate SMAs
     data = calculate_SMAs(data)
     if verbose:
         print(f"SMA calculation complete for {coin}.")

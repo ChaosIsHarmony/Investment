@@ -12,8 +12,8 @@ from datetime import date, datetime, timedelta
 import time
 import pandas as pd
 import numpy as np
-import common
 from typing import List
+from . import common
 
 
 def get_fear_greed() -> dict:

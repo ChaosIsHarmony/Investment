@@ -1,7 +1,7 @@
 import os
 import glob
 import pandas as pd
-import common
+from . import common
 import time
 from typing import List, Tuple
 
@@ -80,7 +80,7 @@ def benchmark_models(model_coin: str, test_coin: str) -> None:
     # load data
     data, valid_data, test_data = prepare_datasets(test_coin)
 
-    # create list of best models 
+    # create list of best models
     best_models = []
     with open(f"reports/{model_coin}_best_performers_all.txt", 'r') as f:
         best_models = f.read().splitlines()

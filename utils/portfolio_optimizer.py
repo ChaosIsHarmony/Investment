@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np, numpy.random
-import common
+from . import common
 from typing import List, Tuple
 
 

@@ -8,13 +8,9 @@ import torch
 from datetime import datetime
 import time
 import numpy as np
-import common
 from typing import List, Tuple
-import neural_nets as nn
-'''
-WHEN testing need these versions instead
-'''
-#from utils import neural_nets as nn
+from . import neural_nets as nn
+from . import common
 
 REPORTS = []
 

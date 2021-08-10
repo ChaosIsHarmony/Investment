@@ -1,5 +1,5 @@
 import torch
-import common
+from . import common
 import pandas as pd
 import numpy as np
 import joblib
@@ -339,7 +339,7 @@ def generate_signals(full_report: bool = False) -> List[str]:
 
         n_votes = [0, 0, 0] # buy x, hodl, sell y
         n_weights = [0, 0, 0]
-        best_model_signal = 3 # set out of bounds to begin with 
+        best_model_signal = 3 # set out of bounds to begin with
 
         # get the best performing models
         models = get_models(best_models)

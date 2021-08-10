@@ -1,5 +1,5 @@
 import pandas as pd
-import common
+from . import common
 
 
 def remove_greater_than_one_artifacts(data_type: str) -> None:
