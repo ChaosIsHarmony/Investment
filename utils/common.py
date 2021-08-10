@@ -24,7 +24,7 @@ OUTSTANDING_ACCURACY_THRESHOLD = 0.76
 INACCURACY_THRESHOLD = 0.05
 
 coins = ["algorand", "bitcoin", "cardano", "chainlink", "ethereum", "polkadot", "solana"]
-possible_coins = ["harmony", "matic-network", "quant-network", "theta-token", "zilliqa"]
+possible_coins = ["matic-network", "theta-token", "zilliqa"]
 
 #
 # ------------- INTERFACES ------------
@@ -60,6 +60,10 @@ def merge_datasets(coin: str, datasets: List[pd.DataFrame], all_data: bool) -> N
 
 
 # DATASET METHODS
+def shuffle_data(data: List[Tuple[List[float],float]]) -> List[Tuple[List[float], float]]:
+    return dt_m.shuffle_data(data)
+
+
 def get_datasets(coin: str, data_aug_factor: int) -> Tuple[List[Tuple[List[float], float]], List[Tuple[List[float], float]], List[Tuple[List[float], float]]]:
     return dt_m.get_datasets(coin, data_aug_factor)
 
@@ -99,6 +103,10 @@ def convert_to_tensor(features: List[float], target: float) -> Tuple[torch.tenso
 
 def print_evaluation_status(model_accuracy: List[float]) -> str:
     return mm.print_evaluation_status(model_accuracy)
+
+
+def validate_model(model: nn.CryptoSoothsayer, valid_data: List[Tuple[List[float], float]], lowest_valid_loss: float, filepath: str) -> Tuple[float, float]:
+    return mm.validate_model(model, valid_data, lowest_valid_loss, filepath)
 
 
 

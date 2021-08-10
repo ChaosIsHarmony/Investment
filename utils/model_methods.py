@@ -81,6 +81,30 @@ def evaluate_model(model: nn.CryptoSoothsayer, test_data: Tuple[List[float], flo
 
 
 
+def validate_model(model: nn.CryptoSoothsayer, valid_data: Tuple[List[float], float], lowest_valid_loss: float, filepath: str) -> Tuple[float, float]:
+    '''
+    Validates the model on the validation dataset.
+    Saves model if validation loss is lower than the current lowest.
+    Returns the average validation loss and lowest validation loss.
+    '''
+    # set to evaluate mode to turn off components like dropout
+    model.eval()
+    valid_loss = 0.0
+    for features, target in valid_data:
+        # make data pytorch compatible
+        feature_tensor, target_tensor = common.convert_to_tensor(features, target)
+        # model makes prediction
+        with torch.no_grad():
+            model_output = model(feature_tensor)
+            loss = nn.get_criterion()(model_output, target_tensor)
+            valid_loss += loss.item()
+
+    avg_valid_loss = valid_loss/len(valid_data)
+
+    return avg_valid_loss, lowest_valid_loss
+
+
+
 def convert_to_tensor(features: List[float], target: float) -> Tuple[torch.tensor, torch.tensor]:
     '''
     Converts the feature vector and target into pytorch-compatible tensors.

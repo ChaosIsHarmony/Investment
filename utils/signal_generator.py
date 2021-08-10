@@ -396,11 +396,17 @@ def generate_signals(full_report: bool = False) -> List[str]:
 
 
 
-def generate_report(report: List[str]) -> None:
-    with open(f"reports/daily/Daily_Report_{str(date.today())}.txt", "w") as f:
-        # starting from index 1 to avoid first triple space divider
-        for row in report[1:]:
-            f.write(row + "\n")
+def generate_report(report: List[str], full_report: bool = False) -> None:
+    if full_report:
+        with open(f"reports/daily/Daily_Report_{str(date.today())}_full.txt", "w") as f:
+            # starting from index 1 to avoid first triple space divider
+            for row in report[1:]:
+                f.write(row + "\n")
+    else:
+        with open(f"reports/daily/Daily_Report_{str(date.today())}.txt", "w") as f:
+            # starting from index 1 to avoid first triple space divider
+            for row in report[1:]:
+                f.write(row + "\n")
 
 
 
@@ -418,10 +424,11 @@ def main() -> None:
     full_report = input("Full report? [y/n; y gives all the gory details] ")
     if (full_report.lower())[0] == 'y':
         report = generate_signals(True)
+        generate_report(report, True)
     else:
         report = generate_signals()
+        generate_report(report)
 
-    generate_report(report)
 
 
 
