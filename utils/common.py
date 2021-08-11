@@ -2,15 +2,14 @@
 Houses all the variables and methods shared among files (DRY).
 Houses interface for all sublibraries so that when modifying sublibrary, will not have to modify its method names in all other sub libraries.
 '''
-from . import data_aggregator as dt_agg
-from . import data_preprocessor as dt_pp
-from . import data_processor as dt_p
-from . import dataset_combiner as dt_c
-from . import dataset_methods as dt_m
-from . import model_methods as mm
+from .model_generation_engine import data_aggregator as dt_agg
+from .model_generation_engine import data_preprocessor as dt_pp
+from .model_generation_engine import data_processor as dt_p
+from .model_generation_engine import dataset_methods as dt_m
+from .model_generation_engine import model_methods as mm
+from .model_generation_engine import neural_nets as nn
+from .model_generation_engine import param_trainer_parser as ptp
 from . import risk_adjusted_return_calculator as rarc
-from . import neural_nets as nn
-from . import param_trainer_parser as ptp
 import pandas as pd
 import torch
 from typing import List, Tuple
@@ -49,7 +48,7 @@ def handle_missing_data(data: pd.DataFrame, start_date: str, end_date: str) -> p
 
 
 
-# DATASET COMBINER
+# DATASET METHODS
 def merge_newly_aggregated_data(coin: str, by_range: bool = True) -> str:
     return dt_c.merge_new_dataset_with_old(coin, by_range)
 
@@ -58,8 +57,6 @@ def merge_datasets(coin: str, datasets: List[pd.DataFrame], all_data: bool) -> N
     dt_c.merge_datasets(coin, datasets, all_data)
 
 
-
-# DATASET METHODS
 def shuffle_data(data: List[Tuple[List[float],float]]) -> List[Tuple[List[float], float]]:
     return dt_m.shuffle_data(data)
 
@@ -78,6 +75,9 @@ def check_if_data_is_clean(data: pd.DataFrame) -> None:
     except:
         raise
 
+
+def prepare_model_pruning_datasets(coin: str) -> Tuple[List[Tuple[List[float], float]], List[Tuple[List[float], float]], List[Tuple[List[float], float]]]:
+    return dt_m.prepare_model_pruning_datasets(coin)
 
 
 # MODEL METHODS
@@ -107,6 +107,10 @@ def print_evaluation_status(model_accuracy: List[float]) -> str:
 
 def validate_model(model: nn.CryptoSoothsayer, valid_data: List[Tuple[List[float], float]], lowest_valid_loss: float, filepath: str) -> Tuple[float, float]:
     return mm.validate_model(model, valid_data, lowest_valid_loss, filepath)
+
+
+def prune_models_by_accuracy(coin: str) -> None:
+    mm.prune_models_by_accuracy(coin)
 
 
 

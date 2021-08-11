@@ -1,16 +1,17 @@
 '''
 This file is used to train neural nets.
+RUN: $ python3 -m utils.model_generation_engine.data_processor
 '''
 import os
 import glob
 import pandas as pd
 import torch
-from datetime import datetime
 import time
 import numpy as np
+from datetime import datetime
 from typing import List, Tuple
 from . import neural_nets as nn
-from . import common
+from .. import common
 
 REPORTS = []
 
@@ -101,6 +102,21 @@ def print_batch_status(avg_train_loss: float, avg_valid_loss:float, start_time: 
 
 
 
+def make_and_save_list_of_best_performers(coin: str, directory: str) -> None:
+    # try removing previous version
+    try:
+        os.remove(f"reports/{coin}_best_performers.txt")
+    except OSError:
+        # file does not exist
+        pass
+
+    models = glob.glob(f"models/{directory}/{coin}*")
+
+    with open(f"reports/{coin}_best_performers.txt", 'w') as f:
+        for model in models:
+            f.write(model + '\n')
+
+
 #
 # ----------- TRAINING FUNCTIONS ----------
 #
@@ -116,6 +132,7 @@ def take_one_step(model: nn.CryptoSoothsayer, features: List[float], target: flo
     # Forward
     model_output = model(feature_tensor)
     loss = nn.get_criterion()(model_output, target_tensor)
+    # TODO: try only optimizing in the validation step so that it is minibatch optimization
     # Backward
     nn.get_optimizer().zero_grad()
     loss.backward()
@@ -384,27 +401,31 @@ def fully_automated_training_pipeline() -> None:
     '''
     Pipeline involves three steps:
 
-        1.) Parameter tune: 	find the most promising learning rates, decay rates, and dropout rates for the given architecture
-        2.) Continue training:	take all the promising models found in the first step and give them more time to train
-        3.) Cleanup:			delete all extraneous files created in the first two phases
+        1.) Parameter tune:     find the most promising learning rates, decay rates, and dropout rates for the given architecture
+        2.) Continue training:  take all the promising models found in the first step and give them more time to train
+        3.) Cleanup:            delete all extraneous files created in the first two phases
     '''
     #neural_net_architecture = ["Pi_0", "Pi_1", "Pi_2", "Pi_3", "Pi_4", "Pi_5", "Pi_6", "Pi_7"]
     #neural_net_architecture = ["PC_0", "PC_1", "PC_2", "PC_3", "PC_4", "PC_5", "PC_6"]
     #neural_net_architecture = ["Laptop_0", "Laptop_1", "Laptop_2", "Laptop_3", "Laptop_4"]
-    neural_net_architecture = ["Pi_4"]
+    neural_net_architecture = ["Pi_5"]
 
     coin = "all"
+    directory = "aggregate"
 
     for model_architecture in neural_net_architecture:
         parameter_tuner(coin, model_architecture)
         continue_training(coin, model_architecture)
-        cleanup(coin, "aggregate")
+        cleanup(coin, directory)
+        common.prune_models_by_accuracy(coin)
+        make_and_save_list_of_best_performers(coin, directory)
 
 
 
 
 if __name__ == "__main__":
     try:
+        pass
         fully_automated_training_pipeline()
         #transfer_learner("algorand")
     finally:

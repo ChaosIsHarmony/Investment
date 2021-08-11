@@ -1,7 +1,7 @@
 '''
 Parses the Parameter_Tuning_Reports.txt file so that it can automatically set the parameters in the continue_training method of the data_processor file.
 '''
-from . import common
+from .. import common
 from typing import List
 
 
