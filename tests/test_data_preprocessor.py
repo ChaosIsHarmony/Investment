@@ -237,14 +237,23 @@ def test_calculate_fear_greed_SMAs():
 
 
 
+def test_get_signal_value():
+    signalDefault = dpp.get_signal_value(0)
+    signalSell = dpp.get_signal_value(-0.176)
+    signalBuy = dpp.get_signal_value(0.151)
+
+    assert signalDefault == 1, "Failed the get_signal_value test for the default hodl value."
+    assert signalSell == 2, "Failed the get_signal_value test for the sell value."
+    assert signalBuy == 0, "Failed the get_signal_value test for the buy value."
+
+
+
 def test_get_weighting_constant():
-        w_const = dpp.get_weighting_constant(4)
+        w_const1 = dpp.get_weighting_constant(4)
+        w_const2 = dpp.get_weighting_constant(7)
 
-        assert 0.099 < w_const < 0.11, f"WRONG VALUE: 0.099 < {w_const} < 0.11 | Failed get_weighting_constant test."
-
-        w_const = dpp.get_weighting_constant(7)
-
-        assert 0.0356 < w_const < 0.0358, f"WRONG VALUE: 0.0356 < {w_const} 0.0358 | Failed get_weighting_constant test."
+        assert 0.099 < w_const1 < 0.11, f"WRONG VALUE: 0.099 < {w_const1} < 0.11 | Failed get_weighting_constant test."
+        assert 0.0356 < w_const2 < 0.0358, f"WRONG VALUE: 0.0356 < {w_const2} 0.0358 | Failed get_weighting_constant test."
 
 
 
@@ -293,6 +302,8 @@ def run_data_preprocessor_tests():
         print("test_calculate_price_SMAs() tests all passed.")
         test_calculate_fear_greed_SMAs()
         print("test_calculate_fear_greed_SMAs() tests all passed.")
+        test_get_signal_value()
+        print("test_get_signal_value() tests all passed.")
         test_get_weighting_constant()
         print("test_get_weighting_constant() tests all passed.")
         test_calculate_signals()

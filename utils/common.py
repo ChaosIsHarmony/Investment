@@ -40,7 +40,7 @@ def aggregate_new_data(coin: str, n_days: int) -> str:
 
 # DATA PREPROCESSOR
 def clean_coin_data(coin: str, data: pd.DataFrame, start_date: str, end_date: str) -> pd.DataFrame:
-    return dt_pp.process_data(coin, data, start_date, end_date)
+    return dt_pp.clean_data(coin, data, start_date, end_date)
 
 
 def handle_missing_data(data: pd.DataFrame, start_date: str, end_date: str) -> pd.DataFrame:
@@ -50,11 +50,11 @@ def handle_missing_data(data: pd.DataFrame, start_date: str, end_date: str) -> p
 
 # DATASET METHODS
 def merge_newly_aggregated_data(coin: str, by_range: bool = True) -> str:
-    return dt_c.merge_new_dataset_with_old(coin, by_range)
+    return dt_m.merge_new_dataset_with_old(coin, by_range)
 
 
 def merge_datasets(coin: str, datasets: List[pd.DataFrame], all_data: bool) -> None:
-    dt_c.merge_datasets(coin, datasets, all_data)
+    dt_m.merge_datasets(coin, datasets, all_data)
 
 
 def shuffle_data(data: List[Tuple[List[float],float]]) -> List[Tuple[List[float], float]]:

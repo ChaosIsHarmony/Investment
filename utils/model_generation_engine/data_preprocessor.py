@@ -227,9 +227,9 @@ def calculate_signals(data: pd.DataFrame, interval: int = 28, verbose: bool = Fa
 
 
 
-def process_data(coin: str, data: pd.DataFrame, start_date: str, end_date: str, verbose=False) -> pd.DataFrame:
+def clean_data(coin: str, data: pd.DataFrame, start_date: str, end_date: str, verbose=False) -> pd.DataFrame:
     '''
-    Processes the basic data provided by coingecko in the following ways:
+    Preprocesses the basic data provided by coingecko in the following ways:
 
         - Fills in missing values
         - Calculates Simple Moving Averages for a variety of intervals
@@ -273,5 +273,5 @@ if __name__ == "__main__":
     for coin in coins:
         print(coin)
         data = pd.read_csv(f"datasets/raw/{coin}_historical_data_raw.csv")
-        data = process_data(coin, data, start_date, end_date, verbose=True)
+        data = clean_data(coin, data, start_date, end_date, verbose=True)
         data.to_csv(f"datasets/clean/{coin}_historical_data_clean.csv", index=False, float_format="%f")

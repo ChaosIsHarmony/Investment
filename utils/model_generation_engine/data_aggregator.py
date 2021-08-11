@@ -17,6 +17,9 @@ from .. import common
 
 
 
+#
+# ---------- API CALLS ----------
+#
 def fetch_and_save_sentiment() -> None:
     '''
     Fetches all historical fear & greed indices.
@@ -28,7 +31,7 @@ def fetch_and_save_sentiment() -> None:
 
 
 
-def get_fear_greed() -> dict:
+def get_fear_greed() -> int:
     '''
     Pulls the data for the fear and greed index at the time it's called.
     Returns an int.
@@ -38,6 +41,9 @@ def get_fear_greed() -> dict:
 
 
 def get_fear_greed_by_range(n_days: int) -> dict:
+    '''
+    Pulls the data for the fear and greed index for a given interval, i.e., since n_days ago
+    '''
     return requests.get(f"https://api.alternative.me/fng/?limit={n_days}&date_format=cn").json()["data"]
 
 
@@ -51,6 +57,9 @@ def get_historic_data(coin: str, date: str) -> dict:
 
 
 
+#
+# ---------- HELPER METHODS ----------
+#
 def get_correct_date_format(date: str) -> str:
     '''
     Puts the Python datetime into a formatted string the coingecko api finds more copacetic i.e., dd-mm-yyyy.
@@ -70,23 +79,6 @@ def get_correct_date_format(date: str) -> str:
     well_formed_date += str(date.year)
 
     return well_formed_date
-
-
-
-def get_generic_score(data: dict) -> float:
-    '''
-    Extracts score for given field from data.
-    '''
-    score = 0
-
-    for key in data.keys():
-        if data[key]:
-            try:
-                score += float(data[key])
-            except Exception:
-                print("Bad value when extracting score.")
-
-    return score
 
 
 
@@ -120,6 +112,9 @@ def get_time() -> int:
 
 
 
+#
+# --------- CONTROLLER METHODS ---------
+#
 def fetch_missing_data_by_dates(coin: str, dates: List[str], verbose: bool = False) -> pd.DataFrame:
     '''
     WARNING: Cannot automatically fetch Fear/Greed index <- This is partially alleviated by the data_preprocessors handle_missing_data method.
