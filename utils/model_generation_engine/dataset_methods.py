@@ -2,11 +2,26 @@ import os
 import pandas as pd
 import random
 import time
+import torch
+from . import neural_nets as nn
 from typing import List, Tuple
 
 #
 # ---------- HELPER METHODS ----------
 #
+def convert_to_tensor(model: nn.CryptoSoothsayer, features: List[float], target: float) -> Tuple[torch.tensor, torch.tensor]:
+    '''
+    Converts the feature vector and target into pytorch-compatible tensors.
+    '''
+    feature_tensor = torch.tensor([features], dtype=torch.float32)
+    feature_tensor = feature_tensor.to(model.get_device())
+    target_tensor = torch.tensor([target], dtype=torch.int64)
+    target_tensor = target_tensor.to(model.get_device())
+
+    return feature_tensor, target_tensor
+
+
+
 def shuffle_data(data: List[Tuple[List[float], float]]) -> List[Tuple[List[float], float]]:
     '''
     Used for shuffling the data during the training/validation phases.

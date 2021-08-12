@@ -8,7 +8,6 @@ from .model_generation_engine import data_processor as dt_p
 from .model_generation_engine import dataset_methods as dt_m
 from .model_generation_engine import model_methods as mm
 from .model_generation_engine import neural_nets as nn
-from .model_generation_engine import param_trainer_parser as ptp
 from . import risk_adjusted_return_calculator as rarc
 import pandas as pd
 import torch
@@ -80,6 +79,11 @@ def prepare_model_pruning_datasets(coin: str) -> Tuple[List[Tuple[List[float], f
     return dt_m.prepare_model_pruning_datasets(coin)
 
 
+def convert_to_tensor(model: nn.CryptoSoothsayer, features: List[float], target: float) -> Tuple[torch.tensor, torch.tensor]:
+    return dt_m.convert_to_tensor(model, features, target)
+
+
+
 # MODEL METHODS
 def save_model(model: nn.CryptoSoothsayer, filepath: str) -> None:
     mm.save_model(model, filepath)
@@ -93,12 +97,12 @@ def load_model_by_params(filepath: str, params: dict) -> nn.CryptoSoothsayer:
     return mm.load_model_by_params(filepath, params)
 
 
+def load_pretrained_model(filepath: str) -> nn.CryptoSoothsayer:
+    return mm.load_pretrained_model(filepath)
+
+
 def evaluate_model(model: nn.CryptoSoothsayer, test_data: Tuple[List[float], float]) -> List[float]:
     return mm.evaluate_model(model, test_data)
-
-
-def convert_to_tensor(features: List[float], target: float) -> Tuple[torch.tensor, torch.tensor]:
-    return mm.convert_to_tensor(features, target)
 
 
 def print_evaluation_status(model_accuracy: List[float]) -> str:
@@ -113,24 +117,18 @@ def prune_models_by_accuracy(coin: str) -> None:
     mm.prune_models_by_accuracy(coin)
 
 
-
-# NEURAL NETS
-def load_nn_model(filepath: str) -> nn.CryptoSoothsayer:
-    return nn.load_model(filepath)
-
-
-def set_nn_model_parameters() -> None:
-    nn.set_model_parameters()
-
-
-
-# PARAMATER TRAINER PARSER
 def get_model_params(coin: str, filepath: str) -> dict:
-    return ptp.get_model_params(coin, filepath)
+    return mm.get_model_params(coin, filepath)
 
 
 def parse_training_reports(coin: str, model_architecture: str) -> List[dict]:
-    return ptp.parse_reports(coin, model_architecture)
+    return mm.parse_reports(coin, model_architecture)
+
+
+
+# NEURAL NETS
+def create_nn_model(hidden_layer_size: int, dropout: float, eta: float, eta_decay: float) -> nn.CryptoSoothsayer:
+    return nn.create_model(hidden_layer_size, dropout, eta, eta_decay)
 
 
 

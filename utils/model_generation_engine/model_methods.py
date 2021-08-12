@@ -6,7 +6,86 @@ from .. import common
 from typing import List, Tuple
 
 
+#
+# ---------- PARSE PARAMS FROM FILE ----------
+#
+def extract_datum(reports: str, key: str, terminator: str) -> str:
+    start_ind = reports.find(key) + len(key)
+    end_ind = reports.find(terminator, start_ind)
 
+    return reports[start_ind : end_ind].strip()
+
+
+
+def parse_reports(coin: str, model_architecture: str) -> List[dict]:
+    try:
+        with open(f"reports/{coin}_Parameter_Tuning_Report_{model_architecture}.txt", 'r') as f:
+            reports = f.read()
+    except:
+        print(f"reports/{coin}_Parameter_Tuning_Report_{model_architecture}.txt not found.")
+        raise
+
+    models = []
+    while len(reports) > 10:
+        model = {}
+        model["model_num"] =  int(extract_datum(reports, "MODEL:", '\n'))
+        #  model["architecture"] = int(extract_datum(reports, "PARAMETERS:\n\tHidden_", 'e'))
+        model["architecture"] = extract_datum(reports, "PARAMETERS:", 'e')
+        model["eta"] = float(extract_datum(reports, "eta:", '|'))
+        model["eta_decay"] = float(extract_datum(reports, "decay:", '|'))
+        model["dropout"] = float(extract_datum(reports, "dropout:", '\n'))
+        model["accuracy"] = float(extract_datum(reports, "Decision:", '\n'))
+        model["inaccuracy"] = float(extract_datum(reports, "Opposite:", '\n'))
+
+        # Add model if meets accuracy threshhold
+        if model["accuracy"] > common.PROMISING_ACCURACY_THRESHOLD and model["inaccuracy"] < common.INACCURACY_THRESHOLD:
+            models.append(model)
+
+        # delete up until next model
+        start_ind = reports.find("MODEL", reports.find("Opposite"))
+        reports = reports[start_ind:]
+
+    return models
+
+
+
+def list_promising_model_details(coin: str, model_architecture: str) -> None:
+    models = parse_reports(coin, model_architecture)
+
+    count = 0
+    for model in models:
+        count += 1
+        print(f"Model num: {model['model_num']}")
+        print(f"Model acc: {model['accuracy']}")
+        print(f"Model bad: {model['inaccuracy']}")
+        print()
+
+        print(f"{count} promising models found.")
+
+
+
+def get_model_params(coin: str, filename: str) -> dict:
+    start_ind = filename.find('_') + 1
+    end_ind = filename.find('_', start_ind) + 2
+    model_architecture = filename[start_ind:end_ind]
+
+    start_ind = filename.find('_', end_ind) + 1
+    end_ind = filename.find('_', start_ind)
+    model_num = filename[start_ind:end_ind]
+
+    try:
+        models = parse_reports(coin, model_architecture)
+        for model in models:
+            if model["model_num"] == int(model_num):
+                return model
+    except:
+        return None
+
+
+
+#
+# ---------- SAVE/LOAD MODELS ----------
+#
 def save_model(model: nn.CryptoSoothsayer, filepath: str) -> None:
     torch.save(model.state_dict(), filepath)
 
@@ -21,15 +100,63 @@ def load_model(model_to_load: nn.CryptoSoothsayer, filepath: str) -> nn.CryptoSo
 
 
 def load_model_by_params(filepath: str, params: dict) -> nn.CryptoSoothsayer:
-    nn.set_model_parameters(dropout = params["dropout"], eta = params["eta"], eta_decay = params["decay"])
-    nn.set_model(params["architecture"])
-    nn.set_pretrained_model(load_model(nn.get_model(), filepath))
-    nn.set_model_props(nn.get_model())
-
-    return nn.get_model()
+    return nn.create_model(hidden_layer_size = params["architecture"], dropout = params["dropout"], eta = params["eta"], eta_decay = params["eta_decay"])
 
 
+# Legacy method; will delete well all models are trained using new specification
+def load_pretrained_model(filepath: str) -> nn.CryptoSoothsayer:
+    start_ind = filepath.find('_') + 1
+    end_ind = filepath.find('_', start_ind) + 2
+    model_architecture = filepath[start_ind:end_ind]
 
+    if "Laptop_0" in model_architecture:
+        model = nn.CryptoSoothsayer(model_architecture, nn.N_FEATURES, 20, nn.N_SIGNALS, 0, 1, 1)
+    elif "Laptop_1" in model_architecture:
+        model = nn.CryptoSoothsayer(model_architecture, nn.N_FEATURES, 21, nn.N_SIGNALS, 0, 1, 1)
+    elif "Laptop_2" in model_architecture:
+        model = nn.CryptoSoothsayer(model_architecture, nn.N_FEATURES, 22, nn.N_SIGNALS, 0, 1, 1)
+    elif "Laptop_3" in model_architecture:
+        model = nn.CryptoSoothsayer(model_architecture, nn.N_FEATURES, 23, nn.N_SIGNALS, 0, 1, 1)
+    elif "Pi_0" in model_architecture:
+        model = nn.CryptoSoothsayer(model_architecture, nn.N_FEATURES, 5, nn.N_SIGNALS, 0, 1, 1)
+    elif "Pi_1" in model_architecture:
+        model = nn.CryptoSoothsayer(model_architecture, nn.N_FEATURES, 6, nn.N_SIGNALS, 0, 1, 1)
+    elif "Pi_2" in model_architecture:
+        model = nn.CryptoSoothsayer(model_architecture, nn.N_FEATURES, 7, nn.N_SIGNALS, 0, 1, 1)
+    elif "Pi_3" in model_architecture:
+        model = nn.CryptoSoothsayer(model_architecture, nn.N_FEATURES, 8, nn.N_SIGNALS, 0, 1, 1)
+    elif "Pi_4" in model_architecture:
+        model = nn.CryptoSoothsayer(model_architecture, nn.N_FEATURES, 9, nn.N_SIGNALS, 0, 1, 1)
+    elif "Pi_5" in model_architecture:
+        model = nn.CryptoSoothsayer(model_architecture, nn.N_FEATURES, 10, nn.N_SIGNALS, 0, 1, 1)
+    elif "Pi_6" in model_architecture:
+        model = nn.CryptoSoothsayer(model_architecture, nn.N_FEATURES, 11, nn.N_SIGNALS, 0, 1, 1)
+    elif "Pi_7" in model_architecture:
+        model = nn.CryptoSoothsayer(model_architecture, nn.N_FEATURES, 12, nn.N_SIGNALS, 0, 1, 1)
+    elif "PC_0" in model_architecture:
+        model = nn.CryptoSoothsayer(model_architecture, nn.N_FEATURES, 13, nn.N_SIGNALS, 0, 1, 1)
+    elif "PC_1" in model_architecture:
+        model = nn.CryptoSoothsayer(model_architecture, nn.N_FEATURES, 14, nn.N_SIGNALS, 0, 1, 1)
+    elif "PC_2" in model_architecture:
+        model = nn.CryptoSoothsayer(model_architecture, nn.N_FEATURES, 15, nn.N_SIGNALS, 0, 1, 1)
+    elif "PC_3" in model_architecture:
+        model = nn.CryptoSoothsayer(model_architecture, nn.N_FEATURES, 16, nn.N_SIGNALS, 0, 1, 1)
+    elif "PC_4" in model_architecture:
+        model = nn.CryptoSoothsayer(model_architecture, nn.N_FEATURES, 17, nn.N_SIGNALS, 0, 1, 1)
+    elif "PC_5" in model_architecture:
+        model = nn.CryptoSoothsayer(model_architecture, nn.N_FEATURES, 18, nn.N_SIGNALS, 0, 1, 1)
+    elif "PC_6" in model_architecture:
+        model = nn.CryptoSoothsayer(model_architecture, nn.N_FEATURES, 19, nn.N_SIGNALS, 0, 1, 1)
+    elif "PC_7" in model_architecture:
+        model = nn.CryptoSoothsayer(model_architecture, nn.N_FEATURES, 19, nn.N_SIGNALS, 0, 1, 1)
+    else:
+        model = None
+
+    return load_model(model, filepath)
+
+#
+# ---------- EVALUATE/VALIDATE MODELS ----------
+#
 def print_evaluation_status(model_accuracy: List[float]) -> str:
     '''
     Prints summary for model evaluation.
@@ -55,8 +182,8 @@ def evaluate_model(model: nn.CryptoSoothsayer, test_data: Tuple[List[float], flo
     safe_fail = 0
     nasty_fail = 0
     catastrophic_fail = 0
-    for feature, target in test_data:
-        feature_tensor, target_tensor = common.convert_to_tensor(feature, target)
+    for features, target in test_data:
+        feature_tensor, target_tensor = common.convert_to_tensor(model, features, target)
 
         with torch.no_grad():
             output = model(feature_tensor)
@@ -94,11 +221,11 @@ def validate_model(model: nn.CryptoSoothsayer, valid_data: Tuple[List[float], fl
     valid_loss = 0.0
     for features, target in valid_data:
         # make data pytorch compatible
-        feature_tensor, target_tensor = common.convert_to_tensor(features, target)
+        feature_tensor, target_tensor = common.convert_to_tensor(model, features, target)
         # model makes prediction
         with torch.no_grad():
             model_output = model(feature_tensor)
-            loss = nn.get_criterion()(model_output, target_tensor)
+            loss = model.get_criterion()(model_output, target_tensor)
             valid_loss += loss.item()
 
     avg_valid_loss = valid_loss/len(valid_data)
@@ -107,19 +234,9 @@ def validate_model(model: nn.CryptoSoothsayer, valid_data: Tuple[List[float], fl
 
 
 
-def convert_to_tensor(features: List[float], target: float) -> Tuple[torch.tensor, torch.tensor]:
-    '''
-    Converts the feature vector and target into pytorch-compatible tensors.
-    '''
-    feature_tensor = torch.tensor([features], dtype=torch.float32)
-    feature_tensor = feature_tensor.to(nn.get_device())
-    target_tensor = torch.tensor([target], dtype=torch.int64)
-    target_tensor = target_tensor.to(nn.get_device())
-
-    return feature_tensor, target_tensor
-
-
-
+#
+# ---------- CULLING METHOD ----------
+#
 def prune_models_by_accuracy(coin: str) -> None:
     # load data
     data, valid_data, test_data = common.prepare_model_pruning_datasets(coin)
@@ -135,13 +252,13 @@ def prune_models_by_accuracy(coin: str) -> None:
             print(f"{filename} Not Found. Continuing on to other models.")
             continue
 
-        model = common.load_model_by_params(filename, params)
+        model = load_model_by_params(filename, params)
+        model = load_model(model, f"{filename}")
 
         # evaluate
-        model = common.load_model(model, f"{filename}")
-        model_acc_all = common.evaluate_model(model, data)
-        model_acc_valid = common.evaluate_model(model, valid_data)
-        model_acc_test = common.evaluate_model(model, test_data)
+        model_acc_all = evaluate_model(model, data)
+        model_acc_valid = evaluate_model(model, valid_data)
+        model_acc_test = evaluate_model(model, test_data)
 
         if (model_acc_all[0] > 0.55) and (model_acc_valid[0] > 0.45) and (model_acc_test[0] > 0.7):
             print(f"{filename}")
@@ -165,8 +282,9 @@ def prune_models_by_accuracy(coin: str) -> None:
 
 
 
-
-
+#
+# ---------- COMPARISON METHODS ----------
+#
 def benchmark_models(model_coin: str, test_coin: str) -> None:
     '''
     Cross compares model performance on other datasets, e.g., bitcoin models on the ethereum dataset.
@@ -186,13 +304,13 @@ def benchmark_models(model_coin: str, test_coin: str) -> None:
             print(f"{filename} Not Found. Continuing on to other models.")
             continue
 
-        model = common.load_model_by_params(filename, model_params)
+        model = load_model_by_params(filename, model_params)
+        model = load_model(model, f"{filename}")
 
         # evaluate
-        model = common.load_model(model, f"{filename}")
-        model_acc_all = common.evaluate_model(model, data)
-        model_acc_valid = common.evaluate_model(model, valid_data)
-        model_acc_test = common.evaluate_model(model, test_data)
+        model_acc_all = evaluate_model(model, data)
+        model_acc_valid = evaluate_model(model, valid_data)
+        model_acc_test = evaluate_model(model, test_data)
 
         if (model_acc_all[0] > 0.5) and (model_acc_valid[0] > 0.1) and (model_acc_test[0] > 0.4):
             print(f"{filename}")

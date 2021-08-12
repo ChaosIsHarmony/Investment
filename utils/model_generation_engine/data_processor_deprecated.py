@@ -10,8 +10,8 @@ import time
 import numpy as np
 from datetime import datetime
 from typing import List, Tuple
-from .. import common
 from . import neural_nets as nn
+from .. import common
 
 REPORTS = []
 
@@ -88,7 +88,7 @@ def save_report(coin: str, architecture: str) -> None:
 
 
 
-def print_batch_status(model: nn.CryptoSoothsayer, avg_train_loss: float, avg_valid_loss:float, start_time: float) -> None:
+def print_batch_status(avg_train_loss: float, avg_valid_loss:float, start_time: float) -> None:
     '''
     Prints summary for the latest batch to console and appends it to the global REPORTS variable
     '''
@@ -96,7 +96,7 @@ def print_batch_status(model: nn.CryptoSoothsayer, avg_train_loss: float, avg_va
 
     now = datetime.now()
     current_time = now.strftime("%H:%M:%S")
-    report = f"System Time: {current_time} | Time Elapsed: {(time.time() - start_time) / 60:.1f} mins. | Avg. Training Loss: {avg_train_loss:.4f} | Avg. Validation Loss: {avg_valid_loss:.4f} | eta: {model.get_optimizer().state_dict()['param_groups'][0]['lr']:.6f}"
+    report = f"System Time: {current_time} | Time Elapsed: {(time.time() - start_time) / 60:.1f} mins. | Avg. Training Loss: {avg_train_loss:.4f} | Avg. Validation Loss: {avg_valid_loss:.4f} | eta: {nn.OPTIMIZER.state_dict()['param_groups'][0]['lr']:.6f}"
     REPORTS.append(report)
     print(report)
 
@@ -128,16 +128,17 @@ def take_one_step(model: nn.CryptoSoothsayer, features: List[float], target: flo
     # set to train mode here to activate components like dropout
     model.train()
     # make data pytorch compatible
-    feature_tensor, target_tensor = common.convert_to_tensor(model, features, target)
+    feature_tensor, target_tensor = common.convert_to_tensor(features, target)
     # Forward
     model_output = model(feature_tensor)
-    loss = model.get_criterion()(model_output, target_tensor)
+    loss = nn.get_criterion()(model_output, target_tensor)
+    # TODO: try only optimizing in the validation step so that it is minibatch optimization
     # Backward
-    model.get_optimizer().zero_grad()
+    nn.get_optimizer().zero_grad()
     loss.backward()
-    model.get_optimizer().step()
+    nn.get_optimizer().step()
     # adjust learning rate
-    model.get_scheduler().step()
+    nn.get_scheduler().step()
     train_loss = loss.item()
 
     return train_loss
@@ -199,7 +200,7 @@ def fully_train(model: nn.CryptoSoothsayer, data: Tuple[List[float], float], sta
                 total_valid_loss += valid_loss
                 avg_valid_loss = total_valid_loss / (steps / batch_size)
                 avg_train_loss = total_train_loss / steps
-                print_batch_status(model, avg_train_loss, avg_valid_loss, start_time)
+                print_batch_status(avg_train_loss, avg_valid_loss, start_time)
                 prev_valid_losses.append(round(avg_valid_loss, 4))
 
                 if terminate_early(prev_valid_losses):
@@ -221,8 +222,8 @@ def fully_train(model: nn.CryptoSoothsayer, data: Tuple[List[float], float], sta
 #
 # ------------- Find the Most Promising Models -----------------
 #
-def parameter_tuner(coin: str, hidden_layer_size: int) -> None:
-    data_aug_factor = 0
+def parameter_tuner(coin: str, model_architecture: str) -> None:
+    data_aug_factor = 32
     batch_size = 256
     n_epochs = 5
 
@@ -243,34 +244,37 @@ def parameter_tuner(coin: str, hidden_layer_size: int) -> None:
                 print(f"Eta: {eta} | Decay: {decay} | Dropout: {dropout}")
                 report = ""
 
-                model = common.create_nn_model(hidden_layer_size, dropout, eta, decay)
+                nn.set_model_parameters(dropout, eta, decay)
+                nn.set_model(model_architecture)
+                nn.set_model_props(nn.get_model())
+                model = nn.get_model()
 
                 # train model
                 start_time = time.time()
-                final_valid_loss = fully_train(model, (train_data, valid_data), start_time, f"models/{coin}_{model.get_model_name()}_{model_number}_param_tuning.pt", n_epochs=n_epochs)
+                final_valid_loss = fully_train(model, (train_data, valid_data), start_time, f"models/{coin}_{model_architecture}_{model_number}_param_tuning.pt", n_epochs=n_epochs)
 
                 # ------------ MODEL TESTING -----------
                 # evaluate model
                 model_acc = common.evaluate_model(model, test_data)
-                model_acc_report = f"MODEL: {model_number}\nFinal Validation Loss: {final_valid_loss}\nPARAMETERS:\n\t{model.get_model_name()}\n\teta: {model.get_eta()} | decay: {model.get_eta_decay()} | dropout: {model.get_dropout().p}\nDECISIONS:\n\tPerfect Decision: {model_acc[0]}\n\tTold to Hodl, though Should Have Bought/Sold: {model_acc[1]}\n\tSignal Should Have Been Hodl: {model_acc[2]}\n\tSignal and Answer Exact Opposite: {model_acc[3]}"
+                model_acc_report = f"MODEL: {model_number}\nFinal Validation Loss: {final_valid_loss}\nPARAMETERS:\n\t{model_architecture}\n\teta: {nn.LEARNING_RATE} | decay: {nn.LEARNING_RATE_DECAY} | dropout: {nn.DROPOUT}\nDECISIONS:\n\tPerfect Decision: {model_acc[0]}\n\tTold to Hodl, though Should Have Bought/Sold: {model_acc[1]}\n\tSignal Should Have Been Hodl: {model_acc[2]}\n\tSignal and Answer Exact Opposite: {model_acc[3]}"
                 report += model_acc_report
                 print(model_acc_report)
 
                 # ------------ RESULT HANDLING -----------
                 # automatically save the best models to best as is
                 if model_acc[0] > common.OUTSTANDING_ACCURACY_THRESHOLD and model_acc[3] < common.INACCURACY_THRESHOLD:
-                    save_filepath = f"models/best/{coin}_{model.get_model_name()}_{model_number}_{int(round(model_acc[0], 2) * 100)}-{int(round(model_acc[3], 2))}_{data_aug_factor}xaug.pt"
+                    save_filepath = f"models/best/{coin}_{model_architecture}_{model_number}_{int(round(model_acc[0], 2) * 100)}-{int(round(model_acc[3], 2))}_{data_aug_factor}xaug.pt"
                     save_model(model, save_filepath)
                     with open(f"reports/{coin}_best_performers.txt", 'a') as f:
                         f.write(save_filepath + '\n')
 
                 # save the model to the promising models folder
                 if model_acc[0] > common.PROMISING_ACCURACY_THRESHOLD and model_acc[3] < common.INACCURACY_THRESHOLD:
-                    save_filepath = f"models/promising/{coin}_{model.get_model_name()}_{model_number}_param_tuning.pt"
+                    save_filepath = f"models/promising/{coin}_{model_architecture}_{model_number}_param_tuning.pt"
                     common.save_model(model, save_filepath)
 
                 # write the report independent of performance
-                with open(f"reports/{coin}_Parameter_Tuning_Report_{model.get_model_name()}.txt", "a") as f:
+                with open(f"reports/{coin}_Parameter_Tuning_Report_{model_architecture}.txt", "a") as f:
                     f.write(report + "\n\n")
 
                     print("Report written")
@@ -301,10 +305,11 @@ def continue_training(coin: str, model_architecture: str) -> None:
     # ------------ MODEL TRAINING -----------
     promising_models = common.parse_training_reports(coin, model_architecture)
     for model_params in promising_models:
-        model_filepath = f"models/promising/{coin}_Hidden_{model_params['hidden_layer_size']}_{model_params['model_num']}_param_tuning.pt"
+        model_filepath = f"models/promising/{coin}_{model_architecture}_{model_params['model_num']}_param_tuning.pt"
         model = common.load_model_by_params(model_filepath, model_params)
 
-        reports = [f"Model: {model.get_model_name()}", f"Learning rate: {model.get_eta()}", f"Learning rate decay: {model.get_eta_decay()}", f"Chance of dropout: {model.get_dropout().p}", f"Batch size: {batch_size}", f"Epochs: {n_epochs}", f"Coin: {coin}"]
+        dropout, eta, eta_decay = nn.get_model_parameters()
+        reports = [f"Model: {model.get_class_name()}", f"Learning rate: {eta}", f"Learning rate decay: {eta_decay}", f"Chance of dropout: {dropout}", f"Batch size: {batch_size}", f"Epochs: {n_epochs}", f"Coin: {coin}"]
 
         start_time = time.time()
         print(f"Model #{model_params['model_num']}")
@@ -362,7 +367,8 @@ def transfer_learner(coin: str) -> None:
         model = common.load_model_by_params(filename, model_params)
 
         # train on novel data
-        reports = [f"Model: {model.get_model_name()}", f"Learning rate: {model.get_eta()}", f"Learning rate decay: {model.get_eta_decay()}", f"Chance of dropout: {model.get_dropout().p}"]
+        dropout, eta, eta_decay = nn.get_model_parameters()
+        reports = [f"Model: {model.get_class_name()}", f"Learning rate: {eta}", f"Learning rate decay: {eta_decay}", f"Chance of dropout: {dropout}"]
 
         start_time = time.time()
         print(f"Architecture: {filename}\nModel: {model_params['model_num']}")
@@ -388,7 +394,6 @@ def transfer_learner(coin: str) -> None:
 
 
 
-
 #
 # ------------ CONTROLLER METHOD ---------------
 #
@@ -400,17 +405,20 @@ def fully_automated_training_pipeline() -> None:
         2.) Continue training:  take all the promising models found in the first step and give them more time to train
         3.) Cleanup:            delete all extraneous files created in the first two phases
     '''
+    #neural_net_architecture = ["Pi_0", "Pi_1", "Pi_2", "Pi_3", "Pi_4", "Pi_5", "Pi_6", "Pi_7"]
+    #neural_net_architecture = ["PC_0", "PC_1", "PC_2", "PC_3", "PC_4", "PC_5", "PC_6"]
+    #neural_net_architecture = ["Laptop_0", "Laptop_1", "Laptop_2", "Laptop_3", "Laptop_4"]
+    neural_net_architecture = ["Pi_5"]
+
     coin = "all"
     directory = "aggregate"
-    layer_sizes = [5] #[x for x in range(nn.N_SIGNALS+1,N_FEATURES)]
 
-    for hidden_layer_size in layer_sizes:
-        parameter_tuner(coin, hidden_layer_size)
-        continue_training(coin, "Hidden_" + hidden_layer_size)
+    for model_architecture in neural_net_architecture:
+        parameter_tuner(coin, model_architecture)
+        continue_training(coin, model_architecture)
         cleanup(coin, directory)
         common.prune_models_by_accuracy(coin)
         make_and_save_list_of_best_performers(coin, directory)
-
 
 
 

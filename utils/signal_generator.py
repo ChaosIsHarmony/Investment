@@ -228,9 +228,8 @@ def populate_stat_report_essentials(coin: str, data: pd.DataFrame, raw_data: pd.
 
 def get_models(best: List[str]) -> List[common.nn.CryptoSoothsayer]:
     models = []
-    common.set_nn_model_parameters()
     for i in range(len(best)):
-        models.append(common.load_nn_model(best[i]))
+        models.append(common.load_pretrained_model(best[i]))
 
     return models
 
