@@ -110,4 +110,4 @@ def calculate_optimal_portfolio(coins: List[str], interval: int, n_simulations: 
 
 if __name__ == "__main__":
     coins = ["bitcoin", "cardano", "ethereum", "solana", "theta-token", "matic-network"]
-    calculate_optimal_portfolio(coins, 365, 10000)
+    calculate_optimal_portfolio(coins, 365, 100000)

@@ -29,8 +29,8 @@ def parse_reports(coin: str, model_architecture: str) -> List[dict]:
     while len(reports) > 10:
         model = {}
         model["model_num"] =  int(extract_datum(reports, "MODEL:", '\n'))
-        #  model["architecture"] = int(extract_datum(reports, "PARAMETERS:\n\tHidden_", 'e'))
-        model["architecture"] = extract_datum(reports, "PARAMETERS:", 'e')
+        model["architecture"] = int(extract_datum(reports, "PARAMETERS:\n\tHidden_", 'e'))
+        #  model["architecture"] = extract_datum(reports, "PARAMETERS:", 'e')
         model["eta"] = float(extract_datum(reports, "eta:", '|'))
         model["eta_decay"] = float(extract_datum(reports, "decay:", '|'))
         model["dropout"] = float(extract_datum(reports, "dropout:", '\n'))
@@ -246,6 +246,8 @@ def prune_models_by_accuracy(coin: str) -> None:
     filenames = glob.glob(f"models/aggregate/{coin}*")
 
     least_reliable_models = []
+    most_reliable_model = ["", 0]
+
     for filename in filenames:
         params = common.get_model_params(coin, filename)
         if params == None:
@@ -260,7 +262,11 @@ def prune_models_by_accuracy(coin: str) -> None:
         model_acc_valid = evaluate_model(model, valid_data)
         model_acc_test = evaluate_model(model, test_data)
 
-        if (model_acc_all[0] > 0.55) and (model_acc_valid[0] > 0.45) and (model_acc_test[0] > 0.7):
+        if (model_acc_all[0] > common.PRUNING_THRESHOLD_ALL) and (model_acc_valid[0] > common.PRUNING_THRESHOLD_VALID) and (model_acc_test[0] > common.PRUNING_THRESHOLD_TEST):
+            total_acc = model_acc_test[0] + model_acc_valid[0] + model_acc_all[0]
+            if total_acc > most_reliable_model[1]:
+                most_reliable_model[0] = filename
+                most_reliable_model[1] = total_acc
             print(f"{filename}")
             print("ALL DATA")
             common.print_evaluation_status(model_acc_all)
@@ -273,14 +279,17 @@ def prune_models_by_accuracy(coin: str) -> None:
             print(f"Model {filename} performance did not meet the threshold.")
 
     # prune the weakest models
+    rm_cnt = 0
     for f in least_reliable_models:
         try:
             os.remove(f)
             print(f"Successfully removed {f}.")
+            rm_cnt += 1
         except:
             print(f"Error when attempting to remove {f}.")
 
-
+    print(f"{rm_cnt} weak models removed [{rm_cnt/len(filenames)*100:.2f}% of original models].")
+    print(f"Most reliable model: {most_reliable_model[0]}\n\tAvg. Acc.: {100*most_reliable_model[1]/3:.2f}%")
 
 #
 # ---------- COMPARISON METHODS ----------

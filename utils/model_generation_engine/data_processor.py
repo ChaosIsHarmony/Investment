@@ -13,8 +13,6 @@ from typing import List, Tuple
 from .. import common
 from . import neural_nets as nn
 
-REPORTS = []
-
 #
 # ------------ DELETING FUNCTIONS -----------
 #
@@ -68,36 +66,13 @@ def cleanup(coin: str, destination_dir: str) -> None:
 #
 # ---------- REPORTING FUNCTIONS ----------
 #
-def join_all_reports() -> str:
-    '''
-    Collects all reports for different steps of the training process into a single string in prep for saving to disk.
-    '''
-    global REPORTS
-
-    final_report = ""
-    for report in REPORTS:
-        final_report += report + "\n"
-
-    return final_report
-
-
-
-def save_report(coin: str, architecture: str) -> None:
-    with open(f"reports/{coin}_{architecture}_report.txt", "w") as report:
-        report.write(join_all_reports())
-
-
-
 def print_batch_status(model: nn.CryptoSoothsayer, avg_train_loss: float, avg_valid_loss:float, start_time: float) -> None:
     '''
-    Prints summary for the latest batch to console and appends it to the global REPORTS variable
+    Prints summary for the latest batch to console.
     '''
-    global REPORTS
-
     now = datetime.now()
     current_time = now.strftime("%H:%M:%S")
     report = f"System Time: {current_time} | Time Elapsed: {(time.time() - start_time) / 60:.1f} mins. | Avg. Training Loss: {avg_train_loss:.4f} | Avg. Validation Loss: {avg_valid_loss:.4f} | eta: {model.get_optimizer().state_dict()['param_groups'][0]['lr']:.6f}"
-    REPORTS.append(report)
     print(report)
 
 
@@ -167,8 +142,6 @@ def terminate_early(prev_valid_losses: List[float]) -> bool:
 
 
 def fully_train(model: nn.CryptoSoothsayer, data: Tuple[List[float], float], start_time: float, filepath: str, n_epochs: int = 20, batch_size: int = 256) -> float:
-    global REPORTS
-
     # unpack training and validation datasets
     train_data, valid_data = data
 
@@ -211,7 +184,6 @@ def fully_train(model: nn.CryptoSoothsayer, data: Tuple[List[float], float], sta
         epoch += 1
 
         report = f"Time elapsed by epoch {epoch+1}: {round((time.time() - start_time)) / 60} mins."
-        REPORTS.append(report)
         print(report)
 
     return last_valid_loss
@@ -260,7 +232,7 @@ def parameter_tuner(coin: str, hidden_layer_size: int) -> None:
                 # automatically save the best models to best as is
                 if model_acc[0] > common.OUTSTANDING_ACCURACY_THRESHOLD and model_acc[3] < common.INACCURACY_THRESHOLD:
                     save_filepath = f"models/best/{coin}_{model.get_model_name()}_{model_number}_{int(round(model_acc[0], 2) * 100)}-{int(round(model_acc[3], 2))}_{data_aug_factor}xaug.pt"
-                    save_model(model, save_filepath)
+                    common.save_model(model, save_filepath)
                     with open(f"reports/{coin}_best_performers.txt", 'a') as f:
                         f.write(save_filepath + '\n')
 
@@ -283,7 +255,6 @@ def parameter_tuner(coin: str, hidden_layer_size: int) -> None:
 # -------------- Continue Training Most Successful Experiments --------------
 #
 def continue_training(coin: str, model_architecture: str) -> None:
-    global REPORTS
     batch_size = 256
     n_epochs = 20
 
@@ -301,7 +272,7 @@ def continue_training(coin: str, model_architecture: str) -> None:
     # ------------ MODEL TRAINING -----------
     promising_models = common.parse_training_reports(coin, model_architecture)
     for model_params in promising_models:
-        model_filepath = f"models/promising/{coin}_Hidden_{model_params['hidden_layer_size']}_{model_params['model_num']}_param_tuning.pt"
+        model_filepath = f"models/promising/{coin}_Hidden_{model_params['architecture']}_{model_params['model_num']}_param_tuning.pt"
         model = common.load_model_by_params(model_filepath, model_params)
 
         reports = [f"Model: {model.get_model_name()}", f"Learning rate: {model.get_eta()}", f"Learning rate decay: {model.get_eta_decay()}", f"Chance of dropout: {model.get_dropout().p}", f"Batch size: {batch_size}", f"Epochs: {n_epochs}", f"Coin: {coin}"]
@@ -314,9 +285,7 @@ def continue_training(coin: str, model_architecture: str) -> None:
         # ------------ MODEL TESTING -----------
         # load model with lowest validation loss
         model = common.load_model(model, f"models/promising/{coin}_{model_architecture}_{model_params['model_num']}_lowest_val_loss.pt")
-        report = "EVALUATE TRAINED MODEL"
-        REPORTS.append(report)
-        print(report)
+        print("EVALUATE TRAINED MODEL")
         model_acc = common.evaluate_model(model, test_data)
 
         # ------------ RESULT HANDLING -----------
@@ -326,8 +295,6 @@ def continue_training(coin: str, model_architecture: str) -> None:
             common.save_model(model, save_filepath)
             with open(f"reports/{coin}_best_performers.txt", 'a') as f:
                 f.write(save_filepath + '\n')
-
-            save_report(coin, model_architecture)
 
 
 
@@ -372,16 +339,14 @@ def transfer_learner(coin: str) -> None:
         # ------------ MODEL TESTING -----------
         # evaluate
         model = load_model(model, f"models/promising/{coin}_{model_params['architecture']}_{model_params['model_num']}_lowest_val_loss.pt")
-        report = "EVALUATE TRAINED MODEL"
-        REPORTS.append(report)
-        print(report)
+        print("EVALUATE TRAINED MODEL")
         model_acc = common.evaluate_model(model, test_data)
 
         # ------------ RESULT HANDLING -----------
         # save iff accuracy is higher/lower than threshholds
         if model_acc[0] > common.OUTSTANDING_ACCURACY_THRESHOLD and model_acc[3] < common.INACCURACY_THRESHOLD:
             save_filepath = f"models/best/{coin}_{model_params['architecture']}_{model_params['model_num']}_{int(round(model_acc[0], 2) * 100)}-{int(round(model_acc[3], 2))}_{data_aug_factor}xaug.pt"
-            save_model(model, save_filepath)
+            common.save_model(model, save_filepath)
 
             with open(f"reports/{coin}_best_performers.txt", 'a') as f:
                 f.write(save_filepath + '\n')
@@ -394,19 +359,21 @@ def transfer_learner(coin: str) -> None:
 #
 def fully_automated_training_pipeline() -> None:
     '''
-    Pipeline involves three steps:
+    Pipeline involves five steps:
 
         1.) Parameter tune:     find the most promising learning rates, decay rates, and dropout rates for the given architecture
         2.) Continue training:  take all the promising models found in the first step and give them more time to train
         3.) Cleanup:            delete all extraneous files created in the first two phases
+        4.) Pruning models:     hold all models to more rigorous standards and keep only those that match
+        5.) Make a list:        list all the best performers (for use in the signal_generator script)
     '''
     coin = "all"
     directory = "aggregate"
-    layer_sizes = [5] #[x for x in range(nn.N_SIGNALS+1,N_FEATURES)]
+    layer_sizes = [6] #[x for x in range(nn.N_SIGNALS+1,N_FEATURES)]
 
     for hidden_layer_size in layer_sizes:
         parameter_tuner(coin, hidden_layer_size)
-        continue_training(coin, "Hidden_" + hidden_layer_size)
+        continue_training(coin, "Hidden_" + str(hidden_layer_size))
         cleanup(coin, directory)
         common.prune_models_by_accuracy(coin)
         make_and_save_list_of_best_performers(coin, directory)

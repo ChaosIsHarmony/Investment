@@ -20,6 +20,10 @@ SIGNAL_FOR_N_DAYS_FROM_NOW = 7 * 5 # 7 * n weeks
 PROMISING_ACCURACY_THRESHOLD = 0.655
 OUTSTANDING_ACCURACY_THRESHOLD = 0.76
 INACCURACY_THRESHOLD = 0.05
+PRUNING_THRESHOLD_ALL = 0.6
+PRUNING_THRESHOLD_VALID = 0.47
+PRUNING_THRESHOLD_TEST = 0.7
+
 
 coins = ["algorand", "bitcoin", "cardano", "chainlink", "ethereum", "polkadot", "solana"]
 possible_coins = ["matic-network", "theta-token", "zilliqa"]
