@@ -99,60 +99,19 @@ def load_model(model_to_load: nn.CryptoSoothsayer, filepath: str) -> nn.CryptoSo
 
 
 
+def load_pretrained_model(filepath: str) -> nn.CryptoSoothsayer:
+    start_ind = filepath.find('Hidden_') + 7
+    end_ind = filepath.find('_', start_ind)
+    hidden_layer_size = int(filepath[start_ind:end_ind])
+
+    model = nn.create_model(hidden_layer_size = hidden_layer_size, dropout = 0.0, eta = 0.0, eta_decay = 0.0)
+
+    return load_model(model, filepath)
+
+
 def load_model_by_params(filepath: str, params: dict) -> nn.CryptoSoothsayer:
     return nn.create_model(hidden_layer_size = params["architecture"], dropout = params["dropout"], eta = params["eta"], eta_decay = params["eta_decay"])
 
-
-# Legacy method; will delete well all models are trained using new specification
-def load_pretrained_model(filepath: str) -> nn.CryptoSoothsayer:
-    start_ind = filepath.find('_') + 1
-    end_ind = filepath.find('_', start_ind) + 2
-    model_architecture = filepath[start_ind:end_ind]
-
-    if "Laptop_0" in model_architecture:
-        model = nn.CryptoSoothsayer(model_architecture, nn.N_FEATURES, 20, nn.N_SIGNALS, 0, 1, 1)
-    elif "Laptop_1" in model_architecture:
-        model = nn.CryptoSoothsayer(model_architecture, nn.N_FEATURES, 21, nn.N_SIGNALS, 0, 1, 1)
-    elif "Laptop_2" in model_architecture:
-        model = nn.CryptoSoothsayer(model_architecture, nn.N_FEATURES, 22, nn.N_SIGNALS, 0, 1, 1)
-    elif "Laptop_3" in model_architecture:
-        model = nn.CryptoSoothsayer(model_architecture, nn.N_FEATURES, 23, nn.N_SIGNALS, 0, 1, 1)
-    elif "Pi_0" in model_architecture:
-        model = nn.CryptoSoothsayer(model_architecture, nn.N_FEATURES, 5, nn.N_SIGNALS, 0, 1, 1)
-    elif "Pi_1" in model_architecture:
-        model = nn.CryptoSoothsayer(model_architecture, nn.N_FEATURES, 6, nn.N_SIGNALS, 0, 1, 1)
-    elif "Pi_2" in model_architecture:
-        model = nn.CryptoSoothsayer(model_architecture, nn.N_FEATURES, 7, nn.N_SIGNALS, 0, 1, 1)
-    elif "Pi_3" in model_architecture:
-        model = nn.CryptoSoothsayer(model_architecture, nn.N_FEATURES, 8, nn.N_SIGNALS, 0, 1, 1)
-    elif "Pi_4" in model_architecture:
-        model = nn.CryptoSoothsayer(model_architecture, nn.N_FEATURES, 9, nn.N_SIGNALS, 0, 1, 1)
-    elif "Pi_5" in model_architecture:
-        model = nn.CryptoSoothsayer(model_architecture, nn.N_FEATURES, 10, nn.N_SIGNALS, 0, 1, 1)
-    elif "Pi_6" in model_architecture:
-        model = nn.CryptoSoothsayer(model_architecture, nn.N_FEATURES, 11, nn.N_SIGNALS, 0, 1, 1)
-    elif "Pi_7" in model_architecture:
-        model = nn.CryptoSoothsayer(model_architecture, nn.N_FEATURES, 12, nn.N_SIGNALS, 0, 1, 1)
-    elif "PC_0" in model_architecture:
-        model = nn.CryptoSoothsayer(model_architecture, nn.N_FEATURES, 13, nn.N_SIGNALS, 0, 1, 1)
-    elif "PC_1" in model_architecture:
-        model = nn.CryptoSoothsayer(model_architecture, nn.N_FEATURES, 14, nn.N_SIGNALS, 0, 1, 1)
-    elif "PC_2" in model_architecture:
-        model = nn.CryptoSoothsayer(model_architecture, nn.N_FEATURES, 15, nn.N_SIGNALS, 0, 1, 1)
-    elif "PC_3" in model_architecture:
-        model = nn.CryptoSoothsayer(model_architecture, nn.N_FEATURES, 16, nn.N_SIGNALS, 0, 1, 1)
-    elif "PC_4" in model_architecture:
-        model = nn.CryptoSoothsayer(model_architecture, nn.N_FEATURES, 17, nn.N_SIGNALS, 0, 1, 1)
-    elif "PC_5" in model_architecture:
-        model = nn.CryptoSoothsayer(model_architecture, nn.N_FEATURES, 18, nn.N_SIGNALS, 0, 1, 1)
-    elif "PC_6" in model_architecture:
-        model = nn.CryptoSoothsayer(model_architecture, nn.N_FEATURES, 19, nn.N_SIGNALS, 0, 1, 1)
-    elif "PC_7" in model_architecture:
-        model = nn.CryptoSoothsayer(model_architecture, nn.N_FEATURES, 19, nn.N_SIGNALS, 0, 1, 1)
-    else:
-        model = None
-
-    return load_model(model, filepath)
 
 #
 # ---------- EVALUATE/VALIDATE MODELS ----------
@@ -243,7 +202,7 @@ def prune_models_by_accuracy(coin: str) -> None:
 
     # test all models to find accuracy stats
     scores = []
-    filenames = glob.glob(f"models/aggregate/{coin}*")
+    filenames = glob.glob(f"models/{coin}/{coin}*")
 
     least_reliable_models = []
     most_reliable_model = ["", 0]

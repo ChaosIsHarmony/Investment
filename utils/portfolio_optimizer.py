@@ -92,7 +92,7 @@ def calculate_optimal_portfolio(coins: List[str], interval: int, n_simulations: 
 
     # calculate portfolio performance
     best_performances = [(0.0,10.0), (0.0,10.0), (0.0,10.0), (0.0,10.0)] # (return, volatility)
-    best_weights = [np.zeros(7), np.zeros(7), np.zeros(7), np.zeros(7)]
+    best_weights = [np.zeros(len(coins)), np.zeros(len(coins)), np.zeros(len(coins)), np.zeros(len(coins))]
     for _ in range(n_simulations):
         # random weights whose sum = 1
         weights = np.random.dirichlet(np.ones(len(coins)), size=1)[0]
@@ -108,6 +108,34 @@ def calculate_optimal_portfolio(coins: List[str], interval: int, n_simulations: 
 
 
 
+def calculate_custom_portfolio(coins: List[str], weights: List[float], interval: int) -> None:
+     # load data
+    portfolio_dataset = get_datasets(coins, interval)
+
+    # get returns & covariance
+    returns = portfolio_dataset.pct_change()
+    mean_returns = returns.mean()
+    covariance_matrix = returns.cov()
+
+    # calculate performance
+    performance = calculate_portfolio_performance(weights, mean_returns, covariance_matrix, interval)
+
+    print_results(coins, "Custom Performance:", performance, weights)
+
+
+
+
 if __name__ == "__main__":
-    coins = ["bitcoin", "cardano", "ethereum", "solana", "theta-token", "matic-network"]
-    calculate_optimal_portfolio(coins, 365, 100000)
+    coins = ["bitcoin", "cardano", "ethereum", "solana"]#, "theta-token", "matic-network"]
+    interval = int(input("Select interval (in days):\n"))
+    mode = input("Select Mode:\n\t(1) Auto-optimize\n\t(2) Input weights manually\n\n")
+
+    if mode == '1':
+        calculate_optimal_portfolio(coins, interval, 1000)
+    else:
+        print(f"Available coins: {coins}")
+        weights = input("Input space separated weights (must sum to 1):\n")
+        weights = weights.split()
+        weights = [ float(x) for x in weights ]
+        weights = np.array(weights)
+        calculate_custom_portfolio(coins, weights, interval)

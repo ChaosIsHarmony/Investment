@@ -97,12 +97,12 @@ def load_model(model: nn.CryptoSoothsayer, filepath: str) -> nn.CryptoSoothsayer
     return mm.load_model(model, filepath)
 
 
-def load_model_by_params(filepath: str, params: dict) -> nn.CryptoSoothsayer:
-    return mm.load_model_by_params(filepath, params)
-
-
 def load_pretrained_model(filepath: str) -> nn.CryptoSoothsayer:
     return mm.load_pretrained_model(filepath)
+
+
+def load_model_by_params(filepath: str, params: dict) -> nn.CryptoSoothsayer:
+    return mm.load_model_by_params(filepath, params)
 
 
 def evaluate_model(model: nn.CryptoSoothsayer, test_data: Tuple[List[float], float]) -> List[float]:

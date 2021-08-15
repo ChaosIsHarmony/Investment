@@ -16,7 +16,7 @@ from . import neural_nets as nn
 #
 # ------------ DELETING FUNCTIONS -----------
 #
-def cleanup(coin: str, destination_dir: str) -> None:
+def cleanup(coin: str) -> None:
     '''
     Delete all the *.pt files from models that are not worth keeping.
     '''
@@ -45,8 +45,8 @@ def cleanup(coin: str, destination_dir: str) -> None:
         try:
             offset = len("models/promising/")
             file_handle = f[offset:]
-            os.rename(f, f"models/{destination_dir}/{file_handle}")
-            print(f"Successfully moved {f} to {destination_dir}")
+            os.rename(f, f"models/{coin}/{file_handle}")
+            print(f"Successfully moved {f} to {coin}")
         except:
             print(f"Error when attempting to move {f}")
 
@@ -56,8 +56,8 @@ def cleanup(coin: str, destination_dir: str) -> None:
         try:
             offset = len("models/best/")
             file_handle = f[offset:]
-            os.rename(f, f"models/{destination_dir}/{file_handle}")
-            print(f"Successfully moved {f} to models/{destination_dir}/")
+            os.rename(f, f"models/{coin}/{file_handle}")
+            print(f"Successfully moved {f} to models/{coin}/")
         except:
             print(f"Error when attempting to move {f}")
 
@@ -77,7 +77,7 @@ def print_batch_status(model: nn.CryptoSoothsayer, avg_train_loss: float, avg_va
 
 
 
-def make_and_save_list_of_best_performers(coin: str, directory: str) -> None:
+def make_and_save_list_of_best_performers(coin: str) -> None:
     # try removing previous version
     try:
         os.remove(f"reports/{coin}_best_performers.txt")
@@ -85,7 +85,7 @@ def make_and_save_list_of_best_performers(coin: str, directory: str) -> None:
         # file does not exist
         pass
 
-    models = glob.glob(f"models/{directory}/{coin}*")
+    models = glob.glob(f"models/{coin}/{coin}*")
 
     with open(f"reports/{coin}_best_performers.txt", 'w') as f:
         for model in models:
@@ -368,15 +368,14 @@ def fully_automated_training_pipeline() -> None:
         5.) Make a list:        list all the best performers (for use in the signal_generator script)
     '''
     coin = "all"
-    directory = "aggregate"
-    layer_sizes = [6] #[x for x in range(nn.N_SIGNALS+1,N_FEATURES)]
+    layer_sizes = [7] #[x for x in range(nn.N_SIGNALS+1,N_FEATURES)]
 
     for hidden_layer_size in layer_sizes:
         parameter_tuner(coin, hidden_layer_size)
         continue_training(coin, "Hidden_" + str(hidden_layer_size))
-        cleanup(coin, directory)
+        cleanup(coin)
         common.prune_models_by_accuracy(coin)
-        make_and_save_list_of_best_performers(coin, directory)
+        make_and_save_list_of_best_performers(coin)
 
 
 
