@@ -205,7 +205,7 @@ def prune_models_by_accuracy(coin: str) -> None:
     filenames = glob.glob(f"models/{coin}/{coin}*")
 
     least_reliable_models = []
-    most_reliable_model = ["", 0]
+    most_reliable_models = []
 
     for filename in filenames:
         params = common.get_model_params(coin, filename)
@@ -223,9 +223,8 @@ def prune_models_by_accuracy(coin: str) -> None:
 
         if (model_acc_all[0] > common.PRUNING_THRESHOLD_ALL) and (model_acc_valid[0] > common.PRUNING_THRESHOLD_VALID) and (model_acc_test[0] > common.PRUNING_THRESHOLD_TEST):
             total_acc = model_acc_test[0] + model_acc_valid[0] + model_acc_all[0]
-            if total_acc > most_reliable_model[1]:
-                most_reliable_model[0] = filename
-                most_reliable_model[1] = total_acc
+            most_reliable_models.append((total_acc, filename))
+
             print(f"{filename}")
             print("ALL DATA")
             common.print_evaluation_status(model_acc_all)
@@ -248,7 +247,23 @@ def prune_models_by_accuracy(coin: str) -> None:
             print(f"Error when attempting to remove {f}.")
 
     print(f"{rm_cnt} weak models removed [{rm_cnt/len(filenames)*100:.2f}% of original models].")
-    print(f"Most reliable model: {most_reliable_model[0]}\n\tAvg. Acc.: {100*most_reliable_model[1]/3:.2f}%")
+
+    # if too many models
+    most_reliable_models.sort(reverse=True)
+    final_cut = []
+    for i in range(common.NUM_MAX_TOTAL_MODELS):
+        final_cut.append(most_reliable_models.pop(0))
+
+    for model in most_reliable_models:
+        if model not in final_cut:
+            try:
+                os.remove(model[1])
+                print(f"Successfully removed {model[1]}.")
+            except:
+                print(f"Error when attempting to remove {model[1]}.")
+
+    print(f"Most reliable model: {final_cut[0][1]}\n\tAvg. Acc.: {100*final_cut[0][0]/3:.2f}%")
+
 
 #
 # ---------- COMPARISON METHODS ----------

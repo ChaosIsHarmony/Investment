@@ -23,7 +23,7 @@ INACCURACY_THRESHOLD = 0.05
 PRUNING_THRESHOLD_ALL = 0.6
 PRUNING_THRESHOLD_VALID = 0.47
 PRUNING_THRESHOLD_TEST = 0.7
-
+NUM_MAX_TOTAL_MODELS = 10000
 
 coins = ["algorand", "bitcoin", "cardano", "chainlink", "ethereum", "polkadot", "solana"]
 possible_coins = ["matic-network", "theta-token", "zilliqa"]
