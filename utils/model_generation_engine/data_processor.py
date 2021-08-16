@@ -368,7 +368,7 @@ def fully_automated_training_pipeline() -> None:
         5.) Make a list:        list all the best performers (for use in the signal_generator script)
     '''
     coin = "all"
-    layer_sizes = [7] #[x for x in range(nn.N_SIGNALS+1,N_FEATURES)]
+    layer_sizes = [8] #[x for x in range(nn.N_SIGNALS+1,N_FEATURES)]
 
     for hidden_layer_size in layer_sizes:
         parameter_tuner(coin, hidden_layer_size)
@@ -383,7 +383,6 @@ def fully_automated_training_pipeline() -> None:
 
 if __name__ == "__main__":
     try:
-        pass
         fully_automated_training_pipeline()
         #transfer_learner("algorand")
     finally:
