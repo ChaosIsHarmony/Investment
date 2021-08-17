@@ -193,8 +193,7 @@ def fully_train(model: nn.CryptoSoothsayer, data: Tuple[List[float], float], sta
 #
 # ------------- Find the Most Promising Models -----------------
 #
-def parameter_tuner(coin: str, hidden_layer_size: int) -> None:
-    data_aug_factor = 0
+def parameter_tuner(coin: str, hidden_layer_size: int, data_aug_factor: int = 16) -> None:
     batch_size = 256
     n_epochs = 5
 
@@ -254,13 +253,12 @@ def parameter_tuner(coin: str, hidden_layer_size: int) -> None:
 #
 # -------------- Continue Training Most Successful Experiments --------------
 #
-def continue_training(coin: str, model_architecture: str) -> None:
+def continue_training(coin: str, model_architecture: str, data_aug_factor: int = 32) -> None:
     batch_size = 256
     n_epochs = 20
 
     # ------------ DATA GENERATION ----------
     start_time = time.time()
-    data_aug_factor = 64
     print("Creating datasets...")
     try:
         train_data, valid_data, test_data = common.get_datasets(coin, data_aug_factor)
@@ -298,14 +296,13 @@ def continue_training(coin: str, model_architecture: str) -> None:
 
 
 
-def transfer_learner(coin: str) -> None:
+def transfer_learner(coin: str, data_aug_factor: int = 16) -> None:
     '''
     Train new models from models successfully trained on other cryptoasset datasets.
     '''
     # ------------ DATA GENERATION ----------
     # create the datasets
     start_time = time.time()
-    data_aug_factor = 16
     print("Creating datasets...")
     try:
         train_data, valid_data, test_data = get_datasets(coin, data_aug_factor)
@@ -368,12 +365,12 @@ def fully_automated_training_pipeline() -> None:
         5.) Make a list:        list all the best performers (for use in the signal_generator script)
     '''
     coin = "all"
-    layer_sizes = [8] #[x for x in range(nn.N_SIGNALS+1,N_FEATURES)]
+    layer_sizes = [9] #[x for x in range(nn.N_SIGNALS+1,N_FEATURES)]
 
     for hidden_layer_size in layer_sizes:
-        parameter_tuner(coin, hidden_layer_size)
-        continue_training(coin, "Hidden_" + str(hidden_layer_size))
-        cleanup(coin)
+        #  parameter_tuner(coin, hidden_layer_size, data_aug_factor=0)
+        #  continue_training(coin, "Hidden_" + str(hidden_layer_size), data_aug_factor=64)
+        #  cleanup(coin)
         common.prune_models_by_accuracy(coin)
         make_and_save_list_of_best_performers(coin)
 

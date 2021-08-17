@@ -222,16 +222,16 @@ def prune_models_by_accuracy(coin: str) -> None:
         model_acc_test = evaluate_model(model, test_data)
 
         if (model_acc_all[0] > common.PRUNING_THRESHOLD_ALL) and (model_acc_valid[0] > common.PRUNING_THRESHOLD_VALID) and (model_acc_test[0] > common.PRUNING_THRESHOLD_TEST):
-            total_acc = model_acc_test[0] + model_acc_valid[0] + model_acc_all[0]
-            most_reliable_models.append((total_acc, filename))
+            avg_acc = (model_acc_test[0] + model_acc_valid[0] + model_acc_all[0]) / 3
+            most_reliable_models.append((avg_acc, filename))
 
-            print(f"{filename}")
-            print("ALL DATA")
-            common.print_evaluation_status(model_acc_all)
-            print("VALIDATION DATA")
-            common.print_evaluation_status(model_acc_valid)
-            print("TEST DATA")
-            common.print_evaluation_status(model_acc_test)
+            print(f"{filename} had satisfactory performance: {100*avg_acc:0.2}% avg accuracy.")
+            #  print("ALL DATA")
+            #  common.print_evaluation_status(model_acc_all)
+            #  print("VALIDATION DATA")
+            #  common.print_evaluation_status(model_acc_valid)
+            #  print("TEST DATA")
+            #  common.print_evaluation_status(model_acc_test)
         else:
             least_reliable_models.append(filename)
             print(f"Model {filename} performance did not meet the threshold.")
@@ -252,7 +252,10 @@ def prune_models_by_accuracy(coin: str) -> None:
     most_reliable_models.sort(reverse=True)
     final_cut = []
     for i in range(common.NUM_MAX_TOTAL_MODELS):
-        final_cut.append(most_reliable_models.pop(0))
+        if len(most_reliable_models) > 0:
+            final_cut.append(most_reliable_models.pop(0))
+        else:
+            break
 
     for model in most_reliable_models:
         if model not in final_cut:
@@ -262,7 +265,7 @@ def prune_models_by_accuracy(coin: str) -> None:
             except:
                 print(f"Error when attempting to remove {model[1]}.")
 
-    print(f"Most reliable model: {final_cut[0][1]}\n\tAvg. Acc.: {100*final_cut[0][0]/3:.2f}%")
+    print(f"Most reliable model: {final_cut[0][1]}\n\tAvg. Acc.: {100*final_cut[0][0]:.2f}%")
 
 
 #
