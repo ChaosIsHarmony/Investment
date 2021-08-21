@@ -66,7 +66,7 @@ def list_promising_model_details(coin: str, model_architecture: str) -> None:
 
 def get_model_params(coin: str, filename: str) -> dict:
     start_ind = filename.find('_') + 1
-    end_ind = filename.find('_', start_ind) + 2
+    end_ind = filename.find('_', filename.find('_', start_ind) + 1)
     model_architecture = filename[start_ind:end_ind]
 
     start_ind = filename.find('_', end_ind) + 1
@@ -208,7 +208,7 @@ def prune_models_by_accuracy(coin: str) -> None:
     most_reliable_models = []
 
     for filename in filenames:
-        params = common.get_model_params(coin, filename)
+        params = get_model_params(coin, filename)
         if params == None:
             print(f"{filename} Not Found. Continuing on to other models.")
             continue
@@ -225,7 +225,7 @@ def prune_models_by_accuracy(coin: str) -> None:
             avg_acc = (model_acc_test[0] + model_acc_valid[0] + model_acc_all[0]) / 3
             most_reliable_models.append((avg_acc, filename))
 
-            print(f"{filename} had satisfactory performance: {100*avg_acc:0.2}% avg accuracy.")
+            print(f"{filename} had satisfactory performance: {100*avg_acc:0.2f}% avg accuracy.")
             #  print("ALL DATA")
             #  common.print_evaluation_status(model_acc_all)
             #  print("VALIDATION DATA")
@@ -285,7 +285,7 @@ def benchmark_models(model_coin: str, test_coin: str) -> None:
 
     most_reliable_models = []
     for filename in best_models:
-        model_params = common.get_model_params(model_coin, filename)
+        model_params = get_model_params(model_coin, filename)
         if model_params == None:
             print(f"{filename} Not Found. Continuing on to other models.")
             continue

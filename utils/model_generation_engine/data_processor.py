@@ -365,12 +365,12 @@ def fully_automated_training_pipeline() -> None:
         5.) Make a list:        list all the best performers (for use in the signal_generator script)
     '''
     coin = "all"
-    layer_sizes = [9] #[x for x in range(nn.N_SIGNALS+1,N_FEATURES)]
+    layer_sizes = [13]
 
     for hidden_layer_size in layer_sizes:
-        #  parameter_tuner(coin, hidden_layer_size, data_aug_factor=0)
-        #  continue_training(coin, "Hidden_" + str(hidden_layer_size), data_aug_factor=64)
-        #  cleanup(coin)
+        parameter_tuner(coin, hidden_layer_size, data_aug_factor=0)
+        continue_training(coin, "Hidden_" + str(hidden_layer_size), data_aug_factor=64)
+        cleanup(coin)
         common.prune_models_by_accuracy(coin)
         make_and_save_list_of_best_performers(coin)
 
