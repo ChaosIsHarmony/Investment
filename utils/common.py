@@ -26,7 +26,7 @@ PRUNING_THRESHOLD_TEST = 0.7
 NUM_MAX_TOTAL_MODELS = 500
 
 coins = ["algorand", "bitcoin", "cardano", "chainlink", "ethereum", "polkadot", "solana"]
-possible_coins = ["matic-network", "theta-token", "zilliqa"]
+possible_coins = ["avalanche-2", "matic-network", "theta-token", "zilliqa"]
 
 #
 # ------------- INTERFACES ------------
@@ -40,14 +40,18 @@ def aggregate_new_data(coin: str, n_days: int) -> str:
     return dt_agg.fetch_missing_data_by_range(coin, n_days)
 
 
+def fetch_missing_data_by_dates(coin: str, dates: List[str], verbose: bool = False) -> pd.DataFrame:
+    return dt_agg.fetch_missing_data_by_dates(coin, dates)
+
+
 
 # DATA PREPROCESSOR
 def clean_coin_data(coin: str, data: pd.DataFrame, start_date: str, end_date: str) -> pd.DataFrame:
     return dt_pp.clean_data(coin, data, start_date, end_date)
 
 
-def handle_missing_data(data: pd.DataFrame, start_date: str, end_date: str) -> pd.DataFrame:
-    return dt_pp.handle_missing_data(data, start_date, end_date)
+def handle_missing_data(coin: str, data: pd.DataFrame, start_date: str, end_date: str) -> pd.DataFrame:
+    return dt_pp.handle_missing_data(coin, data, start_date, end_date)
 
 
 

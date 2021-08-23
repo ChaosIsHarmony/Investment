@@ -365,7 +365,7 @@ def fully_automated_training_pipeline() -> None:
         5.) Make a list:        list all the best performers (for use in the signal_generator script)
     '''
     coin = "all"
-    layer_sizes = [13]
+    layer_sizes = [15]
 
     for hidden_layer_size in layer_sizes:
         parameter_tuner(coin, hidden_layer_size, data_aug_factor=0)

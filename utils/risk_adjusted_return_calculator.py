@@ -91,7 +91,7 @@ def prepare_dataframe(coin: str):
     # drop irrelevant columns
     data = data.drop(columns=["market_cap", "volume", "fear_greed"])
     last_ind = data.shape[0] - 1
-    data = common.handle_missing_data(data, data.iloc[0,0], data.iloc[last_ind,0])
+    data = common.handle_missing_data(coin, data, data.iloc[0,0], data.iloc[last_ind,0])
 
     return data
 

@@ -4,7 +4,7 @@ from typing import Dict, List, Tuple
 
 
 
-def handle_missing_data(data: pd.DataFrame, start_date: str, end_date: str) -> pd.DataFrame:
+def handle_missing_data(coin: str, data: pd.DataFrame, start_date: str, end_date: str) -> pd.DataFrame:
     '''
     Checks for missing days
     Fills all NaN values with 0.
@@ -13,7 +13,12 @@ def handle_missing_data(data: pd.DataFrame, start_date: str, end_date: str) -> p
     # check for missing dates
     data["date"] = pd.to_datetime(data["date"])
     missing_dates = pd.date_range(start = start_date, end = end_date ).difference(data["date"])
-    assert len(missing_dates) == 0, f"The dataset is missing dates: {missing_dates}. Use utils/data_aggregator.py to collect the missing dates before proceeding."
+    if len(missing_dates) > 0:
+        print("There were missing dates in the dataset. Fetching missing data.")
+        common.fetch_missing_data_by_dates(coin, missing_dates, verbose=True)
+        common.merge_newly_aggregated_data(coin, by_range=False)
+        print("Missing dates successfuly fetched.")
+        return None
 
     data = data.fillna(0)
 
@@ -239,7 +244,9 @@ def clean_data(coin: str, data: pd.DataFrame, start_date: str, end_date: str, ve
             - Normalizes neither date nor signal columns
     '''
     # Fill in missing values
-    data = handle_missing_data(data, start_date, end_date)
+    data = handle_missing_data(coin, data, start_date, end_date)
+    if data is None:
+        return None
     if verbose:
         print(f"Missing data handling complete for {coin}.")
     # Calculate SMAs
@@ -263,15 +270,23 @@ def clean_data(coin: str, data: pd.DataFrame, start_date: str, end_date: str, ve
 
 
 if __name__ == "__main__":
-    coins = ["algorand", "bitcoin", "cardano", "chainlink", "ethereum", "polkadot", "solana"]
+    #  coins = ["algorand", "bitcoin", "cardano", "chainlink", "ethereum", "polkadot", "solana"]
     # The following two coins have shorter histories and require a different start date {polkadot = 2020-08-23; solana = 2020-04-11}
+    coins = ["avalanche-2"]
     #coins = ["polkadot"]
     #coins = ["solana"]
-    start_date = "2020-08-23"#"2019-10-20"
-    end_date = "2021-07-08"
+    start_date = "2020-09-22"#"2020-08-23"#"2019-10-20"
+    yesterday = date.today() - timedelta(1)
+    end_date = yesterday
 
     for coin in coins:
-        print(coin)
-        data = pd.read_csv(f"datasets/raw/{coin}_historical_data_raw.csv")
-        data = clean_data(coin, data, start_date, end_date, verbose=True)
-        data.to_csv(f"datasets/clean/{coin}_historical_data_clean.csv", index=False, float_format="%f")
+        complete = False
+        while not complete:
+            print(coin)
+            data = pd.read_csv(f"datasets/raw/{coin}_historical_data_raw.csv")
+            data = clean_data(coin, data, start_date, end_date, verbose=True)
+            if data is None:
+                print(f"The dataset was missing dates. Used utils/data_aggregator.py to collect the missing dates. Beginning preprocessing again.")
+            else:
+                data.to_csv(f"datasets/clean/{coin}_historical_data_clean.csv", index=False, float_format="%f")
+                complete = True

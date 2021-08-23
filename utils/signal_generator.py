@@ -92,12 +92,12 @@ def populate_stat_report_full(coin: str, data: pd.DataFrame, raw_data: pd.DataFr
                    f"Report for {coin.upper()}:",
                    "Basic Stats",
                    "[1.0 is the highest; 0.0 is the lowest]",
-                   f"price:\t\t\t{data[PRICE]:.6f}",
+                   f"price:\t\t\t\t{data[PRICE]:.6f}",
                    f"market_cap:\t\t{data[MARKET_CAP]:.6f}",
-                   f"volume:\t\t\t{data[VOLUME]:.6f}",
+                   f"volume:\t\t\t\t{data[VOLUME]:.6f}",
                    f"fear/greed:\t\t{data[FEAR_GREED]:.6f} [{get_fg_indicator(data[FEAR_GREED])}]",
                    f"sharpe_ratio:\t{common.get_sharpe_ratio(coin):.6f}",
-                   f"UPI:\t\t\t{common.get_upi(coin):.6f}"]
+                   f"UPI:\t\t\t\t\t{common.get_upi(coin):.6f}"]
 
     price_ratios = ["\nPrice Ratios",
                     "[>0 means greater risk/overvalued; <0 means less risk/undervalued]",
@@ -155,7 +155,7 @@ def populate_stat_report_full(coin: str, data: pd.DataFrame, raw_data: pd.DataFr
 
     fear_greed_deltas = ["\nFear/Greed Deltas",
                          "[>0 is greedier; <0 is more fearful]",
-                         f"3-day -> Present:\t{data[FEAR_GREED]-data[FG_3_SMA]:>9.6f}",
+                         f"3-day -> Present:\t\t{data[FEAR_GREED]-data[FG_3_SMA]:>9.6f}",
                          f"5-day -> 3-day:\t\t{data[FG_3_SMA]-data[FG_5_SMA]:>9.6f}",
                          f"7-day -> 5-day\t\t{data[FG_5_SMA]-data[FG_7_SMA]:>9.6f}",
                          f"9-day -> 7-day:\t\t{data[FG_7_SMA]-data[FG_9_SMA]:>9.6f}",
@@ -180,12 +180,12 @@ def populate_stat_report_essentials(coin: str, data: pd.DataFrame, raw_data: pd.
                    f"Report for {coin.upper()}:",
                    "Basic Stats",
                    "[1.0 is the highest; 0.0 is the lowest]",
-                   f"price:\t\t\t{data[PRICE]:.6f}",
+                   f"price:\t\t\t\t{data[PRICE]:.6f}",
                    f"market_cap:\t\t{data[MARKET_CAP]:.6f}",
-                   f"volume:\t\t\t{data[VOLUME]:.6f}",
+                   f"volume:\t\t\t\t{data[VOLUME]:.6f}",
                    f"fear/greed:\t\t{data[FEAR_GREED]:.6f} [{get_fg_indicator(data[FEAR_GREED])}]",
                    f"sharpe_ratio:\t{common.get_sharpe_ratio(coin):.6f}",
-                   f"UPI:\t\t\t{common.get_upi(coin):.6f}"]
+                   f"UPI:\t\t\t\t\t{common.get_upi(coin):.6f}"]
 
     price_ratios = ["\nPrice Ratios",
                     "[>0 means greater risk/overvalued; <0 means less risk/undervalued]"]
@@ -211,7 +211,7 @@ def populate_stat_report_essentials(coin: str, data: pd.DataFrame, raw_data: pd.
 
     fear_greed_deltas = ["\nFear/Greed Deltas",
                          "[>0 is greedier; <0 is more fearful]",
-                         f"7-day -> Present:\t{data[FEAR_GREED]-data[FG_7_SMA]:>9.6f}",
+                         f"7-day -> Present:\t\t{data[FEAR_GREED]-data[FG_7_SMA]:>9.6f}",
                          f"15-day -> Present:\t{data[FEAR_GREED]-data[FG_15_SMA]:>9.6f}",
                          f"30-day -> Present:\t{data[FEAR_GREED]-data[FG_30_SMA]:>9.6f}"]
 
@@ -378,7 +378,7 @@ def generate_signals(full_report: bool = False) -> List[str]:
 
         report.append("\nAction Signals")
         report.append(f"Signal by best nn:\t{signal_b}")
-        report.append(f"Signal by votes:\t{signal_v}")
+        report.append(f"Signal by votes:\t\t{signal_v}")
         report.append(f"Signal by weights:\t{signal_w}")
         report.append(f"Buy/Sell pressure:\t{buy_or_sell} {signal_strength:.1f}X")
 
@@ -389,7 +389,7 @@ def generate_signals(full_report: bool = False) -> List[str]:
         report.append(f"Diff HODL and BUY:\t\t{abs(hodl_signal - buy_signal):>9.4f}")
         report.append(f"Diff HODL and SELL:\t\t{abs(hodl_signal - sell_signal):>9.4f}")
         report.append("[>0.7 is strong; <0.3 is weak]")
-        report.append(f"BUY to SELL diff ratio:\t{abs(buy_signal - sell_signal) / (abs(hodl_signal - buy_signal) + abs(hodl_signal - sell_signal)):>9.4f}")
+        report.append(f"BUY to SELL diff ratio:{abs(buy_signal - sell_signal) / (abs(hodl_signal - buy_signal) + abs(hodl_signal - sell_signal)):>9.4f}")
 
     return report
 

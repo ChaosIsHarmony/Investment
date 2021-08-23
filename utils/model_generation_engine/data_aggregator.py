@@ -265,10 +265,11 @@ def aggregate_data_for_new_coins(coins: List[str], how_far_back: int = 600) -> N
                 fetch_missing_data_by_dates(coin, missing_dates, verbose=True)
                 common.merge_newly_aggregated_data(coin, by_range=False)
 
-            print(f"{coin} data successfully pulled and stored.")
+        print(f"{coin} data successfully pulled and stored.")
 
 
 
 if __name__ == "__main__":
-    #aggregate_data_for_new_coins(common.coins)
-    aggregate_data_for_new_coins(common.possible_coins)
+    #  aggregate_data_for_new_coins(common.coins)
+    #  aggregate_data_for_new_coins(common.possible_coins)
+    aggregate_data_for_new_coins(["avalanche-2"])
