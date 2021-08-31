@@ -246,7 +246,10 @@ def prune_models_by_accuracy(coin: str) -> None:
         except:
             print(f"Error when attempting to remove {f}.")
 
-    print(f"{rm_cnt} weak models removed [{rm_cnt/len(filenames)*100:.2f}% of original models].")
+    if len(filenames) > 0:
+        print(f"{rm_cnt} weak models removed [{rm_cnt/len(filenames)*100:.2f}% of original models].")
+    else:
+        print(f"No models for {coin}")
 
     # if too many models
     most_reliable_models.sort(reverse=True)
@@ -265,7 +268,10 @@ def prune_models_by_accuracy(coin: str) -> None:
             except:
                 print(f"Error when attempting to remove {model[1]}.")
 
-    print(f"Most reliable model: {final_cut[0][1]}\n\tAvg. Acc.: {100*final_cut[0][0]:.2f}%")
+    if len(final_cut) > 0:
+        print(f"Most reliable model: {final_cut[0][1]}\n\tAvg. Acc.: {100*final_cut[0][0]:.2f}%")
+    else:
+        print(f"{coin} had no models make the cut.")
 
 
 #

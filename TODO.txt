@@ -1,3 +1,4 @@
 1.) Make auto merge function with fear-greed dataset on missing data values in data aggregator
 2.) Fill out test suite
 3.) Refactor pandas code to use chaining as per M. Harrison's talk
+4.) Check price and fear-greed deltas in signal_generator, something's off

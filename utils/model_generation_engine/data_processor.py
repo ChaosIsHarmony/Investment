@@ -364,11 +364,11 @@ def fully_automated_training_pipeline() -> None:
         4.) Pruning models:     hold all models to more rigorous standards and keep only those that match
         5.) Make a list:        list all the best performers (for use in the signal_generator script)
     '''
-    coin = "all"
-    layer_sizes = [15]
+    coin = "ethereum"
+    layer_sizes = [7] #[x for x in range(nn.N_SIGNALS+2, nn.N_FEATURES)]
 
     for hidden_layer_size in layer_sizes:
-        parameter_tuner(coin, hidden_layer_size, data_aug_factor=0)
+        parameter_tuner(coin, hidden_layer_size, data_aug_factor=24)
         continue_training(coin, "Hidden_" + str(hidden_layer_size), data_aug_factor=64)
         cleanup(coin)
         common.prune_models_by_accuracy(coin)
