@@ -1,3 +1,6 @@
+'''
+RUN $ python3 -m tests.test_dataset_methods
+'''
 import utils.model_generation_engine.data_preprocessor as dpp
 import utils.model_generation_engine.dataset_methods as dm
 import utils.model_generation_engine.neural_nets as nn

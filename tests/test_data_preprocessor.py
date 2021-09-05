@@ -8,6 +8,7 @@ import pandas as pd
 
 
 def test_handle_missing_data():
+        coin = "fakecoin"
         start_date = "2020-10-01"
         end_date = "2020-10-04"
 
@@ -18,7 +19,7 @@ def test_handle_missing_data():
                         ['2020-10-03', 0, 0, 0],
                         ['2020-10-04', 3, 3, 3]]
         data = pd.DataFrame(data, columns=["date", 1, 2, 3])
-        data = dpp.handle_missing_data(data, start_date, end_date)
+        data = dpp.handle_missing_data(coin, data, start_date, end_date)
 
         # date type
         assert type(data.iloc[0, 0]) == pd._libs.tslibs.timestamps.Timestamp and type(data.iloc[1, 0]) == pd._libs.tslibs.timestamps.Timestamp and type(data.iloc[2, 0]) == pd._libs.tslibs.timestamps.Timestamp and type(data.iloc[3, 0]) == pd._libs.tslibs.timestamps.Timestamp, "Date column type changed test failed"
@@ -30,7 +31,7 @@ def test_handle_missing_data():
                         ['2020-10-03', 3, 3, 3],
                         ['2020-10-04', 3, 3, 3]]
         data = pd.DataFrame(data, columns=["date", 1, 2, 3])
-        data = dpp.handle_missing_data(data, start_date, end_date)
+        data = dpp.handle_missing_data(coin, data, start_date, end_date)
 
         assert data.iloc[0, 1] == 1.0, "Zero in the middle (first row, second column) test failed."
         assert data.iloc[0, 2] == 1.0, "Zero in the middle (first row, third column) test failed."
@@ -55,7 +56,7 @@ def test_handle_missing_data():
                         ['2020-10-03', 0, 0, 0],
                         ['2020-10-04', 3, 3, 3]]
         data = pd.DataFrame(data, columns=["date", 1, 2, 3])
-        data = dpp.handle_missing_data(data, start_date, end_date)
+        data = dpp.handle_missing_data(coin, data, start_date, end_date)
 
         assert data.iloc[0, 1] == 1.0, "Consecutive zeros (first row, second column) test case failed."
         assert data.iloc[0, 2] == 1.0, "Consecutive zeros (first row, third column) test case failed."
@@ -80,7 +81,7 @@ def test_handle_missing_data():
                         ['2020-10-03', 0, 0, 0],
                         ['2020-10-04', 3, 3, 3]]
         data = pd.DataFrame(data, columns=["date", 1, 2, 3])
-        data = dpp.handle_missing_data(data, start_date, end_date)
+        data = dpp.handle_missing_data(coin, data, start_date, end_date)
 
         assert data.iloc[0, 1] == 1.0, "Leading zero (first row, second column) test failed."
         assert data.iloc[0, 2] == 1.0, "Leading zero (first row, third column) test failed."
@@ -105,7 +106,7 @@ def test_handle_missing_data():
                         ['2020-10-03', 2, 2, 2],
                         ['2020-10-04', 0, 0, 0]]
         data = pd.DataFrame(data, columns=["date", 1, 2, 3])
-        data = dpp.handle_missing_data(data, start_date, end_date)
+        data = dpp.handle_missing_data(coin, data, start_date, end_date)
 
         assert data.iloc[0, 1] == 1.0, "Ending zero (first row, second column) test failed."
         assert data.iloc[0, 2] == 1.0, "Ending zero (first row, third column) test failed."
