@@ -96,11 +96,12 @@ def populate_stat_report_full(coin: str, data: pd.DataFrame, raw_data: pd.DataFr
                    f"market_cap:\t\t{data[MARKET_CAP]:.6f}",
                    f"volume:\t\t\t\t{data[VOLUME]:.6f}",
                    f"fear/greed:\t\t{data[FEAR_GREED]:.6f} [{get_fg_indicator(data[FEAR_GREED])}]",
+                   "[SR: >2 is good; UPI, the higher the better]",
                    f"sharpe_ratio:\t{common.get_sharpe_ratio(coin):.6f}",
                    f"UPI:\t\t\t\t\t{common.get_upi(coin):.6f}"]
 
     price_ratios = ["\nPrice Ratios",
-                    "[>0 means greater risk/overvalued; <0 means less risk/undervalued]",
+                    "[>1 means greater risk/overvalued; <1 means less risk/undervalued]",
                     f"5-day/10-day:\t{raw_data[PRICE_5_SMA]/raw_data[PRICE_10_SMA]:>9.6f}",
                     f"10-day/25-day:\t{raw_data[PRICE_10_SMA]/raw_data[PRICE_25_SMA]:>9.6f}",
                     f"25-day/50-day:\t{raw_data[PRICE_25_SMA]/raw_data[PRICE_50_SMA]:>9.6f}"]
@@ -145,24 +146,24 @@ def populate_stat_report_full(coin: str, data: pd.DataFrame, raw_data: pd.DataFr
         price_ratios.append("WARNING: DATA MISSING FROM SMAs; MODEL MAY BE UNRELIABLE")
 
     price_deltas = ["\nPrice Deltas",
-                    "[<0 shows a decrease; >0 shows an increase]",
-                    f"5-day -> Present:\t\t{data[PRICE]-data[PRICE_5_SMA]:>9.6f}",
-                    f"10-day -> 5-day:\t\t{data[PRICE_5_SMA]-data[PRICE_10_SMA]:>9.6f}",
-                    f"25-day -> 10-day:\t\t{data[PRICE_10_SMA]-data[PRICE_25_SMA]:>9.6f}",
-                    f"50-day -> 25-day:\t\t{data[PRICE_25_SMA]-data[PRICE_50_SMA]:>9.6f}",
-                    f"75-day -> 50-day:\t\t{data[PRICE_50_SMA]-data[PRICE_75_SMA]:>9.6f}",
-                    f"100-day -> 75-day:\t\t{data[PRICE_75_SMA]-data[PRICE_100_SMA]:>9.6f}"]
+                    "[>1 shows a decrease; <1 shows an increase]",
+                    f"5-day -> Present:\t\t{raw_data[PRICE_5_SMA]/raw_data[PRICE]:>9.6f}",
+                    f"10-day -> Present:\t\t{raw_data[PRICE_10_SMA]/raw_data[PRICE]:>9.6f}",
+                    f"25-day -> Present:\t\t{raw_data[PRICE_25_SMA]/raw_data[PRICE]:>9.6f}",
+                    f"50-day -> Present:\t\t{raw_data[PRICE_50_SMA]/raw_data[PRICE]:>9.6f}",
+                    f"75-day -> Present:\t\t{raw_data[PRICE_75_SMA]/raw_data[PRICE]:>9.6f}",
+                    f"100-day -> Present:\t\t{raw_data[PRICE_100_SMA]/raw_data[PRICE]:>9.6f}"]
 
     fear_greed_deltas = ["\nFear/Greed Deltas",
                          "[>0 is greedier; <0 is more fearful]",
-                         f"3-day -> Present:\t\t{data[FEAR_GREED]-data[FG_3_SMA]:>9.6f}",
-                         f"5-day -> 3-day:\t\t{data[FG_3_SMA]-data[FG_5_SMA]:>9.6f}",
-                         f"7-day -> 5-day\t\t{data[FG_5_SMA]-data[FG_7_SMA]:>9.6f}",
-                         f"9-day -> 7-day:\t\t{data[FG_7_SMA]-data[FG_9_SMA]:>9.6f}",
-                         f"11-day -> 9-day:\t{data[FG_9_SMA]-data[FG_11_SMA]:>9.6f}",
-                         f"13-day -> 11-day:\t{data[FG_11_SMA]-data[FG_13_SMA]:>9.6f}",
-                         f"15-day -> 13-day:\t{data[FG_13_SMA]-data[FG_15_SMA]:>9.6f}",
-                         f"30-day -> 15-day:\t{data[FG_15_SMA]-data[FG_30_SMA]:>9.6f}"]
+                         f"3-day -> Present:\t\t{raw_data[FEAR_GREED]-raw_data[FG_3_SMA]:>4.1f}",
+                         f"5-day -> 3-day:\t\t{raw_data[FG_3_SMA]-raw_data[FG_5_SMA]:>4.1f}",
+                         f"7-day -> 5-day\t\t{raw_data[FG_5_SMA]-raw_data[FG_7_SMA]:>4.1f}",
+                         f"9-day -> 7-day:\t\t{raw_data[FG_7_SMA]-raw_data[FG_9_SMA]:>4.1f}",
+                         f"11-day -> 9-day:\t{raw_data[FG_9_SMA]-raw_data[FG_11_SMA]:>4.1f}",
+                         f"13-day -> 11-day:\t{raw_data[FG_11_SMA]-raw_data[FG_13_SMA]:>4.1f}",
+                         f"15-day -> 13-day:\t{raw_data[FG_13_SMA]-raw_data[FG_15_SMA]:>4.1f}",
+                         f"30-day -> 15-day:\t{raw_data[FG_15_SMA]-raw_data[FG_30_SMA]:>4.1f}"]
 
     for item in basic_stats:
         report.append(item)
@@ -184,11 +185,12 @@ def populate_stat_report_essentials(coin: str, data: pd.DataFrame, raw_data: pd.
                    f"market_cap:\t\t{data[MARKET_CAP]:.6f}",
                    f"volume:\t\t\t\t{data[VOLUME]:.6f}",
                    f"fear/greed:\t\t{data[FEAR_GREED]:.6f} [{get_fg_indicator(data[FEAR_GREED])}]",
+                   "[SR: >2 is good; UPI, the higher the better]",
                    f"sharpe_ratio:\t{common.get_sharpe_ratio(coin):.6f}",
                    f"UPI:\t\t\t\t\t{common.get_upi(coin):.6f}"]
 
     price_ratios = ["\nPrice Ratios",
-                    "[>0 means greater risk/overvalued; <0 means less risk/undervalued]"]
+                    "[>1 means greater risk/overvalued; <1 means less risk/undervalued]"]
 
     if raw_data[PRICE_150_SMA] > 0:
         price_ratios.append(f"50-day/150-day:\t\t{raw_data[PRICE_50_SMA]/raw_data[PRICE_150_SMA]:>9.6f}")
@@ -204,16 +206,16 @@ def populate_stat_report_essentials(coin: str, data: pd.DataFrame, raw_data: pd.
         price_ratios.append("WARNING: DATA MISSING FROM SMAs; MODEL MAY BE UNRELIABLE")
 
     price_deltas = ["\nPrice Deltas",
-                    "[<0 shows a decrease; >0 shows an increase]",
-                    f"25-day -> Present:\t\t{data[PRICE]-data[PRICE_25_SMA]:>9.6f}",
-                    f"50-day -> Present:\t\t{data[PRICE]-data[PRICE_50_SMA]:>9.6f}",
-                    f"100-day -> Present:\t\t{data[PRICE]-data[PRICE_100_SMA]:>9.6f}"]
+                    "[>1 shows a decrease; <1 shows an increase]",
+                    f"25-day -> Present:\t\t{raw_data[PRICE_25_SMA]/raw_data[PRICE]:>9.6f}",
+                    f"50-day -> Present:\t\t{raw_data[PRICE_50_SMA]/raw_data[PRICE]:>9.6f}",
+                    f"100-day -> Present:\t\t{raw_data[PRICE_100_SMA]/raw_data[PRICE]:>9.6f}"]
 
     fear_greed_deltas = ["\nFear/Greed Deltas",
                          "[>0 is greedier; <0 is more fearful]",
-                         f"7-day -> Present:\t\t{data[FEAR_GREED]-data[FG_7_SMA]:>9.6f}",
-                         f"15-day -> Present:\t{data[FEAR_GREED]-data[FG_15_SMA]:>9.6f}",
-                         f"30-day -> Present:\t{data[FEAR_GREED]-data[FG_30_SMA]:>9.6f}"]
+                         f"7-day -> Present:\t\t{raw_data[FEAR_GREED]-raw_data[FG_7_SMA]:>4.1f}",
+                         f"15-day -> Present:\t{raw_data[FEAR_GREED]-raw_data[FG_15_SMA]:>4.1f}",
+                         f"30-day -> Present:\t{raw_data[FEAR_GREED]-raw_data[FG_30_SMA]:>4.1f}"]
 
     for item in basic_stats:
         report.append(item)
