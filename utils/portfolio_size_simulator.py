@@ -42,18 +42,23 @@ portfolio_dataset = get_datasets(coins, interval)
 returns = portfolio_dataset.pct_change()
 np.random.seed(42)
 sum_of_trials = 0
+portfolio_start_amt = int(input("Portfolio start amount: "))
+dca_amt = int(input("DCA amount: "))
+n_years = int(input("Number of years: "))
 
 for trial in range(1, 10000):
     trial_total = 0
-    start_total = 450000
+    start_total = portfolio_start_amt
     subtotals = [start_total*start_pct[0], start_total*start_pct[1], start_total*start_pct[2], start_total*start_pct[3]]
-    dca_amt = 3000
-    for year in range(1,6):
+    for year in range(1,n_years+1):
         for day in range(1,interval):
             subtotals = calculate_new_subtotals(subtotals, returns, year)
             if day % 7 == 0:
                 dca_coin_ind = random.choice([0,1,2,3])
                 subtotals[dca_coin_ind] += dca_amt
+        # interest earned from staking
+        subtotals[1] *= 1.05
+        subtotals[3] *= 1.05
         trial_total += sum(subtotals)
         print(f"Year: {year} | Total: {trial_total}")
     sum_of_trials += trial_total
