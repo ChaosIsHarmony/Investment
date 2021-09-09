@@ -365,7 +365,7 @@ def fully_automated_training_pipeline() -> None:
         5.) Make a list:        list all the best performers (for use in the signal_generator script)
     '''
     coin = "ethereum"
-    layer_sizes = [19] #[x for x in range(nn.N_SIGNALS+2, nn.N_FEATURES)]
+    layer_sizes = [25] #[x for x in range(nn.N_SIGNALS+2, nn.N_FEATURES)]
 
     for hidden_layer_size in layer_sizes:
         parameter_tuner(coin, hidden_layer_size, data_aug_factor=32)

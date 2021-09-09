@@ -23,7 +23,7 @@ def get_datasets(coins: List[str], interval: int) -> pd.DataFrame:
         end_date = data.iloc[data.shape[0]-1,0]
 
         data = data.drop(columns=["market_cap", "volume", "fear_greed"])
-        data = common.handle_missing_data(data, start_date, end_date)
+        data = common.handle_missing_data(coin, data, start_date, end_date)
         data = data.iloc[::-1] # reverse dataset for later pct_change calculations
 
         portfolio_dataset[coin+"_price"] = data["price"]
@@ -126,12 +126,12 @@ def calculate_custom_portfolio(coins: List[str], weights: List[float], interval:
 
 
 if __name__ == "__main__":
-    coins = ["bitcoin", "cardano", "ethereum", "solana"]#, "theta-token", "matic-network"]
+    coins = ["algorand", "bitcoin", "cardano", "ethereum", "solana"]
     interval = int(input("Select interval (in days):\n"))
     mode = input("Select Mode:\n\t(1) Auto-optimize\n\t(2) Input weights manually\n\n")
 
     if mode == '1':
-        calculate_optimal_portfolio(coins, interval, 1000)
+        calculate_optimal_portfolio(coins, interval, 10000)
     else:
         print(f"Available coins: {coins}")
         weights = input("Input space separated weights (must sum to 1):\n")
