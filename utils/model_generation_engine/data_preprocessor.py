@@ -1,4 +1,5 @@
 import pandas as pd
+from datetime import date, datetime, timedelta
 from .. import common
 from typing import Dict, List, Tuple
 
@@ -270,9 +271,8 @@ def clean_data(coin: str, data: pd.DataFrame, start_date: str, end_date: str, ve
 
 
 if __name__ == "__main__":
-    #  coins = ["algorand", "bitcoin", "cardano", "chainlink", "ethereum", "polkadot", "solana"]
     # The following two coins have shorter histories and require a different start date {polkadot = 2020-08-23; solana = 2020-04-11}
-    coins = ["avalanche-2"]
+    coins = common.coins
     #coins = ["polkadot"]
     #coins = ["solana"]
     start_date = "2020-09-22"#"2020-08-23"#"2019-10-20"

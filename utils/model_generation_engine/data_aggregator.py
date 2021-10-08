@@ -209,9 +209,12 @@ def aggregate_data_for_new_coins(coins: List[str], how_far_back: int = 600) -> N
     today = date.today()
     api_calls = 0
     api_call_cycle_start = get_time()
+    print("Fetching Fear and Greed Index...")
     fear_greed = get_fear_greed_by_range(how_far_back)
+    print(f"Finished collecting Fear and Greed Index for past {how_far_back} days.")
 
     for coin in coins:
+        print(f"Fetching data for {coin}...")
         date_delta = -1
         fear_greed_ind = 0
         has_next = True
@@ -223,7 +226,7 @@ def aggregate_data_for_new_coins(coins: List[str], how_far_back: int = 600) -> N
             # There is a limit of 100 api calls per minute
             # But regularly returns a 434 even with much lower calls/minute
             api_calls += 1
-            if api_calls > 70:
+            if api_calls > 50:
                 time_to_wait = 60 - ((get_time() - api_call_cycle_start) / 1000)
                 if time_to_wait > 0:
                     time.sleep(time_to_wait)
@@ -242,6 +245,7 @@ def aggregate_data_for_new_coins(coins: List[str], how_far_back: int = 600) -> N
 
                 try:
                     data = get_historic_data(coin, next_date)
+                    print(f"Fetched data for {next_date}")
                 except Exception as e:
                     print(f"Error: {e}")
                     print(f"Coin: {coin}")
@@ -256,14 +260,17 @@ def aggregate_data_for_new_coins(coins: List[str], how_far_back: int = 600) -> N
 
                 historical_data.append(daily_data)
 
-            # save as CSV
-            coin_data = pd.DataFrame(historical_data)
-            coin_data.to_csv(f"datasets/raw/{coin}_historical_data_raw.csv", index=False, float_format="%f")
+        # save as CSV
+        print(f"Saving {coin} data to CSV...")
+        coin_data = pd.DataFrame(historical_data)
+        coin_data.to_csv(f"datasets/raw/{coin}_historical_data_raw.csv", index=False, float_format="%f")
 
-            # if missing dates
-            if len(missing_dates) > 0:
-                fetch_missing_data_by_dates(coin, missing_dates, verbose=True)
-                common.merge_newly_aggregated_data(coin, by_range=False)
+        # if missing dates
+        if len(missing_dates) > 0:
+            print(f"Fetching missing data for {coin}...")
+            fetch_missing_data_by_dates(coin, missing_dates, verbose=True)
+            common.merge_newly_aggregated_data(coin, by_range=False)
+            print(f"Finished collecting/merging missing data for {coin}.")
 
         print(f"{coin} data successfully pulled and stored.")
 
@@ -272,4 +279,11 @@ def aggregate_data_for_new_coins(coins: List[str], how_far_back: int = 600) -> N
 if __name__ == "__main__":
     #  aggregate_data_for_new_coins(common.coins)
     #  aggregate_data_for_new_coins(common.possible_coins)
-    aggregate_data_for_new_coins(["avalanche-2"])
+    #  aggregate_data_for_new_coins(["avalanche-2"])
+    #  aggregate_data_for_new_coins(["matic-network"])
+    for coin in common.coins:
+        fetch_missing_data_by_range(coin, 10, start_delta=0, verbose=True)
+        common.merge_newly_aggregated_data(coin, by_range=True)
+        print(f"Finished collecting/merging missing data for {coin}.")
+
+
