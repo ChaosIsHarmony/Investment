@@ -43,7 +43,7 @@ returns = portfolio_dataset.pct_change()
 np.random.seed(42)
 sum_of_trials = 0
 portfolio_start_amt = int(input("Portfolio start amount: "))
-dca_amt = int(input("DCA amount: "))
+dca_amt = int(input("DCA amount [weekly]: "))
 n_years = int(input("Number of years: "))
 
 for trial in range(1, 10000):
