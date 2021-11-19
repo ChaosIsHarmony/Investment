@@ -101,7 +101,9 @@ def populate_stat_report_full(coin: str, data: pd.DataFrame, raw_data: pd.DataFr
                    f"UPI:\t\t\t\t\t{common.get_upi(coin):.6f}"]
 
     limit_orders = ["\nLimit Order",
-                   f"Price: {raw_data[PRICE_50_SMA]}"]
+                    f"Current Price:\t\t{raw_data[PRICE]:.0f}",
+                    f"Limit Order Price: {raw_data[PRICE_50_SMA]:.0f}",
+                    f"Ratio [LOP/CP]:\t\t{raw_data[PRICE_50_SMA]/raw_data[PRICE]:0.4f}"]
 
     price_ratios = ["\nPrice Ratios",
                     "[>1 means greater risk/overvalued; <1 means less risk/undervalued]",
@@ -195,7 +197,9 @@ def populate_stat_report_essentials(coin: str, data: pd.DataFrame, raw_data: pd.
                    f"UPI:\t\t\t\t\t{common.get_upi(coin):.6f}"]
 
     limit_orders = ["\nLimit Order",
-                   f"Price: {raw_data[PRICE_50_SMA]}"]
+                    f"Current Price:\t\t{raw_data[PRICE]:.0f}",
+                    f"Limit Order Price: {raw_data[PRICE_50_SMA]:.0f}",
+                    f"Ratio [LOP/CP]:\t\t{raw_data[PRICE_50_SMA]/raw_data[PRICE]:0.4f}"]
 
     price_ratios = ["\nPrice Ratios",
                     "[>1 means greater risk/overvalued; <1 means less risk/undervalued]"]
@@ -444,4 +448,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-	main()
+        main()
