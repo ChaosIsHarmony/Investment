@@ -100,11 +100,6 @@ def populate_stat_report_full(coin: str, data: pd.DataFrame, raw_data: pd.DataFr
                    f"sharpe_ratio:\t{common.get_sharpe_ratio(coin):.6f}",
                    f"UPI:\t\t\t\t\t{common.get_upi(coin):.6f}"]
 
-    limit_orders = ["\nLimit Order",
-                    f"Current Price:\t\t{raw_data[PRICE]:.0f}",
-                    f"Limit Order Price: {raw_data[PRICE_50_SMA]:.0f}",
-                    f"Ratio [LOP/CP]:\t\t{raw_data[PRICE_50_SMA]/raw_data[PRICE]:0.4f}"]
-
     price_ratios = ["\nPrice Ratios",
                     "[>1 means greater risk/overvalued; <1 means less risk/undervalued]",
                     f"5-day/10-day:\t{raw_data[PRICE_5_SMA]/raw_data[PRICE_10_SMA]:>9.6f}",
@@ -172,8 +167,6 @@ def populate_stat_report_full(coin: str, data: pd.DataFrame, raw_data: pd.DataFr
 
     for item in basic_stats:
         report.append(item)
-    for item in limit_orders:
-        report.append(item)
     for item in price_ratios:
         report.append(item)
     for item in price_deltas:
@@ -195,11 +188,6 @@ def populate_stat_report_essentials(coin: str, data: pd.DataFrame, raw_data: pd.
                    "[SR: >2 is good; UPI, the higher the better]",
                    f"sharpe_ratio:\t{common.get_sharpe_ratio(coin):.6f}",
                    f"UPI:\t\t\t\t\t{common.get_upi(coin):.6f}"]
-
-    limit_orders = ["\nLimit Order",
-                    f"Current Price:\t\t{raw_data[PRICE]:.0f}",
-                    f"Limit Order Price: {raw_data[PRICE_50_SMA]:.0f}",
-                    f"Ratio [LOP/CP]:\t\t{raw_data[PRICE_50_SMA]/raw_data[PRICE]:0.4f}"]
 
     price_ratios = ["\nPrice Ratios",
                     "[>1 means greater risk/overvalued; <1 means less risk/undervalued]"]
@@ -230,8 +218,6 @@ def populate_stat_report_essentials(coin: str, data: pd.DataFrame, raw_data: pd.
                          f"30-day -> Present:\t{raw_data[FEAR_GREED]-raw_data[FG_30_SMA]:>4.1f}"]
 
     for item in basic_stats:
-        report.append(item)
-    for item in limit_orders:
         report.append(item)
     for item in price_ratios:
         report.append(item)
@@ -406,6 +392,15 @@ def generate_signals(full_report: bool = False) -> List[str]:
         report.append(f"Diff HODL and SELL:\t\t{abs(hodl_signal - sell_signal):>9.4f}")
         report.append("[>0.7 is strong; <0.3 is weak]")
         report.append(f"BUY to SELL diff ratio:{abs(buy_signal - sell_signal) / (abs(hodl_signal - buy_signal) + abs(hodl_signal - sell_signal)):>9.4f}")
+
+        report.append("\nLimit Orders")
+        report.append("[ratio > 1 is BUY; ratio < 1 is NEUTRAL]")
+        report.append(f"Current Price:\t\t{raw_data[PRICE]:.0f}")
+        report.append(f"Limit Order [1x]: {raw_data[PRICE_50_SMA]:.0f} | ratio:\t\t{raw_data[PRICE_50_SMA]/raw_data[PRICE]:0.4f}")
+        report.append(f"Limit Order [2x]: {raw_data[PRICE_100_SMA]:.0f} | ratio:\t\t{raw_data[PRICE_100_SMA]/raw_data[PRICE]:0.4f}")
+        report.append(f"Limit Order [3x]: {raw_data[PRICE_150_SMA]:.0f} | ratio:\t\t{raw_data[PRICE_150_SMA]/raw_data[PRICE]:0.4f}")
+        report.append(f"Limit Order [4x]: {raw_data[PRICE_200_SMA]:.0f} | ratio:\t\t{raw_data[PRICE_200_SMA]/raw_data[PRICE]:0.4f}")
+
 
     return report
 
