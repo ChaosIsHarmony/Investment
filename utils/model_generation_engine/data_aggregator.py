@@ -279,7 +279,7 @@ def aggregate_data_for_new_coins(coins: List[str], how_far_back: int = 600) -> N
 if __name__ == "__main__":
     #  aggregate_data_for_new_coins(common.coins)
     #  aggregate_data_for_new_coins(common.possible_coins)
-    #  aggregate_data_for_new_coins(["avalanche-2"])
+    aggregate_data_for_new_coins(["elrond-erd-2"])
     #  aggregate_data_for_new_coins(["matic-network"])
     for coin in common.coins:
         fetch_missing_data_by_range(coin, 10, start_delta=0, verbose=True)

@@ -85,43 +85,60 @@ def get_custom_sharpe_ratio(data: pd.DataFrame, interval: int) -> float:
 
 
 
-def prepare_dataframe(coin: str):
+def prepare_dataframe(coin: str, interval: int = 365, time_delta: int = 0) -> pd.DataFrame:
+    '''
+    Returns a data frame for specified coin up to the present day minus time_delta.
+    '''
     data = pd.read_csv(f"datasets/raw/{coin}_historical_data_raw.csv")
 
     # drop irrelevant columns
     data = data.drop(columns=["market_cap", "volume", "fear_greed"])
-    last_ind = data.shape[0] - 1
-    data = common.handle_missing_data(coin, data, data.iloc[0,0], data.iloc[last_ind,0])
+    last_ind = time_delta+interval
+    if last_ind > data.shape[0] - 1:
+        last_ind = data.shape[0] - 1
+        print("WARNING: risk_adjusted_return_calculator.py: prepare_dataframe: data frame length is less than desired interval")
+    data = common.handle_missing_data(coin, data, data.iloc[time_delta,0], data.iloc[last_ind,0])
+    data = data.iloc[time_delta:last_ind, 0:data.shape[1]]
 
     return data
 
 
 
-def get_sharpe_ratio(coin: str) -> float:
+def get_sharpe_ratio(coin: str, interval: int = 365) -> float:
     '''
     If possible, returns the 365-day Sharpe Ratio
     Else, returns the max interval Sharpe Ratio.
     '''
     data = prepare_dataframe(coin)
-    interval = data.shape[0]
     try:
         return get_current_sharpe_ratio(data)
     except:
-        return get_custom_sharpe_ratio(data, interval)
+        return get_custom_sharpe_ratio(data, data.shape[0])
 
 
 
-def get_upi(coin: str) -> float:
+def get_sharpe_ratio_range(coin: str, interval: int = 365, time_delta: int = 0) -> float:
+    '''
+    Returns Sharpe Ratio for a given interval offset from the present day by time_delta days.
+    '''
+    data = prepare_dataframe(coin, interval, time_delta)
+    try:
+        return get_current_sharpe_ratio(data)
+    except:
+        return get_custom_sharpe_ratio(data, data.shape[0])
+
+
+
+def get_upi(coin: str, interval: int = 365) -> float:
     '''
     If possible, returns the 365-day UPI
     Else, returns the max interval UPI.
     '''
     data = prepare_dataframe(coin)
-    interval = data.shape[0]
     try:
-        return calculate_ulcer_performance_index(data, 365)
-    except:
         return calculate_ulcer_performance_index(data, interval)
+    except:
+        return calculate_ulcer_performance_index(data, data.shape[0])
 
 
 

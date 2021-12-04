@@ -32,7 +32,7 @@ FG_11_SMA = FG_3_SMA+4
 FG_13_SMA = FG_3_SMA+5
 FG_15_SMA = FG_3_SMA+6
 FG_30_SMA = FG_3_SMA+7
-
+RSI = 23
 
 
 def fetch_new_data(n_days: int) -> None:
@@ -87,6 +87,52 @@ def get_fg_indicator(fg_index: float) -> str:
 
 
 
+def normalize(x: float, y: float) -> (float, float):
+    '''
+    Returns a positive normalized value.
+    Results are square to make it positive.
+    '''
+    distance = max(np.abs(x - y), 1)
+    x_norm = x / distance
+    y_norm = y / distance
+    return (x_norm**2, y_norm**2)
+
+
+
+def scale(val: float) -> float:
+    return 1 / (1 + np.exp(-val))
+
+
+
+def calculate_risk(raw_data: pd.DataFrame, coin: str, time_delta: int = 0) -> float:
+    '''
+    Returns a float between 0.0 - 1.0 indicating level of risk.
+    '''
+    # calculate risk for intervals (in weeks, converted to days by multiplying by 7)
+    risk_52_sr = common.get_sharpe_ratio_range(coin, 52*7, time_delta)
+    risk_52_upi = common.get_upi(coin, 52*7)
+    risk_2_sr = common.get_sharpe_ratio_range(coin, 2*7, time_delta)
+    risk_2_upi = common.get_upi(coin, 2*7)
+
+    risk_52_sr, risk_2_sr = normalize(risk_52_sr, risk_2_sr)
+    risk_52_upi, risk_2_upi = normalize(risk_52_upi, risk_2_upi)
+
+    # aggregate and weigth (recent > past)
+    risk_delta_sr = np.abs(risk_52_sr - risk_2_sr)
+    risk_delta_upi = np.abs(risk_52_upi - risk_2_upi)
+    total_weighted_risk_sr = (risk_52_sr / 3) + (risk_2_sr * 2 / 3)
+    total_weighted_risk_upi = (risk_52_upi / 3) + (risk_2_upi * 2 / 3)
+    print(f"{coin}")
+
+    # average all indicators
+    sr_upi_avg = scale(total_weighted_risk_sr / risk_delta_sr) + scale(total_weighted_risk_upi / risk_delta_upi) / 2
+    rsi = scale(raw_data[len(raw_data)-2]/100)
+    risk = (sr_upi_avg / 3) + (rsi * 2 / 3)
+
+    return risk
+
+
+
 def populate_stat_report_full(coin: str, data: pd.DataFrame, raw_data: pd.DataFrame, report: List[str]) -> None:
     basic_stats = ["\n\n\n________________________________________",
                    f"Report for {coin.upper()}:",
@@ -98,7 +144,9 @@ def populate_stat_report_full(coin: str, data: pd.DataFrame, raw_data: pd.DataFr
                    f"fear/greed:\t\t{data[FEAR_GREED]:.6f} [{get_fg_indicator(data[FEAR_GREED])}]",
                    "[SR: >2 is good; UPI, the higher the better]",
                    f"sharpe_ratio:\t{common.get_sharpe_ratio(coin):.6f}",
-                   f"UPI:\t\t\t\t\t{common.get_upi(coin):.6f}"]
+                   f"UPI:\t\t\t\t\t{common.get_upi(coin):.6f}",
+                   f"RSI:\t\t\t\t\t{raw_data[RSI]:.6f}",
+                   f"Risk Metric:\t{calculate_risk(raw_data, coin):.6f}"]
 
     price_ratios = ["\nPrice Ratios",
                     "[>1 means greater risk/overvalued; <1 means less risk/undervalued]",
@@ -187,7 +235,9 @@ def populate_stat_report_essentials(coin: str, data: pd.DataFrame, raw_data: pd.
                    f"fear/greed:\t\t{data[FEAR_GREED]:.6f} [{get_fg_indicator(data[FEAR_GREED])}]",
                    "[SR: >2 is good; UPI, the higher the better]",
                    f"sharpe_ratio:\t{common.get_sharpe_ratio(coin):.6f}",
-                   f"UPI:\t\t\t\t\t{common.get_upi(coin):.6f}"]
+                   f"UPI:\t\t\t\t\t{common.get_upi(coin):.6f}",
+                   f"RSI:\t\t\t\t\t{raw_data[RSI]:.6f}",
+                   f"Risk Metric:\t{calculate_risk(raw_data, coin):.6f}"]
 
     price_ratios = ["\nPrice Ratios",
                     "[>1 means greater risk/overvalued; <1 means less risk/undervalued]"]
@@ -329,6 +379,10 @@ def generate_signals(full_report: bool = False) -> List[str]:
         # NOTE: raw_data is used for the SMA ratio calculations as the normalized data cannot adequately capture the ratios' significances
         data = pd.read_csv(f"datasets/clean/{coin}_historical_data_clean.csv")
         raw_data = pd.read_csv(f"datasets/raw/{coin}_historical_data_raw_all_features.csv")
+
+        # TODO: retrain models with RSI
+        data = data.drop(columns=["RSI"])
+
         # extracts the most recent data as a python list
         data = data[data["date"] == str(date.today()-timedelta(0))].values.tolist()[0][1:-1]
         raw_data = raw_data[raw_data["date"] == str(date.today()-timedelta(0))].values.tolist()[0][1:-1]

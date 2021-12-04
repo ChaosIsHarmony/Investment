@@ -170,6 +170,40 @@ def calculate_SMAs(data: pd.DataFrame) -> pd.DataFrame:
 
 
 
+def calculate_relative_strength(data: pd.DataFrame, end_index: int, interval: int = 14) -> float:
+    '''
+    Calculate total percent gains and losses over period of time.
+    Interval is 14 days by default.
+    '''
+    gain = 0
+    loss = 0
+    for i in range(end_index - interval, end_index):
+        price_today = data.iloc[i+1,2]
+        price_yesterday = data.iloc[i,2]
+
+        if price_today > price_yesterday:
+            gain += (price_today - price_yesterday) #/ price_yesterday
+        elif price_yesterday > price_today:
+            loss += (price_yesterday - price_today) #/ price_yesterday
+
+    return (gain/interval) / (loss/interval)
+
+
+
+def calculate_RSIs(data: pd.DataFrame) -> pd.DataFrame:
+    RSI = [0,0,0,0,0,0,0,0,0,0,0,0,0]
+    for i in range(13,len(data)):
+        # calculate avg gain/loss
+        rs_value = calculate_relative_strength(data, i)
+        rsi = 100.0 - (100.0 / (1.0 + rs_value))
+        RSI.append(rsi)
+
+    data["RSI"] = RSI
+
+    return data
+
+
+
 def get_signal_value(percent_delta: float) -> int:
     '''
     Returns signal to BUY, SELL, or HODL [0-3 scale] based on percent_delta over given period (as determined by the calling method).
@@ -254,6 +288,10 @@ def clean_data(coin: str, data: pd.DataFrame, start_date: str, end_date: str, ve
     data = calculate_SMAs(data)
     if verbose:
         print(f"SMA calculation complete for {coin}.")
+    # Calculate RSIs
+    data = calculate_RSIs(data)
+    if verbose:
+        print(f"RSI calculation complete for {coin}.")
     # Calculate signals
     data = calculate_signals(data, common.SIGNAL_FOR_N_DAYS_FROM_NOW)
     if verbose:

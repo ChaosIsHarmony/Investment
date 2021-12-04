@@ -25,8 +25,8 @@ PRUNING_THRESHOLD_VALID = 0.47
 PRUNING_THRESHOLD_TEST = 0.7
 NUM_MAX_TOTAL_MODELS = 50
 
-coins = ["algorand", "bitcoin", "cardano", "chainlink", "ethereum",  "matic-network", "polkadot", "solana"]
-possible_coins = ["avalanche-2", "theta-token", "zilliqa"]
+coins = ["bitcoin", "cardano", "chainlink", "elrond-erd-2", "ethereum", "polkadot", "solana"]
+possible_coins = ["algorand", "avalanche-2", "matic-network", "theta-token", "zilliqa"]
 
 #
 # ------------- INTERFACES ------------
@@ -141,9 +141,17 @@ def create_nn_model(hidden_layer_size: int, dropout: float, eta: float, eta_deca
 
 
 # RISK ADJUSTED RETURN CALCULATOR
-def get_sharpe_ratio(coin: str) -> float:
-    return rarc.get_sharpe_ratio(coin)
+def get_sharpe_ratio(coin: str, interval: int = 365) -> float:
+    return rarc.get_sharpe_ratio(coin, interval)
 
 
-def get_upi(coin: str) -> float:
-    return rarc.get_upi(coin)
+def get_upi(coin: str, interval: int = 365) -> float:
+    return rarc.get_upi(coin, interval)
+
+
+def get_sharpe_ratio_range(coin: str, interval: int = 365, time_delta: int = 0) -> float:
+    return rarc.get_sharpe_ratio_range(coin, interval, time_delta)
+
+
+def get_upi_range(coin: str, interval: int = 365, time_delta: int = 0) -> float:
+    return rarc.get_upi_range(coin, interval, time_delta)
