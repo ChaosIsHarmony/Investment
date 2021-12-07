@@ -87,47 +87,104 @@ def get_fg_indicator(fg_index: float) -> str:
 
 
 
-def normalize(x: float, y: float) -> (float, float):
+def normalize(arr: List[float]) -> List[float]:
     '''
-    Returns a positive normalized value.
-    Results are square to make it positive.
+    Returns a positive normalized value for each element in a list.
     '''
-    distance = max(np.abs(x - y), 1)
-    x_norm = x / distance
-    y_norm = y / distance
-    return (x_norm**2, y_norm**2)
+    max_elem = max(arr)
+    min_elem = min(arr)
+    if max_elem < 0:
+        distance = np.abs(min_elem) - np.abs(max_elem)
+    else:
+        distance = max_elem - min_elem
 
+    # add small constant so that it's never zero, to prevent div by zero
+    arr = [np.abs((x - min_elem) / distance) + 0.0001 for x in arr]
 
-
-def scale(val: float) -> float:
-    return 1 / (1 + np.exp(-val))
+    return arr
 
 
 
 def calculate_risk(raw_data: pd.DataFrame, coin: str, time_delta: int = 0) -> float:
     '''
-    Returns a float between 0.0 - 1.0 indicating level of risk.
+    Returns a float in range [0,1] indicating level of risk.
     '''
+    # calculate MA ratios
+    ma_50_200 = raw_data[PRICE_50_SMA] / raw_data[PRICE_200_SMA]
+    ma_50_250 = raw_data[PRICE_50_SMA] / raw_data[PRICE_250_SMA]
+    ma_50_300 = raw_data[PRICE_50_SMA] / raw_data[PRICE_300_SMA]
+    ma_50_350 = raw_data[PRICE_50_SMA] / raw_data[PRICE_350_SMA]
+    ma_50_norm = normalize([ma_50_200, ma_50_250, ma_50_300, ma_50_350])
+
+    ma_25_200 = raw_data[PRICE_25_SMA] / raw_data[PRICE_200_SMA]
+    ma_25_250 = raw_data[PRICE_25_SMA] / raw_data[PRICE_250_SMA]
+    ma_25_300 = raw_data[PRICE_25_SMA] / raw_data[PRICE_300_SMA]
+    ma_25_350 = raw_data[PRICE_25_SMA] / raw_data[PRICE_350_SMA]
+    ma_25_norm = normalize([ma_25_200, ma_25_250, ma_25_300, ma_25_350])
+
+    ma_50_avg = []
+    ma_25_avg = []
+    mult = 4
+    i = 0
+    # weights closer averages more heavily
+    while i < 4:
+        ma_50_avg.append(ma_50_norm[i] * mult / 10)
+        ma_25_avg.append(ma_25_norm[i] * mult / 10)
+        i += 1
+        mult -= 1
+
+    ma_weighted_avg = (sum(ma_50_avg) * 2 / 3) + (sum(ma_25_norm) * 1 / 3)
+
     # calculate risk for intervals (in weeks, converted to days by multiplying by 7)
-    risk_52_sr = common.get_sharpe_ratio_range(coin, 52*7, time_delta)
-    risk_52_upi = common.get_upi(coin, 52*7)
-    risk_2_sr = common.get_sharpe_ratio_range(coin, 2*7, time_delta)
-    risk_2_upi = common.get_upi(coin, 2*7)
+    i = 52
+    sr = []
+    upi = []
+    while i >= 2:
+        sr.append(common.get_sharpe_ratio_range(coin, i*7, time_delta))
+        upi.append(common.get_upi(coin, i*7))
+        i = i // 2
 
-    risk_52_sr, risk_2_sr = normalize(risk_52_sr, risk_2_sr)
-    risk_52_upi, risk_2_upi = normalize(risk_52_upi, risk_2_upi)
+    sr_norm = normalize(sr)
+    upi_norm = normalize(upi)
 
-    # aggregate and weigth (recent > past)
-    risk_delta_sr = np.abs(risk_52_sr - risk_2_sr)
-    risk_delta_upi = np.abs(risk_52_upi - risk_2_upi)
-    total_weighted_risk_sr = (risk_52_sr / 3) + (risk_2_sr * 2 / 3)
-    total_weighted_risk_upi = (risk_52_upi / 3) + (risk_2_upi * 2 / 3)
-    print(f"{coin}")
+    sr_avg = []
+    upi_avg = []
+    mult = 5
+    i = 0
+    # weights long range gains more heavily
+    while i < 5:
+        sr_avg.append(sr_norm[i] * mult / 15)
+        upi_avg.append(upi_norm[i] * mult / 15)
+        i += 1
+        mult -= 1
+
+    sr_upi_avg = (sum(sr_avg) + sum(upi_avg)) / 2
+
+    # rsi
+    rsi = raw_data[RSI] / 100
+
+    # fear & greed index
+    fear_greed = raw_data[FEAR_GREED] / 100
 
     # average all indicators
-    sr_upi_avg = scale(total_weighted_risk_sr / risk_delta_sr) + scale(total_weighted_risk_upi / risk_delta_upi) / 2
-    rsi = scale(raw_data[len(raw_data)-2]/100)
-    risk = (sr_upi_avg / 3) + (rsi * 2 / 3)
+    # weight stronger indicators
+    factors = [ma_weighted_avg, sr_upi_avg, rsi, fear_greed]
+    tot = 4
+    for i in range(len(factors)):
+        if factors[i] > 0.9 or factors[i] < 0.3:
+            factors[i] *= 128
+            tot += 128
+        elif factors[i] > 0.8 or factors[i] < 0.4:
+            factors [i] *= 64
+            tot += 64
+        elif factors[i] > 0.7 or factors[i] < 0.5:
+            factors[i] *= 16
+            tot += 16
+
+    for factor in factors:
+        print(factor)
+        print(factor/tot)
+    risk = sum([factor / tot for factor in factors])
 
     return risk
 
@@ -488,10 +545,10 @@ def main() -> None:
     full_report = input("Full report? [y/n; y gives all the gory details] ")
     if (full_report.lower())[0] == 'y':
         report = generate_signals(True)
-        generate_report(report, True)
+        #  generate_report(report, True)
     else:
         report = generate_signals()
-        generate_report(report)
+        #  generate_report(report)
 
 
 
