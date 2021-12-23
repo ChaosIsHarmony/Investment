@@ -181,9 +181,6 @@ def calculate_risk(raw_data: pd.DataFrame, coin: str, time_delta: int = 0) -> fl
             factors[i] *= 16
             tot += 16
 
-    for factor in factors:
-        print(factor)
-        print(factor/tot)
     risk = sum([factor / tot for factor in factors])
 
     return risk
@@ -545,10 +542,10 @@ def main() -> None:
     full_report = input("Full report? [y/n; y gives all the gory details] ")
     if (full_report.lower())[0] == 'y':
         report = generate_signals(True)
-        #  generate_report(report, True)
+        generate_report(report, True)
     else:
         report = generate_signals()
-        #  generate_report(report)
+        generate_report(report)
 
 
 

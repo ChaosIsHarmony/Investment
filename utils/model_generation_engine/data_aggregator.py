@@ -235,30 +235,30 @@ def aggregate_data_for_new_coins(coins: List[str], how_far_back: int = 600) -> N
                     api_call_cycle_start = get_time()
                     api_calls = 1
 
-                # Request data
-                date_delta += 1
-                if date_delta >= how_far_back:
-                    has_next = False
-                    continue
+            # Request data
+            date_delta += 1
+            if date_delta >= how_far_back:
+                has_next = False
+                continue
 
-                next_date = get_correct_date_format(today - timedelta(date_delta))
+            next_date = get_correct_date_format(today - timedelta(date_delta))
 
-                try:
-                    data = get_historic_data(coin, next_date)
-                    print(f"Fetched data for {next_date}")
-                except Exception as e:
-                    print(f"Error: {e}")
-                    print(f"Coin: {coin}")
-                    print(f"Date that failed: {next_date}")
-                    print(f"Days from today: {date_delta}")
-                    missing_dates.append(next_date)
-                    continue
+            try:
+                data = get_historic_data(coin, next_date)
+                print(f"Fetched data for {next_date}")
+            except Exception as e:
+                print(f"Error: {e}")
+                print(f"Coin: {coin}")
+                print(f"Date that failed: {next_date}")
+                print(f"Days from today: {date_delta}")
+                missing_dates.append(next_date)
+                continue
 
-                daily_data = extract_basic_data(data, next_date)
-                daily_data["fear_greed"] = fear_greed[fear_greed_ind]["value"]
-                fear_greed_ind += 1
+            daily_data = extract_basic_data(data, next_date)
+            daily_data["fear_greed"] = fear_greed[fear_greed_ind]["value"]
+            fear_greed_ind += 1
 
-                historical_data.append(daily_data)
+            historical_data.append(daily_data)
 
         # save as CSV
         print(f"Saving {coin} data to CSV...")
@@ -279,11 +279,11 @@ def aggregate_data_for_new_coins(coins: List[str], how_far_back: int = 600) -> N
 if __name__ == "__main__":
     #  aggregate_data_for_new_coins(common.coins)
     #  aggregate_data_for_new_coins(common.possible_coins)
-    aggregate_data_for_new_coins(["elrond-erd-2"])
-    #  aggregate_data_for_new_coins(["matic-network"])
-    for coin in common.coins:
-        fetch_missing_data_by_range(coin, 10, start_delta=0, verbose=True)
-        common.merge_newly_aggregated_data(coin, by_range=True)
-        print(f"Finished collecting/merging missing data for {coin}.")
+    #  aggregate_data_for_new_coins(["elrond-erd-2"])
+    aggregate_data_for_new_coins(["matic-network"])
+    #  for coin in common.coins:
+        #  fetch_missing_data_by_range(coin, 10, start_delta=0, verbose=True)
+        #  common.merge_newly_aggregated_data(coin, by_range=True)
+        #  print(f"Finished collecting/merging missing data for {coin}.")
 
 
