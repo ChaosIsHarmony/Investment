@@ -108,80 +108,36 @@ def normalize(arr: List[float]) -> List[float]:
 def calculate_risk(raw_data: pd.DataFrame, coin: str, time_delta: int = 0) -> float:
     '''
     Returns a float in range [0,1] indicating level of risk.
+    Based on Meehl's findings, fancy weighting doesn't yield better results.
     '''
+    factors = []
+
     # calculate MA ratios
     ma_50_200 = raw_data[PRICE_50_SMA] / raw_data[PRICE_200_SMA]
-    ma_50_250 = raw_data[PRICE_50_SMA] / raw_data[PRICE_250_SMA]
-    ma_50_300 = raw_data[PRICE_50_SMA] / raw_data[PRICE_300_SMA]
-    ma_50_350 = raw_data[PRICE_50_SMA] / raw_data[PRICE_350_SMA]
-    ma_50_norm = normalize([ma_50_200, ma_50_250, ma_50_300, ma_50_350])
-
     ma_25_200 = raw_data[PRICE_25_SMA] / raw_data[PRICE_200_SMA]
-    ma_25_250 = raw_data[PRICE_25_SMA] / raw_data[PRICE_250_SMA]
-    ma_25_300 = raw_data[PRICE_25_SMA] / raw_data[PRICE_300_SMA]
-    ma_25_350 = raw_data[PRICE_25_SMA] / raw_data[PRICE_350_SMA]
-    ma_25_norm = normalize([ma_25_200, ma_25_250, ma_25_300, ma_25_350])
 
-    ma_50_avg = []
-    ma_25_avg = []
-    mult = 4
-    i = 0
-    # weights closer averages more heavily
-    while i < 4:
-        ma_50_avg.append(ma_50_norm[i] * mult / 10)
-        ma_25_avg.append(ma_25_norm[i] * mult / 10)
-        i += 1
-        mult -= 1
-
-    ma_weighted_avg = (sum(ma_50_avg) * 2 / 3) + (sum(ma_25_norm) * 1 / 3)
+    factors.append(ma_25_200/ma_50_200)
 
     # calculate risk for intervals (in weeks, converted to days by multiplying by 7)
-    i = 52
+    i = 66
     sr = []
     upi = []
-    while i >= 2:
+    while i >= 26:
         sr.append(common.get_sharpe_ratio_range(coin, i*7, time_delta))
-        upi.append(common.get_upi(coin, i*7))
-        i = i // 2
+        #  upi.append(common.get_upi(coin, i*7))
+        i -= 8
 
-    sr_norm = normalize(sr)
-    upi_norm = normalize(upi)
-
-    sr_avg = []
-    upi_avg = []
-    mult = 5
-    i = 0
-    # weights long range gains more heavily
-    while i < 5:
-        sr_avg.append(sr_norm[i] * mult / 15)
-        upi_avg.append(upi_norm[i] * mult / 15)
-        i += 1
-        mult -= 1
-
-    sr_upi_avg = (sum(sr_avg) + sum(upi_avg)) / 2
+    factors.append(sum(normalize(sr)) / len(sr))
+    #  factors.append(sum(normalize(upi)) / len(upi))
 
     # rsi
-    rsi = raw_data[RSI] / 100
+    factors.append(raw_data[RSI] / 100)
 
     # fear & greed index
-    fear_greed = raw_data[FEAR_GREED] / 100
+    factors.append(raw_data[FEAR_GREED] / 100)
 
     # average all indicators
-    # weight stronger indicators
-    factors = [ma_weighted_avg, sr_upi_avg, rsi, fear_greed]
-    tot = 4
-    for i in range(len(factors)):
-        if factors[i] > 0.9 or factors[i] < 0.3:
-            factors[i] *= 128
-            tot += 128
-        elif factors[i] > 0.8 or factors[i] < 0.4:
-            factors [i] *= 64
-            tot += 64
-        elif factors[i] > 0.7 or factors[i] < 0.5:
-            factors[i] *= 16
-            tot += 16
-
-    risk = sum([factor / tot for factor in factors])
+    risk = sum(factors) / len(factors)
 
     return risk
 
@@ -414,7 +370,7 @@ def get_signal_strength(data: pd.DataFrame, raw_data: pd.DataFrame) -> Tuple[flo
 
 
 
-def generate_signals(full_report: bool = False) -> List[str]:
+def generate_signals(full_report: bool = False, time_delta: int = 0) -> List[str]:
     report = []
     best_models = []
     for coin in common.coins:
@@ -438,8 +394,8 @@ def generate_signals(full_report: bool = False) -> List[str]:
         data = data.drop(columns=["RSI"])
 
         # extracts the most recent data as a python list
-        data = data[data["date"] == str(date.today()-timedelta(0))].values.tolist()[0][1:-1]
-        raw_data = raw_data[raw_data["date"] == str(date.today()-timedelta(0))].values.tolist()[0][1:-1]
+        data = data[data["date"] == str(date.today()-timedelta(time_delta))].values.tolist()[0][1:-1]
+        raw_data = raw_data[raw_data["date"] == str(date.today()-timedelta(time_delta))].values.tolist()[0][1:-1]
         # stat report
         if full_report:
             populate_stat_report_full(coin, data, raw_data, report)
@@ -551,4 +507,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-        main()
+    main()
