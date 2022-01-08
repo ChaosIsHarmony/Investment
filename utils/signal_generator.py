@@ -105,12 +105,12 @@ def normalize(arr: List[float]) -> List[float]:
 
 
 
-def calculate_risk(raw_data: pd.DataFrame, coin: str, time_delta: int = 0) -> float:
+def calculate_risk(raw_data: pd.DataFrame, coin: str, signal_avg: float, time_delta: int = 0) -> float:
     '''
     Returns a float in range [0,1] indicating level of risk.
     Based on Meehl's findings, fancy weighting doesn't yield better results.
     '''
-    factors = []
+    factors = [signal_avg]
 
     # calculate MA ratios
     ma_50_200 = raw_data[PRICE_50_SMA] / raw_data[PRICE_200_SMA]
@@ -118,7 +118,7 @@ def calculate_risk(raw_data: pd.DataFrame, coin: str, time_delta: int = 0) -> fl
 
     factors.append(ma_25_200/ma_50_200)
 
-    # calculate risk for intervals (in weeks, converted to days by multiplying by 7)
+    # calculate sharpe and upi for intervals (in weeks, converted to days by multiplying by 7)
     i = 66
     sr = []
     upi = []
@@ -143,97 +143,6 @@ def calculate_risk(raw_data: pd.DataFrame, coin: str, time_delta: int = 0) -> fl
 
 
 
-def populate_stat_report_full(coin: str, data: pd.DataFrame, raw_data: pd.DataFrame, report: List[str]) -> None:
-    basic_stats = ["\n\n\n________________________________________",
-                   f"Report for {coin.upper()}:",
-                   "Basic Stats",
-                   "[1.0 is the highest; 0.0 is the lowest]",
-                   f"price:\t\t\t\t{data[PRICE]:.6f}",
-                   f"market_cap:\t\t{data[MARKET_CAP]:.6f}",
-                   f"volume:\t\t\t\t{data[VOLUME]:.6f}",
-                   f"fear/greed:\t\t{data[FEAR_GREED]:.6f} [{get_fg_indicator(data[FEAR_GREED])}]",
-                   "[SR: >2 is good; UPI, the higher the better]",
-                   f"sharpe_ratio:\t{common.get_sharpe_ratio(coin):.6f}",
-                   f"UPI:\t\t\t\t\t{common.get_upi(coin):.6f}",
-                   f"RSI:\t\t\t\t\t{raw_data[RSI]:.6f}",
-                   f"Risk Metric:\t{calculate_risk(raw_data, coin):.6f}"]
-
-    price_ratios = ["\nPrice Ratios",
-                    "[>1 means greater risk/overvalued; <1 means less risk/undervalued]",
-                    f"5-day/10-day:\t{raw_data[PRICE_5_SMA]/raw_data[PRICE_10_SMA]:>9.6f}",
-                    f"10-day/25-day:\t{raw_data[PRICE_10_SMA]/raw_data[PRICE_25_SMA]:>9.6f}",
-                    f"25-day/50-day:\t{raw_data[PRICE_25_SMA]/raw_data[PRICE_50_SMA]:>9.6f}"]
-
-    if raw_data[PRICE_200_SMA] > 0:
-        price_ratios.append("x-day/200-day")
-        price_ratios.append(f"\t5-day/200-day:\t\t{raw_data[PRICE_5_SMA]/raw_data[PRICE_200_SMA]:>9.6f}")
-        price_ratios.append(f"\t10-day/200-day:\t\t{raw_data[PRICE_10_SMA]/raw_data[PRICE_200_SMA]:>9.6f}")
-        price_ratios.append(f"\t25-day/200-day:\t\t{raw_data[PRICE_25_SMA]/raw_data[PRICE_200_SMA]:>9.6f}")
-        price_ratios.append(f"\t50-day/200-day:\t\t{raw_data[PRICE_50_SMA]/raw_data[PRICE_200_SMA]:>9.6f}")
-        price_ratios.append(f"\t75-day/200-day:\t\t{raw_data[PRICE_75_SMA]/raw_data[PRICE_200_SMA]:>9.6f}")
-        price_ratios.append(f"\t100-day/200-day:\t{raw_data[PRICE_100_SMA]/raw_data[PRICE_200_SMA]:>9.6f}")
-        price_ratios.append(f"\t150-day/200-day:\t{raw_data[PRICE_150_SMA]/raw_data[PRICE_200_SMA]:>9.6f}")
-    if raw_data[PRICE_250_SMA] > 0:
-        price_ratios.append("x-day/250-day")
-        price_ratios.append(f"\t5-day/250-day:\t\t{raw_data[PRICE_5_SMA]/raw_data[PRICE_250_SMA]:>9.6f}")
-        price_ratios.append(f"\t10-day/250-day:\t\t{raw_data[PRICE_10_SMA]/raw_data[PRICE_250_SMA]:>9.6f}")
-        price_ratios.append(f"\t25-day/250-day:\t\t{raw_data[PRICE_25_SMA]/raw_data[PRICE_250_SMA]:>9.6f}")
-        price_ratios.append(f"\t50-day/250-day:\t\t{raw_data[PRICE_50_SMA]/raw_data[PRICE_250_SMA]:>9.6f}")
-        price_ratios.append(f"\t75-day/250-day:\t\t{raw_data[PRICE_75_SMA]/raw_data[PRICE_250_SMA]:>9.6f}")
-        price_ratios.append(f"\t100-day/250-day:\t{raw_data[PRICE_100_SMA]/raw_data[PRICE_250_SMA]:>9.6f}")
-        price_ratios.append(f"\t150-day/250-day:\t{raw_data[PRICE_150_SMA]/raw_data[PRICE_250_SMA]:>9.6f}")
-    if raw_data[PRICE_300_SMA] > 0:
-        price_ratios.append("x-day/300-day")
-        price_ratios.append(f"\t5-day/300-day:\t\t{raw_data[PRICE_5_SMA]/raw_data[PRICE_300_SMA]:>9.6f}")
-        price_ratios.append(f"\t10-day/300-day:\t\t{raw_data[PRICE_10_SMA]/raw_data[PRICE_300_SMA]:>9.6f}")
-        price_ratios.append(f"\t25-day/300-day:\t\t{raw_data[PRICE_25_SMA]/raw_data[PRICE_300_SMA]:>9.6f}")
-        price_ratios.append(f"\t50-day/300-day:\t\t{raw_data[PRICE_50_SMA]/raw_data[PRICE_300_SMA]:>9.6f}")
-        price_ratios.append(f"\t75-day/300-day:\t\t{raw_data[PRICE_75_SMA]/raw_data[PRICE_300_SMA]:>9.6f}")
-        price_ratios.append(f"\t100-day/300-day:\t{raw_data[PRICE_100_SMA]/raw_data[PRICE_300_SMA]:>9.6f}")
-        price_ratios.append(f"\t150-day/300-day:\t{raw_data[PRICE_150_SMA]/raw_data[PRICE_300_SMA]:>9.6f}")
-    if raw_data[PRICE_350_SMA] > 0:
-        price_ratios.append("x-day/350-day")
-        price_ratios.append(f"\t5-day/350-day:\t\t{raw_data[PRICE_5_SMA]/raw_data[PRICE_350_SMA]:>9.6f}")
-        price_ratios.append(f"\t10-day/350-day:\t\t{raw_data[PRICE_10_SMA]/raw_data[PRICE_350_SMA]:>9.6f}")
-        price_ratios.append(f"\t25-day/350-day:\t\t{raw_data[PRICE_25_SMA]/raw_data[PRICE_350_SMA]:>9.6f}")
-        price_ratios.append(f"\t50-day/350-day:\t\t{raw_data[PRICE_50_SMA]/raw_data[PRICE_350_SMA]:>9.6f}")
-        price_ratios.append(f"\t75-day/350-day:\t\t{raw_data[PRICE_75_SMA]/raw_data[PRICE_350_SMA]:>9.6f}")
-        price_ratios.append(f"\t100-day/350-day:\t{raw_data[PRICE_100_SMA]/raw_data[PRICE_350_SMA]:>9.6f}")
-        price_ratios.append(f"\t150-day/350-day:\t{raw_data[PRICE_150_SMA]/raw_data[PRICE_350_SMA]:>9.6f}")
-    else:
-        price_ratios.append("WARNING: DATA MISSING FROM SMAs; MODEL MAY BE UNRELIABLE")
-
-    price_deltas = ["\nPrice Deltas",
-                    "[>1 shows a decrease; <1 shows an increase]",
-                    f"5-day -> Present:\t\t{raw_data[PRICE_5_SMA]/raw_data[PRICE]:>9.6f}",
-                    f"10-day -> Present:\t\t{raw_data[PRICE_10_SMA]/raw_data[PRICE]:>9.6f}",
-                    f"25-day -> Present:\t\t{raw_data[PRICE_25_SMA]/raw_data[PRICE]:>9.6f}",
-                    f"50-day -> Present:\t\t{raw_data[PRICE_50_SMA]/raw_data[PRICE]:>9.6f}",
-                    f"75-day -> Present:\t\t{raw_data[PRICE_75_SMA]/raw_data[PRICE]:>9.6f}",
-                    f"100-day -> Present:\t\t{raw_data[PRICE_100_SMA]/raw_data[PRICE]:>9.6f}"]
-
-    fear_greed_deltas = ["\nFear/Greed Deltas",
-                         "[>0 is greedier; <0 is more fearful]",
-                         f"3-day -> Present:\t\t{raw_data[FEAR_GREED]-raw_data[FG_3_SMA]:>4.1f}",
-                         f"5-day -> 3-day:\t\t{raw_data[FG_3_SMA]-raw_data[FG_5_SMA]:>4.1f}",
-                         f"7-day -> 5-day\t\t{raw_data[FG_5_SMA]-raw_data[FG_7_SMA]:>4.1f}",
-                         f"9-day -> 7-day:\t\t{raw_data[FG_7_SMA]-raw_data[FG_9_SMA]:>4.1f}",
-                         f"11-day -> 9-day:\t{raw_data[FG_9_SMA]-raw_data[FG_11_SMA]:>4.1f}",
-                         f"13-day -> 11-day:\t{raw_data[FG_11_SMA]-raw_data[FG_13_SMA]:>4.1f}",
-                         f"15-day -> 13-day:\t{raw_data[FG_13_SMA]-raw_data[FG_15_SMA]:>4.1f}",
-                         f"30-day -> 15-day:\t{raw_data[FG_15_SMA]-raw_data[FG_30_SMA]:>4.1f}"]
-
-    for item in basic_stats:
-        report.append(item)
-    for item in price_ratios:
-        report.append(item)
-    for item in price_deltas:
-        report.append(item)
-    for item in fear_greed_deltas:
-        report.append(item)
-
-
-
 def populate_stat_report_essentials(coin: str, data: pd.DataFrame, raw_data: pd.DataFrame, report: List[str]) -> None:
     basic_stats = ["\n\n\n________________________________________",
                    f"Report for {coin.upper()}:",
@@ -246,8 +155,26 @@ def populate_stat_report_essentials(coin: str, data: pd.DataFrame, raw_data: pd.
                    "[SR: >2 is good; UPI, the higher the better]",
                    f"sharpe_ratio:\t{common.get_sharpe_ratio(coin):.6f}",
                    f"UPI:\t\t\t\t\t{common.get_upi(coin):.6f}",
-                   f"RSI:\t\t\t\t\t{raw_data[RSI]:.6f}",
-                   f"Risk Metric:\t{calculate_risk(raw_data, coin):.6f}"]
+                   f"RSI:\t\t\t\t\t{raw_data[RSI]:.6f}"]
+
+    for item in basic_stats:
+        report.append(item)
+
+
+
+def populate_stat_report_full(coin: str, data: pd.DataFrame, raw_data: pd.DataFrame, report: List[str]) -> None:
+    basic_stats = ["\n\n\n________________________________________",
+                   f"Report for {coin.upper()}:",
+                   "Basic Stats",
+                   "[1.0 is the highest; 0.0 is the lowest]",
+                   f"price:\t\t\t\t{data[PRICE]:.6f}",
+                   f"market_cap:\t\t{data[MARKET_CAP]:.6f}",
+                   f"volume:\t\t\t\t{data[VOLUME]:.6f}",
+                   f"fear/greed:\t\t{data[FEAR_GREED]:.6f} [{get_fg_indicator(data[FEAR_GREED])}]",
+                   "[SR: >2 is good; UPI, the higher the better]",
+                   f"sharpe_ratio:\t{common.get_sharpe_ratio(coin):.6f}",
+                   f"UPI:\t\t\t\t\t{common.get_upi(coin):.6f}",
+                   f"RSI:\t\t\t\t\t{raw_data[RSI]:.6f}"]
 
     price_ratios = ["\nPrice Ratios",
                     "[>1 means greater risk/overvalued; <1 means less risk/undervalued]"]
@@ -370,78 +297,87 @@ def get_signal_strength(data: pd.DataFrame, raw_data: pd.DataFrame) -> Tuple[flo
 
 
 
-def generate_signals(full_report: bool = False, time_delta: int = 0) -> List[str]:
-    report = []
+def get_avg_model_signal(signal_v: str, signal_w: str, signal_b: str) -> float:
+    '''
+    If signal is BUY, then add 0.0; HODL, then 0.5; SELL, then 1.0 for each of three.
+    Return average of all three.
+    '''
+    tot = 0.0
+
+    if signal_v == "HODL":
+        tot += 0.5
+    if signal_w == "HODL":
+        tot += 0.5
+    if signal_b == "HODL":
+        tot += 0.5
+
+    if signal_v == "SELL":
+        tot += 1.0
+    if signal_w == "SELL":
+        tot += 1.0
+    if signal_b == "SELL":
+        tot += 1.0
+
+    return tot / 3.0
+
+
+
+def populate_nn_report(coin: str, data: pd.DataFrame, raw_data: pd.DataFrame, full_report: bool, report: List[str]) -> float:
+    # parse all asset-specific best-performing models OR just use the bitcoin one if no asset-specific ones exist (e.g., polkadot because it's too new)
     best_models = []
-    for coin in common.coins:
-        # parse all asset-specific best-performing models OR just use the bitcoin one if no asset-specific ones exist (e.g., polkadot because it's too new)
-        try:
-            with open(f"reports/{coin}_best_performers.txt") as f:
-                models = f.read().splitlines()
-                for model in models:
-                    best_models.append(model)
-        except:
-            with open("reports/all_best_performers.txt") as f:
-                models = f.read().splitlines()
-                for model in models:
-                    best_models.append(model)
+    try:
+        with open(f"reports/{coin}_best_performers.txt") as f:
+            models = f.read().splitlines()
+            for model in models:
+                best_models.append(model)
+    except:
+        with open("reports/all_best_performers.txt") as f:
+            models = f.read().splitlines()
+            for model in models:
+                best_models.append(model)
 
-        # NOTE: raw_data is used for the SMA ratio calculations as the normalized data cannot adequately capture the ratios' significances
-        data = pd.read_csv(f"datasets/clean/{coin}_historical_data_clean.csv")
-        raw_data = pd.read_csv(f"datasets/raw/{coin}_historical_data_raw_all_features.csv")
 
-        # TODO: retrain models with RSI
-        data = data.drop(columns=["RSI"])
+    n_votes = [0, 0, 0] # buy x, hodl, sell y
+    n_weights = [0, 0, 0]
+    best_model_signal = 3 # set out of bounds to begin with
 
-        # extracts the most recent data as a python list
-        data = data[data["date"] == str(date.today()-timedelta(time_delta))].values.tolist()[0][1:-1]
-        raw_data = raw_data[raw_data["date"] == str(date.today()-timedelta(time_delta))].values.tolist()[0][1:-1]
-        # stat report
-        if full_report:
-            populate_stat_report_full(coin, data, raw_data, report)
-        else:
-            populate_stat_report_essentials(coin, data, raw_data, report)
+# get the best performing models
+    models = get_models(best_models)
 
-        n_votes = [0, 0, 0] # buy x, hodl, sell y
-        n_weights = [0, 0, 0]
-        best_model_signal = 3 # set out of bounds to begin with
+    for i in range(len(models)):
+        # set to prediction mode
+        model = models[i]
+        model.eval()
+        # make the data pytorch compatible
+        feature_tensor = torch.tensor([data], dtype=torch.float32)
 
-        # get the best performing models
-        models = get_models(best_models)
+        with torch.no_grad():
+            output = model(feature_tensor)
 
-        for i in range(len(models)):
-            # set to prediction mode
-            model = models[i]
-            model.eval()
-            # make the data pytorch compatible
-            feature_tensor = torch.tensor([data], dtype=torch.float32)
+        if i == 0:
+            best_model_signal = int(torch.argmax(output, dim=1))
 
-            with torch.no_grad():
-                output = model(feature_tensor)
+        for i in range(len(n_votes)):
+            n_weights[i] += float(output[0][i])
+            n_votes[int(torch.argmax(output, dim=1))] += 1
 
-            if i == 0:
-                best_model_signal = int(torch.argmax(output, dim=1))
+# tabulate answers according to different metrics
+    n_votes = torch.tensor(n_votes, dtype=torch.float32)
+    n_weights = torch.tensor(n_weights, dtype=torch.float32)
+    signal_v = DECISIONS[torch.argmax(n_votes)]
+    signal_w = DECISIONS[torch.argmax(n_weights)]
+    signal_b = DECISIONS[best_model_signal]
 
-            for i in range(len(n_votes)):
-                n_weights[i] += float(output[0][i])
-                n_votes[int(torch.argmax(output, dim=1))] += 1
+    formatted_w_list = [round((x/len(best_models)), 4) for x in n_weights.tolist()]
 
-        # tabulate answers according to different metrics
-        n_votes = torch.tensor(n_votes, dtype=torch.float32)
-        n_weights = torch.tensor(n_weights, dtype=torch.float32)
-        signal_v = DECISIONS[torch.argmax(n_votes)]
-        signal_w = DECISIONS[torch.argmax(n_weights)]
-        signal_b = DECISIONS[best_model_signal]
+    buy_signal = formatted_w_list[0]
+    hodl_signal = formatted_w_list[1]
+    sell_signal = formatted_w_list[2]
 
-        formatted_w_list = [round((x/len(best_models)), 4) for x in n_weights.tolist()]
+# calculate signal strength
+    signal_strength, buy_or_sell = get_signal_strength(data, raw_data)
 
-        buy_signal = formatted_w_list[0]
-        hodl_signal = formatted_w_list[1]
-        sell_signal = formatted_w_list[2]
-
-        # calculate signal strength
-        signal_strength, buy_or_sell = get_signal_strength(data, raw_data)
-
+    if full_report:
         report.append("\nAction Signals")
         report.append(f"Signal by best nn:\t{signal_b}")
         report.append(f"Signal by votes:\t\t{signal_v}")
@@ -457,14 +393,46 @@ def generate_signals(full_report: bool = False, time_delta: int = 0) -> List[str
         report.append("[>0.7 is strong; <0.3 is weak]")
         report.append(f"BUY to SELL diff ratio:{abs(buy_signal - sell_signal) / (abs(hodl_signal - buy_signal) + abs(hodl_signal - sell_signal)):>9.4f}")
 
-        report.append("\nLimit Orders")
-        report.append("[ratio > 1 is BUY; ratio < 1 is NEUTRAL]")
-        report.append(f"Current Price:\t\t{raw_data[PRICE]:.0f}")
-        report.append(f"Limit Order [1x]: {raw_data[PRICE_50_SMA]:.0f} | ratio:\t\t{raw_data[PRICE_50_SMA]/raw_data[PRICE]:0.4f}")
-        report.append(f"Limit Order [2x]: {raw_data[PRICE_100_SMA]:.0f} | ratio:\t\t{raw_data[PRICE_100_SMA]/raw_data[PRICE]:0.4f}")
-        report.append(f"Limit Order [3x]: {raw_data[PRICE_150_SMA]:.0f} | ratio:\t\t{raw_data[PRICE_150_SMA]/raw_data[PRICE]:0.4f}")
-        report.append(f"Limit Order [4x]: {raw_data[PRICE_200_SMA]:.0f} | ratio:\t\t{raw_data[PRICE_200_SMA]/raw_data[PRICE]:0.4f}")
+    return get_avg_model_signal(signal_v, signal_w, signal_b)
 
+
+
+def generate_signals(full_report: bool, time_delta: int) -> List[str]:
+    report = []
+    for coin in common.coins:
+        # NOTE: raw_data is used for the SMA ratio calculations as the normalized data cannot adequately capture the ratios' significances
+        data = pd.read_csv(f"datasets/clean/{coin}_historical_data_clean.csv")
+        raw_data = pd.read_csv(f"datasets/raw/{coin}_historical_data_raw_all_features.csv")
+
+        # TODO: retrain models with RSI
+        data = data.drop(columns=["RSI"])
+
+        # extracts the most recent data as a python list
+        data = data[data["date"] == str(date.today()-timedelta(time_delta))].values.tolist()[0][1:-1]
+        raw_data = raw_data[raw_data["date"] == str(date.today()-timedelta(time_delta))].values.tolist()[0][1:-1]
+
+        # stat report
+        if full_report:
+            populate_stat_report_full(coin, data, raw_data, report)
+        else:
+            populate_stat_report_essentials(coin, data, raw_data, report)
+
+        # model results
+        signal_avg = populate_nn_report(coin, data, raw_data, full_report, report)
+
+        # calculate risk
+        report.append("\nRisk")
+        report.append(f"Risk Metric:\t{calculate_risk(raw_data, coin, signal_avg):.6f}")
+
+        # calculate limit orders
+        if full_report:
+            report.append("\nLimit Orders")
+            report.append("[ratio > 1 is BUY; ratio < 1 is NEUTRAL]")
+            report.append(f"Current Price:\t\t{raw_data[PRICE]:.0f}")
+            report.append(f"Limit Order [1x]: {raw_data[PRICE_50_SMA]:.0f} | ratio:\t\t{raw_data[PRICE_50_SMA]/raw_data[PRICE]:0.4f}")
+            report.append(f"Limit Order [2x]: {raw_data[PRICE_100_SMA]:.0f} | ratio:\t\t{raw_data[PRICE_100_SMA]/raw_data[PRICE]:0.4f}")
+            report.append(f"Limit Order [3x]: {raw_data[PRICE_150_SMA]:.0f} | ratio:\t\t{raw_data[PRICE_150_SMA]/raw_data[PRICE]:0.4f}")
+            report.append(f"Limit Order [4x]: {raw_data[PRICE_200_SMA]:.0f} | ratio:\t\t{raw_data[PRICE_200_SMA]/raw_data[PRICE]:0.4f}")
 
     return report
 
@@ -486,21 +454,22 @@ def generate_report(report: List[str], full_report: bool = False) -> None:
 
 def main() -> None:
     # collects new data and then cleans it
-    fetch_data = input("Fetch most recent daily data? [y/n; only if you haven't already fetched today] ")
+    time_delta = int(input("Input #days before today whose report to generate [ex.: 1 if today is Friday and you want Thursday's report]: "))
+    fetch_data = input("Fetch most recent daily data? [y/n; only if you haven't already fetched today]: ")
     if (fetch_data.lower())[0] == 'y':
         days_back = -1
         while days_back < 0:
-            days_back = int(input("How many days worth of data? [e.g., 5 if you haven't calculated a signal for 5 days] "))
+            days_back = int(input("How many days worth of data? [e.g., 5 if you haven't calculated a signal for 5 days]: "))
         fetch_new_data(days_back)
         process_new_data()
 
     # determines signal and creates report
-    full_report = input("Full report? [y/n; y gives all the gory details] ")
+    full_report = input("Full report? [y/n; y gives all the gory details]: ")
     if (full_report.lower())[0] == 'y':
-        report = generate_signals(True)
+        report = generate_signals(full_report=True, time_delta=time_delta)
         generate_report(report, True)
     else:
-        report = generate_signals()
+        report = generate_signals(full_report=False, time_delta=time_delta)
         generate_report(report)
 
 
