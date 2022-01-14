@@ -105,6 +105,39 @@ def normalize(arr: List[float]) -> List[float]:
 
 
 
+def calculate_MA_risk(raw_data: pd.DataFrame) -> float:
+    ma_50_200 = raw_data[PRICE_50_SMA] / raw_data[PRICE_200_SMA]
+    ma_25_200 = raw_data[PRICE_25_SMA] / raw_data[PRICE_200_SMA]
+
+    diff = ma_25_200 - ma_50_200
+
+    if diff < -0.2:
+        val = 0.0
+    elif diff < -0.15:
+        val = 0.1
+    elif diff < -0.1:
+        val = 0.2
+    elif diff < -0.05:
+        val = 0.3
+    elif diff < -0.025:
+        val = 0.4
+    elif diff < 0.025:
+        val = 0.5
+    elif diff < 0.05:
+        val = 0.6
+    elif diff < 0.1:
+        val = 0.7
+    elif diff < 0.15:
+        val = 0.8
+    elif diff < 0.2:
+        val = 0.9
+    else:
+        val = 1.0
+
+    return val
+
+
+
 def calculate_risk(raw_data: pd.DataFrame, coin: str, signal_avg: float, time_delta: int = 0) -> float:
     '''
     Returns a float in range [0,1] indicating level of risk.
@@ -113,10 +146,7 @@ def calculate_risk(raw_data: pd.DataFrame, coin: str, signal_avg: float, time_de
     factors = [signal_avg]
 
     # calculate MA ratios
-    ma_50_200 = raw_data[PRICE_50_SMA] / raw_data[PRICE_200_SMA]
-    ma_25_200 = raw_data[PRICE_25_SMA] / raw_data[PRICE_200_SMA]
-
-    factors.append(ma_25_200/ma_50_200)
+    factors.append(calculate_MA_risk(raw_data))
 
     # calculate sharpe and upi for intervals (in weeks, converted to days by multiplying by 7)
     i = 66
@@ -124,11 +154,11 @@ def calculate_risk(raw_data: pd.DataFrame, coin: str, signal_avg: float, time_de
     upi = []
     while i >= 26:
         sr.append(common.get_sharpe_ratio_range(coin, i*7, time_delta))
-        #  upi.append(common.get_upi(coin, i*7))
+        upi.append(common.get_upi(coin, i*7))
         i -= 8
+    sr_upi = (sum(normalize(sr)) / len(sr)) + (sum(normalize(upi)) / len(upi))
 
-    factors.append(sum(normalize(sr)) / len(sr))
-    #  factors.append(sum(normalize(upi)) / len(upi))
+    factors.append(sr_upi / 2)
 
     # rsi
     factors.append(raw_data[RSI] / 100)
