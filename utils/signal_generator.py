@@ -177,6 +177,7 @@ def populate_stat_report_essentials(coin: str, data: pd.DataFrame, raw_data: pd.
     basic_stats = ["\n\n\n________________________________________",
                    f"Report for {coin.upper()}:",
                    "Basic Stats",
+                   f"price (NTD):\t\t{raw_data[PRICE]:.0f}",
                    "[1.0 is the highest; 0.0 is the lowest]",
                    f"price:\t\t\t\t{data[PRICE]:.6f}",
                    f"market_cap:\t\t{data[MARKET_CAP]:.6f}",
@@ -196,6 +197,7 @@ def populate_stat_report_full(coin: str, data: pd.DataFrame, raw_data: pd.DataFr
     basic_stats = ["\n\n\n________________________________________",
                    f"Report for {coin.upper()}:",
                    "Basic Stats",
+                   f"price (NTD):\t\t{raw_data[PRICE]:.0f}",
                    "[1.0 is the highest; 0.0 is the lowest]",
                    f"price:\t\t\t\t{data[PRICE]:.6f}",
                    f"market_cap:\t\t{data[MARKET_CAP]:.6f}",
@@ -458,11 +460,18 @@ def generate_signals(full_report: bool, time_delta: int) -> List[str]:
         if full_report:
             report.append("\nLimit Orders")
             report.append("[ratio > 1 is BUY; ratio < 1 is NEUTRAL]")
+            limits = [
+                raw_data[PRICE_50_SMA],
+                raw_data[PRICE_100_SMA],
+                raw_data[PRICE_150_SMA],
+                raw_data[PRICE_200_SMA]
+            ]
+            limits.sort(reverse=True)
             report.append(f"Current Price:\t\t{raw_data[PRICE]:.0f}")
-            report.append(f"Limit Order [1x]: {raw_data[PRICE_50_SMA]:.0f} | ratio:\t\t{raw_data[PRICE_50_SMA]/raw_data[PRICE]:0.4f}")
-            report.append(f"Limit Order [2x]: {raw_data[PRICE_100_SMA]:.0f} | ratio:\t\t{raw_data[PRICE_100_SMA]/raw_data[PRICE]:0.4f}")
-            report.append(f"Limit Order [3x]: {raw_data[PRICE_150_SMA]:.0f} | ratio:\t\t{raw_data[PRICE_150_SMA]/raw_data[PRICE]:0.4f}")
-            report.append(f"Limit Order [4x]: {raw_data[PRICE_200_SMA]:.0f} | ratio:\t\t{raw_data[PRICE_200_SMA]/raw_data[PRICE]:0.4f}")
+            report.append(f"Limit Order [1x]: {limits[0]:.0f} | ratio:\t\t{limits[0]/raw_data[PRICE]:0.4f}")
+            report.append(f"Limit Order [2x]: {limits[1]:.0f} | ratio:\t\t{limits[1]/raw_data[PRICE]:0.4f}")
+            report.append(f"Limit Order [3x]: {limits[2]:.0f} | ratio:\t\t{limits[2]/raw_data[PRICE]:0.4f}")
+            report.append(f"Limit Order [4x]: {limits[3]:.0f} | ratio:\t\t{limits[3]/raw_data[PRICE]:0.4f}")
 
     return report
 

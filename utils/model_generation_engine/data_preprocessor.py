@@ -314,9 +314,8 @@ def clean_data(coin: str, data: pd.DataFrame, start_date: str, end_date: str, ve
 if __name__ == "__main__":
     # The following two coins have shorter histories and require a different start date {polkadot = 2020-08-23; solana = 2020-04-11}
     #  coins = common.coins
-    #coins = ["polkadot"]
-    coins = ["matic-network"]
-    start_date = "2020-03-05"#"2020-08-23"#"2019-10-20"
+    coins = ["enjincoin"]
+    start_date = "2020-10-26"#"2020-08-23"#"2019-10-20"
     yesterday = date.today() - timedelta(1)
     end_date = yesterday
 
