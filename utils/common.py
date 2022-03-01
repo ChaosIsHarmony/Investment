@@ -25,7 +25,7 @@ PRUNING_THRESHOLD_VALID = 0.47
 PRUNING_THRESHOLD_TEST = 0.7
 NUM_MAX_TOTAL_MODELS = 50
 
-coins = ["bitcoin", "cardano", "chainlink", "enjincoin", "ethereum", "matic-network","polkadot", "solana"]
+coins = ["bitcoin", "cardano", "chainlink", "enjincoin", "ethereum", "matic-network","polkadot", "solana", "terra-luna"]
 possible_coins = ["algorand", "avalanche-2", "elrond-erd-2", "theta-token", "zilliqa"]
 
 #
